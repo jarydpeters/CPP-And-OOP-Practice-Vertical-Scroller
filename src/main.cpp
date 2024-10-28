@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    TTF_Font* pixelFont = TTF_OpenFont("Pixellettersfull-BnJ5.ttf", 24);
+    TTF_Font* pixelFont = TTF_OpenFont("assets/fonts/Pixellettersfull-BnJ5.ttf", 24);
     if(pixelFont == nullptr) 
     {
         std::cerr << "Font could not be opened! TTF_Error: " << TTF_GetError() << std::endl;
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
     }
 
     SDL_Color white = {255, 255, 255, 255};
-    SDL_Surface* surface = TTF_RenderText_Solid(pixelFont, "VertScroller", white);
+    SDL_Surface* surface = TTF_RenderText_Solid(pixelFont, "It's working!", white);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(mainWindowRenderer, surface);
 
     SDL_Rect textRect;
