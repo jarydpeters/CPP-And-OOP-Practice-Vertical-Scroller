@@ -2,6 +2,19 @@
 
 #include "../include/sdl/SDL.h"
 #include "../include/sdl/SDL_ttf.h"
+#include "../include/headers/textRenderer.h"
+
+constexpr int maxRGBHex = 0xFF;
+constexpr int mainTitleVerticalPostion = 200;
+
+void cleanup(TTF_Font* font, SDL_Window* window, SDL_Renderer* renderer)
+{
+    TTF_CloseFont(font);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_Quit();
+    SDL_Quit();
+}
 
 int main(int argc, char* argv[])
 {
@@ -18,7 +31,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    SDL_Window* mainWindow = SDL_CreateWindow("VertScroller", 100, 100, 500, 500, SDL_WINDOW_SHOWN);
+    SDL_Window* mainWindow = SDL_CreateWindow("VertScroller", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     if(mainWindow == nullptr) 
     {
         std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -45,22 +58,18 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    SDL_Color white = {255, 255, 255, 255};
-    SDL_Surface* surface = TTF_RenderText_Solid(pixelFont, "It's working!", white);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(mainWindowRenderer, surface);
-
-    SDL_Rect textRect;
-    textRect.x = 10;
-    textRect.y = 10;
-    textRect.w = surface->w;
-    textRect.h = surface->h;
-
-    SDL_FreeSurface(surface);
-
+    SDL_Color white = {maxRGBHex, maxRGBHex, maxRGBHex, maxRGBHex};
+    SDL_Color black = {0, 0, 0, maxRGBHex};
     SDL_Event event;
+
+    TextRenderer textRenderer(pixelFont);
+
     bool quit = false;
     while (!quit)
     {
+        SDL_SetRenderDrawColor(mainWindowRenderer, black.r, black.g, black.b, black.a);
+        SDL_RenderClear(mainWindowRenderer);
+
         while (SDL_PollEvent(&event))
         {
             if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
@@ -71,22 +80,16 @@ int main(int argc, char* argv[])
             {
                 quit = true;
             }
+            else if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
+            {
+                textRenderer.renderHorizontallyCenteredText(mainWindowRenderer, "It's Working!", mainTitleVerticalPostion, white, mainWindow);
+            }
         }
-
-        SDL_SetRenderDrawColor(mainWindowRenderer, 0, 0, 0, 255); // Black background
-        SDL_RenderClear(mainWindowRenderer);
-
-        SDL_RenderCopy(mainWindowRenderer, texture, nullptr, &textRect);
-
+        textRenderer.renderHorizontallyCenteredText(mainWindowRenderer, "It's Working!", mainTitleVerticalPostion, white, mainWindow);
         SDL_RenderPresent(mainWindowRenderer);
     }
 
-    SDL_DestroyTexture(texture);
-    TTF_CloseFont(pixelFont);
-    SDL_DestroyRenderer(mainWindowRenderer);
-    SDL_DestroyWindow(mainWindow);
-    TTF_Quit();
-    SDL_Quit();
+    cleanup(pixelFont, mainWindow, mainWindowRenderer);
 
     return 0;
 }
