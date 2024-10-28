@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include "../include/sdl/SDL.h"
+#include "../include/sdl/SDL_ttf.h"
 
-int main(int argc, char*argv[])
+int main(int argc, char* argv[])
 {
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0) 
     {
@@ -45,7 +45,7 @@ int main(int argc, char*argv[])
         return -1;
     }
 
-    SDL_Color white = { 255, 255, 255 };
+    SDL_Color white = {255, 255, 255, 255};
     SDL_Surface* surface = TTF_RenderText_Solid(pixelFont, "VertScroller", white);
     SDL_Texture* texture = SDL_CreateTextureFromSurface(mainWindowRenderer, surface);
 
