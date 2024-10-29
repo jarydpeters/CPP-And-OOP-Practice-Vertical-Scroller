@@ -1,2 +1,27 @@
-all:
-	g++ -Iinclude -Iinclude/sdl -Iinclude/headers -Llib -o VertScroller src/*.cpp -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Iinclude -Iinclude/sdl -Iinclude/headers -IC:/msys64/ucrt64/include/SDL2
+
+LDFLAGS = -Llib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+
+# Specify all your source files here
+SRCS = src/main.cpp \
+       src/textRenderer.cpp \
+       src/textureRenderer.cpp
+
+# Automatically convert .cpp files to .o files in the obj directory
+OBJS = $(SRCS:src/%.cpp=obj/%.o)
+
+# Target for the final executable
+all: VertScroller
+
+# Rule to create the executable
+VertScroller: $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+# Rule to compile each .cpp file into .o files in the obj directory
+obj/%.o: src/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+# Clean rule to remove generated files
+clean:
+	del /Q "obj\*.o" "VertScroller" || echo "No files to delete."
