@@ -1,10 +1,11 @@
 #include <iostream>
 #include <string>
 
-#include "../include/sdl/SDL.h"
-#include "../include/sdl/SDL_image.h"
-#include "../include/sdl/SDL_ttf.h"
-#include "../include/headers/textRenderer.h"
+#include "SDL.h"
+#include "SDL_image.h"
+#include "SDL_ttf.h"
+#include "textRenderer.h"
+#include "textureRenderer.h"
 
 constexpr int MAX_RGB_HEX = 0xFF;
 constexpr int MAX_TRANSPARENCY_HEX = 0xFF;

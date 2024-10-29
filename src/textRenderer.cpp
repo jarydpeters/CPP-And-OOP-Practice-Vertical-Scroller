@@ -2,7 +2,7 @@
 #include <SDL_ttf.h>
 #include <string>
 
-#include "../include/headers/textRenderer.h"
+#include "textRenderer.h"
 
 TextRenderer::TextRenderer(TTF_Font* font) : font(font)
 {

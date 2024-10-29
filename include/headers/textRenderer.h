@@ -1,8 +1,8 @@
 #ifndef TEXT_RENDERER_H
 #define TEXT_RENDERER_H
 
-#include <../sdl/SDL.h>
-#include <../sdl/SDL_ttf.h>
+#include <SDL.h>
+#include <SDL_ttf.h>
 #include <string>
 
 class TextRenderer
@@ -10,7 +10,7 @@ class TextRenderer
     public:
 
         /**
-         * 
+         * \param font font to initialize textRenderer with. Can be changed with changeFont
          */
         TextRenderer(TTF_Font* font);
 
@@ -99,8 +99,6 @@ class TextRenderer
          * \returns void
          */
         void ReadWindowDimensions(SDL_Window* window);
-
 };
-
 
 #endif // TEXT_RENDERER_H
