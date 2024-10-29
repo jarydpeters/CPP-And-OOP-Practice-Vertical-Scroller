@@ -80,19 +80,6 @@ TTF_Font* createAndVerifyTTFFont(const char* fontFile, const int fontPointSize, 
     return returnFont;
 }
 
-SDL_Texture* createAndVerifyTexture(const char* textureFilePath, SDL_Window* windowToRenderTextureOn, SDL_Renderer* windowRenderer)
-{
-    SDL_Texture* returnTexture = IMG_LoadTexture(windowRenderer, textureFilePath);
-    if(returnTexture == nullptr) 
-    {
-        std::cerr << "Failed to load texture: " << IMG_GetError() << std::endl;
-        SDL_DestroyRenderer(windowRenderer);
-        SDL_DestroyWindow(windowToRenderTextureOn);
-        SDL_Quit();
-    }
-    return returnTexture;
-}
-
 int main(int argc, char* argv[])
 {
     if(!successfulSDLInit())
@@ -103,24 +90,17 @@ int main(int argc, char* argv[])
     SDL_Window* mainWindow = createAndVerifySDLWindow(MAIN_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     SDL_Renderer* mainWindowRenderer = createAndVerifySDLRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED);
     TTF_Font* pixelFont = createAndVerifyTTFFont(FONT_PATH, 24, mainWindow, mainWindowRenderer);
-    SDL_Texture* mainTitleLogo = createAndVerifyTexture(TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
 
-    int mainTitleWidth;
-    int mainTitleHeight;
-    SDL_QueryTexture(mainTitleLogo, NULL, NULL, &mainTitleWidth, &mainTitleHeight);
-    SDL_Rect mainTitleTextureRect =
-    {
-        100, //x
-        100, //y
-        mainTitleWidth, //width
-        mainTitleHeight  //height
-    };
+    TextRenderer textRenderer(pixelFont);
+    TextureRenderer textureRenderer;
+
+    TextureRenderer::TextureWithRect mainTitleTextureWithRect = textureRenderer.createAndVerifyTexture(100, 100, TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
+    SDL_Texture* mainTitleTexture = mainTitleTextureWithRect.texture;
+    SDL_Rect mainTitleRect = mainTitleTextureWithRect.rectangle;
 
     SDL_Color white = {MAX_RGB_HEX, MAX_RGB_HEX, MAX_RGB_HEX, MAX_TRANSPARENCY_HEX};
     SDL_Color black = {0, 0, 0, MAX_RGB_HEX};
     SDL_Event event;
-
-    TextRenderer textRenderer(pixelFont);
 
     bool quit = false;
     while(!quit)
@@ -130,6 +110,10 @@ int main(int argc, char* argv[])
 
         while (SDL_PollEvent(&event))
         {
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+            {
+                quit = true;
+            }
             if(event.type == SDL_QUIT) 
             {
                 quit = true;
@@ -139,12 +123,12 @@ int main(int argc, char* argv[])
         textRenderer.renderVerticallyCenteredText(mainWindowRenderer, "Vertically Centered Text", 200, white, mainWindow);
         textRenderer.renderText(mainWindowRenderer, "Placed Text", 300, 300, white, mainWindow);
 
-        SDL_RenderCopy(mainWindowRenderer, mainTitleLogo, NULL, &mainTitleTextureRect);
+        SDL_RenderCopy(mainWindowRenderer, mainTitleTexture, NULL, &mainTitleRect);
 
         SDL_RenderPresent(mainWindowRenderer);
     }
 
-    cleanup(pixelFont, mainWindow, mainWindowRenderer, mainTitleLogo);
+    cleanup(pixelFont, mainWindow, mainWindowRenderer, mainTitleTexture);
 
     return 0;
 }
