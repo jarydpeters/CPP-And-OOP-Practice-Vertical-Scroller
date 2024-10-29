@@ -106,12 +106,6 @@ int main(int argc, char* argv[])
             {
                 quit = true;
             }
-            else if(event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_RESIZED)
-            {
-                textRenderer.renderHorizontallyCenteredText(mainWindowRenderer, "Horizontally Centered Text", 200, white, mainWindow);
-                textRenderer.renderVerticallyCenteredText(mainWindowRenderer, "Vertically Centered Text", 200, white, mainWindow);
-                textRenderer.renderText(mainWindowRenderer, "Placed Text", 300, 300, white, mainWindow);
-            }
         }
         textRenderer.renderHorizontallyCenteredText(mainWindowRenderer, "Horizontally Centered Text", mainTitleVerticalPostion, white, mainWindow);
         textRenderer.renderVerticallyCenteredText(mainWindowRenderer, "Vertically Centered Text", 200, white, mainWindow);
