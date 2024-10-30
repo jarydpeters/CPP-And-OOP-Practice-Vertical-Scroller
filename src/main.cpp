@@ -15,15 +15,15 @@ constexpr int MAIN_TITLE_VERTICAL_POSITION = 200;
 #define TITLE_IMAGE_PATH "assets/sprites/menuSelectionIcon.png"
 #define FONT_PATH "assets/fonts/Pixellettersfull-BnJ5.ttf"
 
-void cleanup(TTF_Font* font, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
-{
-    TTF_CloseFont(font);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_DestroyTexture(texture);
-    TTF_Quit();
-    SDL_Quit();
-}
+// void cleanup(TTF_Font* font, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
+// {
+//     TTF_CloseFont(font);
+//     SDL_DestroyRenderer(renderer);
+//     SDL_DestroyWindow(window);
+//     SDL_DestroyTexture(texture);
+//     TTF_Quit();
+//     SDL_Quit();
+// }
 
 bool successfulSDLInit()
 {
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
         SDL_RenderPresent(mainWindowRenderer);
     }
 
-    cleanup(pixelFont, mainWindow, mainWindowRenderer, mainTitleTexture);
+    //cleanup(subtextPixelFont, mainWindow, mainWindowRenderer, mainMenuSelectionTexture);
 
     return 0;
 }
