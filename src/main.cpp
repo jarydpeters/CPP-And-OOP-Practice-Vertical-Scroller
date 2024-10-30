@@ -25,6 +25,9 @@ constexpr int EXIT_GAME_INDEX = 3;
 constexpr int MAIN_MENU_INDEX = 0;
 constexpr int SETTINGS_MENU_INDEX = 1;
 
+constexpr int DEFAULT_HORIZONTAL_RESOLUTION = 1280;
+constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;
+
 #define MAIN_TITLE_TEXT "VERT SCROLLER"
 #define CONTINUE_TEXT "CONTINUE"
 #define NEW_GAME_TEXT "NEW GAME"
@@ -38,6 +41,9 @@ constexpr int SETTINGS_MENU_INDEX = 1;
 
 int currentlySelectedMainMenuOption = CONTINUE_INDEX;
 int currentlyDisplayedMenu = MAIN_MENU_INDEX;
+
+int currentHorizontalResolution = DEFAULT_HORIZONTAL_RESOLUTION;
+int currentVerticalResolution = DEFAULT_VERTICAL_RESOLUTION;
 
 bool quitGame = false;
 
@@ -89,7 +95,14 @@ bool successfulSDLInit()
 
 SDL_Window* createAndVerifySDLWindow(const char* windowName, const bool horizontalCentering, const bool verticalCentering, const int horizontalSize, const int verticalSize, const Uint32 flags)
 {
-    SDL_Window* returnWindow = SDL_CreateWindow(windowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    SDL_Window* returnWindow = SDL_CreateWindow(
+        windowName, 
+        SDL_WINDOWPOS_CENTERED, 
+        SDL_WINDOWPOS_CENTERED, 
+        DEFAULT_HORIZONTAL_RESOLUTION, 
+        DEFAULT_VERTICAL_RESOLUTION, 
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+
     if(returnWindow == nullptr) 
     {
         std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -137,7 +150,13 @@ void renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, TextRenderer menuT
     {
         case MAIN_MENU_INDEX:
         {
-            mainTitleMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(100, mainMenuOptionsMap[currentlySelectedMainMenuOption], TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
+            mainTitleMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
+                ((currentHorizontalResolution / 2) - 100), //set in middle of screen and then offset left to sit on left side of menu options
+                (mainMenuOptionsMap[currentlySelectedMainMenuOption] - 10), //offset up to account for texture height
+                TITLE_IMAGE_PATH, 
+                mainWindow, 
+                mainWindowRenderer);
+
             mainMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
             mainMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
 
@@ -155,7 +174,13 @@ void renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, TextRenderer menuT
         }
         case SETTINGS_MENU_INDEX:
         {
-            // settingsMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(100, settingsMenuOptionsMap[currentlySelectedSettingsMenuOption], TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
+            // settingsMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
+            //     ((currentHorizontalResolution / 2) - 100), //set in middle of screen and then offset left to sit on left side of menu options
+            //     (mainMenuOptionsMap[currentlySelectedMainMenuOption] - 10), //offset up to account for texture height
+            //     TITLE_IMAGE_PATH, 
+            //     mainWindow, 
+            //     mainWindowRenderer);
+
             SDL_Texture* settingsMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
             SDL_Rect settingsMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
 
@@ -211,11 +236,15 @@ void executeActionBasedOnEvent(SDL_Event event)
                     }
                 }
             } 
-
             break;
         }
         case SETTINGS_MENU_INDEX:
         {
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+            {
+                currentlySelectedMainMenuOption = CONTINUE_INDEX;
+                currentlyDisplayedMenu = MAIN_MENU_INDEX;
+            }   
             break;
         }
     }
@@ -228,7 +257,14 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    mainWindow = createAndVerifySDLWindow(MAIN_TITLE_TEXT, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    mainWindow = createAndVerifySDLWindow(
+        MAIN_TITLE_TEXT, 
+        SDL_WINDOWPOS_CENTERED, 
+        SDL_WINDOWPOS_CENTERED, 
+        DEFAULT_HORIZONTAL_RESOLUTION, 
+        DEFAULT_VERTICAL_RESOLUTION, 
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+
     mainWindowRenderer = createAndVerifySDLRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED);
 
     menuTextPixelFont = createAndVerifyTTFFont(FONT_PATH, 48, mainWindow, mainWindowRenderer);
