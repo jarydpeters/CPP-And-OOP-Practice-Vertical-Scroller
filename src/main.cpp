@@ -47,6 +47,9 @@ SDL_Color black = {0, 0, 0, MAX_RGB_HEX};
 SDL_Window* mainWindow;
 SDL_Renderer* mainWindowRenderer;
 
+SDL_Texture* mainMenuSelectionTexture;
+SDL_Rect mainMenuSelectionRect;
+
 TTF_Font* menuTextPixelFont;
 TTF_Font* subtextPixelFont;
 
@@ -55,15 +58,15 @@ std::map<int, int> mainMenuOptionsMap;
 TextureRenderer textureRenderer;
 TextureRenderer::TextureWithRect mainTitleMenuSelectionTextureWithRect;
 
-// void cleanup(TTF_Font* font, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
-// {
-//     TTF_CloseFont(font);
-//     SDL_DestroyRenderer(renderer);
-//     SDL_DestroyWindow(window);
-//     SDL_DestroyTexture(texture);
-//     TTF_Quit();
-//     SDL_Quit();
-// }
+void cleanup(TTF_Font* font, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
+{
+    TTF_CloseFont(font);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_DestroyTexture(texture);
+    TTF_Quit();
+    SDL_Quit();
+}
 
 bool successfulSDLInit()
 {
@@ -135,8 +138,8 @@ void renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, TextRenderer menuT
         case MAIN_MENU_INDEX:
         {
             mainTitleMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(100, mainMenuOptionsMap[currentlySelectedMainMenuOption], TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
-            SDL_Texture* mainMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
-            SDL_Rect mainMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
+            mainMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
+            mainMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
 
             menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_TITLE_TEXT, MAIN_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
 
@@ -251,7 +254,7 @@ int main(int argc, char* argv[])
         renderCurrentlyDisplayedMenu(currentlyDisplayedMenu, menuTextRenderer, menuSubtextRenderer);
     }
 
-    //cleanup(subtextPixelFont, mainWindow, mainWindowRenderer, mainMenuSelectionTexture);
+    cleanup(subtextPixelFont, mainWindow, mainWindowRenderer, mainMenuSelectionTexture);
 
     return 0;
 }
