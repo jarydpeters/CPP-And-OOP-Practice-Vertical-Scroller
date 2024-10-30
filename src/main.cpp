@@ -1,4 +1,5 @@
 #include <iostream>
+#include <map>
 #include <string>
 
 #include "SDL.h"
@@ -9,9 +10,26 @@
 
 constexpr int MAX_RGB_HEX = 0xFF;
 constexpr int MAX_TRANSPARENCY_HEX = 0xFF;
-constexpr int MAIN_TITLE_VERTICAL_POSITION = 200;
 
-#define MAIN_TITLE "VertScroller"
+constexpr int MAIN_TITLE_TEXT_VERTICAL_POSITION = 200;
+constexpr int CONTINUE_TEXT_VERTICAL_POSITION = MAIN_TITLE_TEXT_VERTICAL_POSITION + 100;
+constexpr int NEW_GAME_TEXT_VERTICAL_POSITION = CONTINUE_TEXT_VERTICAL_POSITION + 50;
+constexpr int SETTINGS_TEXT_VERTICAL_POSITION = NEW_GAME_TEXT_VERTICAL_POSITION + 50;
+constexpr int EXIT_TEXT_VERTICAL_POSITION = SETTINGS_TEXT_VERTICAL_POSITION + 50;
+
+constexpr int CONTINUE_INDEX = 0;
+constexpr int NEW_GAME_INDEX = 1;
+constexpr int SETTINGS_INDEX = 2;
+constexpr int EXIT_GAME_INDEX = 3;
+
+constexpr int MAIN_MENU_INDEX = 0;
+constexpr int SETTINGS_MENU_INDEX = 1;
+
+#define MAIN_TITLE_TEXT "VERT SCROLLER"
+#define CONTINUE_TEXT "CONTINUE"
+#define NEW_GAME_TEXT "NEW GAME"
+#define SETTINGS_TEXT "SETTINGS"
+#define EXIT_TEXT "QUIT"
 #define TITLE_IMAGE_PATH "assets/sprites/menuSelectionIcon.png"
 #define FONT_PATH "assets/fonts/Pixellettersfull-BnJ5.ttf"
 
@@ -87,16 +105,25 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    SDL_Window* mainWindow = createAndVerifySDLWindow(MAIN_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    std::map<int, int> mainMenuOptionsMap;
+
+    mainMenuOptionsMap[CONTINUE_INDEX] = CONTINUE_TEXT_VERTICAL_POSITION;
+    mainMenuOptionsMap[NEW_GAME_INDEX] = NEW_GAME_TEXT_VERTICAL_POSITION;
+    mainMenuOptionsMap[SETTINGS_INDEX] = SETTINGS_TEXT_VERTICAL_POSITION;
+    mainMenuOptionsMap[EXIT_GAME_INDEX] = EXIT_TEXT_VERTICAL_POSITION;
+
+    SDL_Window* mainWindow = createAndVerifySDLWindow(MAIN_TITLE_TEXT, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     SDL_Renderer* mainWindowRenderer = createAndVerifySDLRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED);
-    TTF_Font* pixelFont = createAndVerifyTTFFont(FONT_PATH, 24, mainWindow, mainWindowRenderer);
 
-    TextRenderer textRenderer(pixelFont);
+    TTF_Font* menuTextPixelFont = createAndVerifyTTFFont(FONT_PATH, 48, mainWindow, mainWindowRenderer);
+    TTF_Font* subtextPixelFont = createAndVerifyTTFFont(FONT_PATH, 24, mainWindow, mainWindowRenderer);
+    TextRenderer menuTextRenderer(menuTextPixelFont);
+    TextRenderer menuSubtextRenderer(subtextPixelFont);
+
     TextureRenderer textureRenderer;
-
-    TextureRenderer::TextureWithRect mainTitleTextureWithRect = textureRenderer.createAndVerifyTexture(100, 100, TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
-    SDL_Texture* mainTitleTexture = mainTitleTextureWithRect.texture;
-    SDL_Rect mainTitleRect = mainTitleTextureWithRect.rectangle;
+    TextureRenderer::TextureWithRect mainTitleMenuSelectionTextureWithRect;
+    int currentlySelectedMainMenuOption = CONTINUE_INDEX;
+    int currentlyDisplayedMenu = MAIN_MENU_INDEX;
 
     SDL_Color white = {MAX_RGB_HEX, MAX_RGB_HEX, MAX_RGB_HEX, MAX_TRANSPARENCY_HEX};
     SDL_Color black = {0, 0, 0, MAX_RGB_HEX};
@@ -110,22 +137,73 @@ int main(int argc, char* argv[])
 
         while (SDL_PollEvent(&event))
         {
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
-            {
-                quit = true;
-            }
             if(event.type == SDL_QUIT) 
             {
                 quit = true;
             }
+            switch(currentlyDisplayedMenu)
+            {
+                case MAIN_MENU_INDEX:
+                {
+                    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+                    {
+                        currentlySelectedMainMenuOption--;
+                        if(currentlySelectedMainMenuOption < CONTINUE_INDEX)
+                        {
+                            currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
+                        }
+                    }   
+                    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+                    {
+                        currentlySelectedMainMenuOption++;
+                        if(currentlySelectedMainMenuOption > EXIT_GAME_INDEX)
+                        {
+                            currentlySelectedMainMenuOption = CONTINUE_INDEX;
+                        }
+                    } 
+                    if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN)
+                    {
+                        switch(currentlySelectedMainMenuOption)
+                        {
+                            case EXIT_GAME_INDEX:
+                            {
+                                quit = true;
+                                break;
+                            }
+                            case SETTINGS_INDEX:
+                            {
+                                currentlyDisplayedMenu = SETTINGS_MENU_INDEX;
+                                break;
+                            }
+                        }
+                    } 
+
+                    break;
+                }
+            }
         }
-        textRenderer.renderHorizontallyCenteredText(mainWindowRenderer, "Horizontally Centered Text", MAIN_TITLE_VERTICAL_POSITION, white, mainWindow);
-        textRenderer.renderVerticallyCenteredText(mainWindowRenderer, "Vertically Centered Text", 200, white, mainWindow);
-        textRenderer.renderText(mainWindowRenderer, "Placed Text", 300, 300, white, mainWindow);
 
-        SDL_RenderCopy(mainWindowRenderer, mainTitleTexture, NULL, &mainTitleRect);
+        switch(currentlyDisplayedMenu)
+        {
+            case MAIN_MENU_INDEX:
+            {
+                mainTitleMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(100, mainMenuOptionsMap[currentlySelectedMainMenuOption], TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
+                SDL_Texture* mainMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
+                SDL_Rect mainMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
 
-        SDL_RenderPresent(mainWindowRenderer);
+                menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_TITLE_TEXT, MAIN_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+
+                menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, CONTINUE_TEXT, CONTINUE_TEXT_VERTICAL_POSITION, white, mainWindow);
+                menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, NEW_GAME_TEXT, NEW_GAME_TEXT_VERTICAL_POSITION, white, mainWindow);
+                menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_TEXT, SETTINGS_TEXT_VERTICAL_POSITION, white, mainWindow);
+                menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, EXIT_TEXT,     EXIT_TEXT_VERTICAL_POSITION,     white, mainWindow);
+
+                SDL_RenderCopy(mainWindowRenderer, mainMenuSelectionTexture, NULL, &mainMenuSelectionRect);
+                SDL_RenderPresent(mainWindowRenderer);
+
+                break;
+            }
+        }
     }
 
     //cleanup(subtextPixelFont, mainWindow, mainWindowRenderer, mainMenuSelectionTexture);
