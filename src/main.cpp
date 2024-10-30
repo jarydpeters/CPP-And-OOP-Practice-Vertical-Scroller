@@ -30,6 +30,9 @@ constexpr int SETTINGS_MENU_INDEX = 1;
 #define NEW_GAME_TEXT "NEW GAME"
 #define SETTINGS_TEXT "SETTINGS"
 #define EXIT_TEXT "QUIT"
+
+#define SETTINGS_MENU_TITLE_TEXT "SETTINGS"
+
 #define TITLE_IMAGE_PATH "assets/sprites/menuSelectionIcon.png"
 #define FONT_PATH "assets/fonts/Pixellettersfull-BnJ5.ttf"
 
@@ -180,6 +183,10 @@ int main(int argc, char* argv[])
 
                     break;
                 }
+                case SETTINGS_MENU_INDEX:
+                {
+                    break;
+                }
             }
         }
 
@@ -199,6 +206,19 @@ int main(int argc, char* argv[])
                 menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, EXIT_TEXT,     EXIT_TEXT_VERTICAL_POSITION,     white, mainWindow);
 
                 SDL_RenderCopy(mainWindowRenderer, mainMenuSelectionTexture, NULL, &mainMenuSelectionRect);
+                SDL_RenderPresent(mainWindowRenderer);
+
+                break;
+            }
+            case SETTINGS_MENU_INDEX:
+            {
+                // settingsMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(100, settingsMenuOptionsMap[currentlySelectedSettingsMenuOption], TITLE_IMAGE_PATH, mainWindow, mainWindowRenderer);
+                SDL_Texture* settingsMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
+                SDL_Rect settingsMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
+
+                menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, MAIN_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+
+                SDL_RenderCopy(mainWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
                 SDL_RenderPresent(mainWindowRenderer);
 
                 break;
