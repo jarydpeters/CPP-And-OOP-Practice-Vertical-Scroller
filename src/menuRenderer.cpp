@@ -5,7 +5,7 @@ MenuRenderer::MenuRenderer()
 
 }
 
-void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTextRenderer, TextRenderer menuSubtextRenderer)
+void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTitleTextRenderer, TextRenderer menuSubtextRenderer)
 {
     switch(currentlyDisplayedMenu)
     {
@@ -21,7 +21,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
             mainMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
-            menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
 
             menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_CONTINUE_TEXT, MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
             menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_NEW_GAME_TEXT, MENU_TEXT_SECOND_VERTICAL_POSITION, white, mainWindow);
@@ -45,7 +45,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             SDL_Texture* settingsMenuSelectionTexture = menuSelectionIconTextureWithRect.texture;
             SDL_Rect settingsMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
-            menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
 
             menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_FULLSCREEN_TEXT, MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
             menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_MUSIC_VOLUME_TEXT, MENU_TEXT_SECOND_VERTICAL_POSITION, white, mainWindow);
