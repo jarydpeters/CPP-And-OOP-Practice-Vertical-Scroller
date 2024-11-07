@@ -11,16 +11,21 @@
 constexpr int MAX_RGB_HEX = 0xFF;
 constexpr int MAX_TRANSPARENCY_HEX = 0xFF;
 
-constexpr int MAIN_TITLE_TEXT_VERTICAL_POSITION = 200;
-constexpr int CONTINUE_TEXT_VERTICAL_POSITION = MAIN_TITLE_TEXT_VERTICAL_POSITION + 100;
-constexpr int NEW_GAME_TEXT_VERTICAL_POSITION = CONTINUE_TEXT_VERTICAL_POSITION + 50;
-constexpr int SETTINGS_TEXT_VERTICAL_POSITION = NEW_GAME_TEXT_VERTICAL_POSITION + 50;
-constexpr int EXIT_TEXT_VERTICAL_POSITION = SETTINGS_TEXT_VERTICAL_POSITION + 50;
+constexpr int MENU_TITLE_TEXT_VERTICAL_POSITION = 200;
+constexpr int MENU_TEXT_FIRST_VERTICAL_POSITION = MENU_TITLE_TEXT_VERTICAL_POSITION + 100;
+constexpr int MENU_TEXT_SECOND_VERTICAL_POSITION = MENU_TEXT_FIRST_VERTICAL_POSITION + 50;
+constexpr int MENU_TEXT_THIRD_VERTICAL_POSITION = MENU_TEXT_SECOND_VERTICAL_POSITION + 50;
+constexpr int MENU_TEXT_FOURTH_VERTICAL_POSITION = MENU_TEXT_THIRD_VERTICAL_POSITION + 50;
 
 constexpr int CONTINUE_INDEX = 0;
 constexpr int NEW_GAME_INDEX = 1;
 constexpr int SETTINGS_INDEX = 2;
 constexpr int EXIT_GAME_INDEX = 3;
+
+constexpr int FULLSCREEN_INDEX = 0;
+constexpr int MUSIC_VOLUME_INDEX = 1;
+constexpr int SOUND_EFFECTS_VOLUME_INDEX = 2;
+constexpr int RETURN_TO_MAIN_MENU_INDEX = 3;
 
 constexpr int MAIN_MENU_INDEX = 0;
 constexpr int SETTINGS_MENU_INDEX = 1;
@@ -28,24 +33,35 @@ constexpr int SETTINGS_MENU_INDEX = 1;
 constexpr int DEFAULT_HORIZONTAL_RESOLUTION = 1280;
 constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;
 
-#define MAIN_TITLE_TEXT "VERT SCROLLER"
-#define CONTINUE_TEXT "CONTINUE"
-#define NEW_GAME_TEXT "NEW GAME"
-#define SETTINGS_TEXT "SETTINGS"
-#define EXIT_TEXT "QUIT"
+
+#define MAIN_MENU_TITLE_TEXT "VERT SCROLLER"
+#define MAIN_MENU_CONTINUE_TEXT "CONTINUE"
+#define MAIN_MENU_NEW_GAME_TEXT "NEW GAME"
+#define MAIN_MENU_SETTINGS_TEXT "SETTINGS"
+#define MAIN_MENU_EXIT_TEXT "QUIT"
 
 #define SETTINGS_MENU_TITLE_TEXT "SETTINGS"
+#define SETTINGS_MENU_FULLSCREEN_TEXT "FULL SCREEN"
+#define SETTINGS_MENU_MUSIC_VOLUME_TEXT "MUSIC VOLUME"
+#define SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT "SOUND EFFECTS VOLUME"
+#define SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT "RETURN TO MAIN MENU"
+
+#define SETTING_NOT_SELECTED_TEXT "[ ]"
+#define SETTING_SELECTED_TEXT "[X]"
 
 #define TITLE_IMAGE_PATH "assets/sprites/menuSelectionIcon.png"
 #define FONT_PATH "assets/fonts/Pixellettersfull-BnJ5.ttf"
 
-int currentlySelectedMainMenuOption = CONTINUE_INDEX;
 int currentlyDisplayedMenu = MAIN_MENU_INDEX;
+
+int currentlySelectedMainMenuOption = CONTINUE_INDEX;
+int currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
 
 int currentHorizontalResolution = DEFAULT_HORIZONTAL_RESOLUTION;
 int currentVerticalResolution = DEFAULT_VERTICAL_RESOLUTION;
 
 bool quitGame = false;
+bool fullscreen = false;
 
 SDL_Color white = {MAX_RGB_HEX, MAX_RGB_HEX, MAX_RGB_HEX, MAX_TRANSPARENCY_HEX};
 SDL_Color black = {0, 0, 0, MAX_RGB_HEX};
@@ -59,10 +75,10 @@ SDL_Rect mainMenuSelectionRect;
 TTF_Font* menuTextPixelFont;
 TTF_Font* subtextPixelFont;
 
-std::map<int, int> mainMenuOptionsMap;
+std::map<int, int> menuOptionsPositionMap;
 
 TextureRenderer textureRenderer;
-TextureRenderer::TextureWithRect mainTitleMenuSelectionTextureWithRect;
+TextureRenderer::TextureWithRect menuSelectionTextureWithRect;
 
 void cleanup(TTF_Font* font, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
 {
@@ -138,10 +154,10 @@ TTF_Font* createAndVerifyTTFFont(const char* fontFile, const int fontPointSize, 
 
 void initializeMenuOptionsMaps()
 {
-    mainMenuOptionsMap[CONTINUE_INDEX]  = CONTINUE_TEXT_VERTICAL_POSITION;
-    mainMenuOptionsMap[NEW_GAME_INDEX]  = NEW_GAME_TEXT_VERTICAL_POSITION;
-    mainMenuOptionsMap[SETTINGS_INDEX]  = SETTINGS_TEXT_VERTICAL_POSITION;
-    mainMenuOptionsMap[EXIT_GAME_INDEX] = EXIT_TEXT_VERTICAL_POSITION;
+    menuOptionsPositionMap[CONTINUE_INDEX]  = MENU_TEXT_FIRST_VERTICAL_POSITION;
+    menuOptionsPositionMap[NEW_GAME_INDEX]  = MENU_TEXT_SECOND_VERTICAL_POSITION;
+    menuOptionsPositionMap[SETTINGS_INDEX]  = MENU_TEXT_THIRD_VERTICAL_POSITION;
+    menuOptionsPositionMap[EXIT_GAME_INDEX] = MENU_TEXT_FOURTH_VERTICAL_POSITION;
 }
 
 void renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, TextRenderer menuTextRenderer, TextRenderer menuSubtextRenderer)
@@ -150,22 +166,22 @@ void renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, TextRenderer menuT
     {
         case MAIN_MENU_INDEX:
         {
-            mainTitleMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
+            menuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
                 ((currentHorizontalResolution / 2) - 100), //set in middle of screen and then offset left to sit on left side of menu options
-                (mainMenuOptionsMap[currentlySelectedMainMenuOption] - 10), //offset up to account for texture height
+                (menuOptionsPositionMap[currentlySelectedMainMenuOption] - 10), //offset up to account for texture height
                 TITLE_IMAGE_PATH, 
                 mainWindow, 
                 mainWindowRenderer);
 
-            mainMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
-            mainMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
+            mainMenuSelectionTexture = menuSelectionTextureWithRect.texture;
+            mainMenuSelectionRect = menuSelectionTextureWithRect.rectangle;
 
-            menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_TITLE_TEXT, MAIN_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+            menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
 
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, CONTINUE_TEXT, CONTINUE_TEXT_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, NEW_GAME_TEXT, NEW_GAME_TEXT_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_TEXT, SETTINGS_TEXT_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, EXIT_TEXT,     EXIT_TEXT_VERTICAL_POSITION,     white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_CONTINUE_TEXT, MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_NEW_GAME_TEXT, MENU_TEXT_SECOND_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_SETTINGS_TEXT, MENU_TEXT_THIRD_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_EXIT_TEXT, MENU_TEXT_FOURTH_VERTICAL_POSITION, white, mainWindow);
 
             SDL_RenderCopy(mainWindowRenderer, mainMenuSelectionTexture, NULL, &mainMenuSelectionRect);
             SDL_RenderPresent(mainWindowRenderer);
@@ -174,17 +190,27 @@ void renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, TextRenderer menuT
         }
         case SETTINGS_MENU_INDEX:
         {
-            // settingsMenuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
-            //     ((currentHorizontalResolution / 2) - 100), //set in middle of screen and then offset left to sit on left side of menu options
-            //     (mainMenuOptionsMap[currentlySelectedMainMenuOption] - 10), //offset up to account for texture height
-            //     TITLE_IMAGE_PATH, 
-            //     mainWindow, 
-            //     mainWindowRenderer);
+            menuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
+                ((currentHorizontalResolution / 2) - 200), //set in middle of screen and then offset left to sit on left side of menu options
+                (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - 10), //offset up to account for texture height
+                TITLE_IMAGE_PATH, 
+                mainWindow, 
+                mainWindowRenderer);
 
-            SDL_Texture* settingsMenuSelectionTexture = mainTitleMenuSelectionTextureWithRect.texture;
-            SDL_Rect settingsMenuSelectionRect = mainTitleMenuSelectionTextureWithRect.rectangle;
+            SDL_Texture* settingsMenuSelectionTexture = menuSelectionTextureWithRect.texture;
+            SDL_Rect settingsMenuSelectionRect = menuSelectionTextureWithRect.rectangle;
 
-            menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, MAIN_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+            menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_FULLSCREEN_TEXT, MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_MUSIC_VOLUME_TEXT, MENU_TEXT_SECOND_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, MENU_TEXT_THIRD_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, MENU_TEXT_FOURTH_VERTICAL_POSITION, white, mainWindow);
+
+            //TODO: MAKE OPTION ENABLED BUTTON DYNAMIC TO WINDOW SIZE
+            SDL_GetWindowSize(mainWindow, &currentHorizontalResolution, &currentVerticalResolution);
+
+            menuSubtextRenderer.renderText(mainWindowRenderer, (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), (currentHorizontalResolution * 2 / 3), MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
 
             SDL_RenderCopy(mainWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
             SDL_RenderPresent(mainWindowRenderer);
@@ -204,6 +230,7 @@ void executeActionBasedOnEvent(SDL_Event event)
     {
         case MAIN_MENU_INDEX:
         {
+            //TODO: add mouse controls
             if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
             {
                 currentlySelectedMainMenuOption--;
@@ -231,6 +258,7 @@ void executeActionBasedOnEvent(SDL_Event event)
                     }
                     case SETTINGS_INDEX:
                     {
+                        currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
                         currentlyDisplayedMenu = SETTINGS_MENU_INDEX;
                         break;
                     }
@@ -240,6 +268,41 @@ void executeActionBasedOnEvent(SDL_Event event)
         }
         case SETTINGS_MENU_INDEX:
         {
+            //TODO: add mouse controls
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+            {
+                currentlySelectedSettingsMenuOption--;
+                if(currentlySelectedSettingsMenuOption < FULLSCREEN_INDEX)
+                {
+                    currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+                }
+            }   
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+            {
+                currentlySelectedSettingsMenuOption++;
+                if(currentlySelectedSettingsMenuOption > RETURN_TO_MAIN_MENU_INDEX)
+                {
+                    currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
+                }
+            } 
+            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN)
+            {
+                switch(currentlySelectedSettingsMenuOption)
+                {
+                    case FULLSCREEN_INDEX:
+                    {
+                        fullscreen = !fullscreen;
+                        SDL_SetWindowFullscreen(mainWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
+                        break;
+                    }
+                    case RETURN_TO_MAIN_MENU_INDEX:
+                    {
+                        currentlySelectedMainMenuOption = CONTINUE_INDEX;
+                        currentlyDisplayedMenu = MAIN_MENU_INDEX;
+                        break;
+                    }
+                }
+            } 
             if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
             {
                 currentlySelectedMainMenuOption = CONTINUE_INDEX;
@@ -258,12 +321,14 @@ int main(int argc, char* argv[])
     }
 
     mainWindow = createAndVerifySDLWindow(
-        MAIN_TITLE_TEXT, 
+        MAIN_MENU_TITLE_TEXT, 
         SDL_WINDOWPOS_CENTERED, 
         SDL_WINDOWPOS_CENTERED, 
         DEFAULT_HORIZONTAL_RESOLUTION, 
         DEFAULT_VERTICAL_RESOLUTION, 
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+        SDL_WINDOW_OPENGL);
+
+    SDL_SetWindowResizable(mainWindow, SDL_bool::SDL_FALSE);
 
     mainWindowRenderer = createAndVerifySDLRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED);
 
