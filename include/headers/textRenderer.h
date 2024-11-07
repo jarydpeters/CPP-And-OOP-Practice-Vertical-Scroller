@@ -19,20 +19,20 @@ class TextRenderer
          *
          * \param renderer the rendering context
          * \param text the string to be rendered
-         * \param textHorizontallPosition the X coordinate at which to render the text
-         * \param textVerticallPosition the Y coordinate at which to render the text
+         * \param textHorizontalPosition the X coordinate at which to render the text
+         * \param textVerticalPosition the Y coordinate at which to render the text
          * \param color the color to render the text in
          * \param window
          * \returns void
          */
-        void renderText(SDL_Renderer* renderer, const std::string& text, const int textHorizontallPosition, const int textVerticallPosition, const SDL_Color color, SDL_Window* window);
+        void renderText(SDL_Renderer* renderer, const std::string& text, const int textHorizontalPosition, const int textVerticalPosition, const SDL_Color color, SDL_Window* window);
 
         /**
-         * Renders text centered horizontally and at a given vertical position
+         * Renders text centered Horizontaly and at a given vertical position
          *
          * \param renderer the rendering context
          * \param text the string to be rendered
-         * \param textVerticallPosition the Y coordinate at which to render the text
+         * \param textVerticalPosition the Y coordinate at which to render the text
          * \param color the color to render the text in
          * \param window
          * \returns void
@@ -40,19 +40,19 @@ class TextRenderer
         void renderHorizontallyCenteredText(SDL_Renderer* renderer, const std::string& text, const int textVerticalPosition, const SDL_Color color, SDL_Window* window);
 
         /**
-         * Renders text centered vertically and at a given horizontal position
+         * Renders text centered Verticaly and at a given horizontal position
          *
          * \param renderer the rendering context
          * \param text the string to be rendered
-         * \param textHorizontallPosition the X coordinate at which to render the text
+         * \param textHorizontalPosition the X coordinate at which to render the text
          * \param color the color to render the text in
          * \param window
          * \returns void
          */
-        void renderVerticallyCenteredText(SDL_Renderer* renderer, const std::string& text, const int textHorizontallPosition, const SDL_Color color, SDL_Window* window);
+        void renderVerticallyCenteredText(SDL_Renderer* renderer, const std::string& text, const int textHorizontalPosition, const SDL_Color color, SDL_Window* window);
 
         /**
-         * Renders text centered vertically and horizontally
+         * Renders text centered Verticaly and Horizontaly
          *
          * \param renderer the rendering context
          * \param text the string to be rendered
