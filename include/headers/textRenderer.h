@@ -10,6 +10,7 @@ class TextRenderer
     public:
 
         /**
+         * constructor
          * \param font font to initialize textRenderer with. Can be changed with changeFont
          */
         TextRenderer(TTF_Font* font);
@@ -77,6 +78,7 @@ class TextRenderer
 
         /**
          * creates an SDL_Rect of size and position of given text paramters
+         * 
          * \param textHorizontalPosition horizontal position of text
          * \param textVerticalPosition vertical position of text
          * \param textWidth width of text
@@ -87,6 +89,7 @@ class TextRenderer
 
         /**
          * frees surface and destroys texture
+         * 
          * \param textSurface surface to be freed
          * \param textTexture texture to be destroyed
          * \returns void
@@ -95,6 +98,7 @@ class TextRenderer
 
         /**
          * updates class parameters for window height and width
+         * 
          * \param window window to measure dimensions of
          * \returns void
          */

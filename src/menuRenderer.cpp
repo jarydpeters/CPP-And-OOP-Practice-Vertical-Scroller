@@ -5,29 +5,21 @@ MenuRenderer::MenuRenderer()
 
 }
 
-void MenuRenderer::initializeMenuOptionsMaps()
-{
-    menuOptionsPositionMap[CONTINUE_INDEX]  = MENU_TEXT_FIRST_VERTICAL_POSITION;
-    menuOptionsPositionMap[NEW_GAME_INDEX]  = MENU_TEXT_SECOND_VERTICAL_POSITION;
-    menuOptionsPositionMap[SETTINGS_INDEX]  = MENU_TEXT_THIRD_VERTICAL_POSITION;
-    menuOptionsPositionMap[EXIT_GAME_INDEX] = MENU_TEXT_FOURTH_VERTICAL_POSITION;
-}
-
-void MenuRenderer::renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, TextRenderer menuTextRenderer, TextRenderer menuSubtextRenderer)
+void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTextRenderer, TextRenderer menuSubtextRenderer)
 {
     switch(currentlyDisplayedMenu)
     {
         case MAIN_MENU_INDEX:
         {
-            menuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
+            menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
                 ((currentHorizontalResolution / 2) - 100), //set in middle of screen and then offset left to sit on left side of menu options
                 (menuOptionsPositionMap[currentlySelectedMainMenuOption] - 10), //offset up to account for texture height
                 TITLE_IMAGE_PATH, 
                 mainWindow, 
                 mainWindowRenderer);
 
-            mainMenuSelectionTexture = menuSelectionTextureWithRect.texture;
-            mainMenuSelectionRect = menuSelectionTextureWithRect.rectangle;
+            menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
+            mainMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
             menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
 
@@ -36,22 +28,22 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, Text
             menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_SETTINGS_TEXT, MENU_TEXT_THIRD_VERTICAL_POSITION, white, mainWindow);
             menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_EXIT_TEXT, MENU_TEXT_FOURTH_VERTICAL_POSITION, white, mainWindow);
 
-            SDL_RenderCopy(mainWindowRenderer, mainMenuSelectionTexture, NULL, &mainMenuSelectionRect);
+            SDL_RenderCopy(mainWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
             SDL_RenderPresent(mainWindowRenderer);
 
             break;
         }
         case SETTINGS_MENU_INDEX:
         {
-            menuSelectionTextureWithRect = textureRenderer.createAndVerifyTexture(
+            menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
                 ((currentHorizontalResolution / 2) - 200), //set in middle of screen and then offset left to sit on left side of menu options
                 (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - 10), //offset up to account for texture height
                 TITLE_IMAGE_PATH, 
                 mainWindow, 
                 mainWindowRenderer);
 
-            SDL_Texture* settingsMenuSelectionTexture = menuSelectionTextureWithRect.texture;
-            SDL_Rect settingsMenuSelectionRect = menuSelectionTextureWithRect.rectangle;
+            SDL_Texture* settingsMenuSelectionTexture = menuSelectionIconTextureWithRect.texture;
+            SDL_Rect settingsMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
             menuTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
 
@@ -73,7 +65,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(int currentlyDisplayedMenu, Text
     }
 }
 
-void MenuRenderer::executeMenuActionBasedOnEvent(SDL_Event event)
+void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
 {
     if(event.type == SDL_QUIT) 
     {
@@ -164,4 +156,54 @@ void MenuRenderer::executeMenuActionBasedOnEvent(SDL_Event event)
             break;
         }
     }
+}
+
+int MenuRenderer::getCurrentlyDisplayedMenu()
+{
+    return currentlyDisplayedMenu;
+}
+
+SDL_Window* MenuRenderer::getMainWindow()
+{
+    return mainWindow;
+}
+
+void MenuRenderer::setMainWindow(SDL_Window* window)
+{
+    mainWindow = window;
+}
+
+SDL_Renderer* MenuRenderer::getMainWindowRenderer()
+{
+    return mainWindowRenderer;
+}
+
+void MenuRenderer::setMainWindowRenderer(SDL_Renderer* renderer)
+{
+    mainWindowRenderer = renderer;
+}
+
+TTF_Font* MenuRenderer::getMenuTitleTextFont()
+{
+    return menuTitleFont;
+}
+
+void MenuRenderer::setMenuTitleTextFont(TTF_Font* font)
+{
+    menuTitleFont = font;
+}
+
+TTF_Font* MenuRenderer::getMenuSubtitleTextFont()
+{
+    return menuSubtitleFont;
+}
+
+void MenuRenderer::setMenuSubtitleTextFont(TTF_Font* font)
+{
+    menuSubtitleFont = font;
+}
+
+SDL_Texture* MenuRenderer::getMenuSelectionIconTexture()
+{
+    return menuSelectionIconTexture;
 }
