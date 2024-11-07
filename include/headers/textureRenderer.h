@@ -16,6 +16,10 @@ class TextureRenderer
             SDL_Rect rectangle;
         };
 
+        /**
+         *
+         *
+         */
         TextureWithRect createAndVerifyTexture(const int horizontalPosition, const int verticalPosition, const char* textureFilePath, SDL_Window* windowToRenderTextureOn, SDL_Renderer* windowRenderer);
 
     private:
