@@ -71,12 +71,37 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
     {
         quitGame = true;
     }
+    switch(event.type)
+    {
+        case SDL_KEYDOWN:
+        {
+            evaluateKeystrokeEvent(event);
+            break;
+        }
+        case SDL_MOUSEMOTION:
+        {
+            evaluteMouseMotionEvent(event);
+            break;
+        }
+        case SDL_MOUSEBUTTONDOWN:
+        {
+            evaluteMouseButtonEvent(event);
+            break;
+        }
+        case SDL_MOUSEWHEEL:
+        {
+            evaluteMouseWheelEvent(event);
+        }
+    }
+}
+
+void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
+{
     switch(currentlyDisplayedMenu)
     {
         case MAIN_MENU_INDEX:
         {
-            //TODO: add mouse controls
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+            if(event.key.keysym.sym == SDLK_UP)
             {
                 currentlySelectedMainMenuOption--;
                 if(currentlySelectedMainMenuOption < CONTINUE_INDEX)
@@ -84,7 +109,7 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
                     currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
                 }
             }   
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+            if(event.key.keysym.sym == SDLK_DOWN)
             {
                 currentlySelectedMainMenuOption++;
                 if(currentlySelectedMainMenuOption > EXIT_GAME_INDEX)
@@ -92,7 +117,7 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
                     currentlySelectedMainMenuOption = CONTINUE_INDEX;
                 }
             } 
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN)
+            if(event.key.keysym.sym == SDLK_RETURN)
             {
                 switch(currentlySelectedMainMenuOption)
                 {
@@ -113,8 +138,7 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
         }
         case SETTINGS_MENU_INDEX:
         {
-            //TODO: add mouse controls
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_UP)
+            if(event.key.keysym.sym == SDLK_UP)
             {
                 currentlySelectedSettingsMenuOption--;
                 if(currentlySelectedSettingsMenuOption < FULLSCREEN_INDEX)
@@ -122,7 +146,7 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
                     currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
                 }
             }   
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_DOWN)
+            if(event.key.keysym.sym == SDLK_DOWN)
             {
                 currentlySelectedSettingsMenuOption++;
                 if(currentlySelectedSettingsMenuOption > RETURN_TO_MAIN_MENU_INDEX)
@@ -130,7 +154,7 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
                     currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
                 }
             } 
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_RETURN)
+            if(event.key.keysym.sym == SDLK_RETURN)
             {
                 switch(currentlySelectedSettingsMenuOption)
                 {
@@ -148,12 +172,75 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
                     }
                 }
             } 
-            if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+            if(event.key.keysym.sym == SDLK_ESCAPE)
             {
                 currentlySelectedMainMenuOption = CONTINUE_INDEX;
                 currentlyDisplayedMenu = MAIN_MENU_INDEX;
             }   
             break;
+        }
+    }
+}
+
+void MenuRenderer::evaluteMouseMotionEvent(const SDL_Event event)
+{
+
+}
+
+void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
+{
+
+}
+
+void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
+{
+    switch(currentlyDisplayedMenu)
+    {
+        case MAIN_MENU_INDEX:
+        {
+            //scroll up
+            if(event.wheel.y < 0)
+            {
+                currentlySelectedMainMenuOption++;
+                if(currentlySelectedMainMenuOption > RETURN_TO_MAIN_MENU_INDEX)
+                {
+                    currentlySelectedMainMenuOption = FULLSCREEN_INDEX;
+                }
+                break;
+            }
+            //scroll down
+            else if(event.wheel.y > 0)
+            {
+                currentlySelectedMainMenuOption--;
+                if(currentlySelectedMainMenuOption < FULLSCREEN_INDEX)
+                {
+                    currentlySelectedMainMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+                }
+                break;
+            }
+        }
+        case SETTINGS_MENU_INDEX:
+        {
+            //scroll up
+            if(event.wheel.y < 0)
+            {
+                currentlySelectedSettingsMenuOption++;
+                if(currentlySelectedSettingsMenuOption > RETURN_TO_MAIN_MENU_INDEX)
+                {
+                    currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
+                }
+                break;
+            }
+            //scroll down
+            else if(event.wheel.y > 0)
+            {
+                currentlySelectedSettingsMenuOption--;
+                if(currentlySelectedSettingsMenuOption < FULLSCREEN_INDEX)
+                {
+                    currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+                }
+                break;
+            }
         }
     }
 }

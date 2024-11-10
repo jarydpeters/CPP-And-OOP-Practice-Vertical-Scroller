@@ -64,6 +64,39 @@ class MenuRenderer
         void executeMenuActionBasedOnEvent(const SDL_Event event);
 
         /**
+         * manipulates menu based off of keystroke event
+         *
+         * \param event keystroke event to be acted upon
+         * \returns void
+         */
+        void evaluateKeystrokeEvent(const SDL_Event event);
+
+        /**
+         * manipulates menu based off of mouse motion event
+         *
+         * \param event mouse motion event to be acted upon
+         * \returns void
+         */
+        void evaluteMouseMotionEvent(const SDL_Event event);
+
+        /**
+         * manipulates menu based off of mouse button event
+         *
+         * \param event mouse button event to be acted upon
+         * \returns void
+         */
+        void evaluteMouseButtonEvent(const SDL_Event event);
+
+        /**
+         * manipulates menu based off of mousewheel event
+         *
+         * \param event mousewheel event to be acted upon
+         * \returns void
+         */
+        void evaluteMouseWheelEvent(const SDL_Event event);
+
+
+        /**
          * getter for currentlyDisplayedMenu
          *
          * \returns currentlyDisplayedMenu
