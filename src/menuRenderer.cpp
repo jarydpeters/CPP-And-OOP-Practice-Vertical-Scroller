@@ -177,44 +177,44 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 
 void MenuRenderer::evaluteMouseMotionEvent()
 {
-    SDL_GetMouseState(&horizontalMousePosition, &verticalMousePosition);
+    SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
 
     switch(currentlyDisplayedMenu)
     {
         case MAIN_MENU_INDEX:
         {
-            if((menuTextFirstVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            if((menuTextFirstVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedMainMenuOption = CONTINUE_INDEX;
             }
-            else if((menuTextSecondVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            else if((menuTextSecondVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedMainMenuOption = NEW_GAME_INDEX;
             }
-            else if((menuTextThirdVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            else if((menuTextThirdVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedMainMenuOption = SETTINGS_INDEX;
             }
-            else if((menuTextFourthVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            else if((menuTextFourthVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
             }
         }
         case SETTINGS_MENU_INDEX:
         {
-            if((menuTextFirstVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            if((menuTextFirstVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
             }
-            else if((menuTextSecondVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            else if((menuTextSecondVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;
             }
-            else if((menuTextThirdVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            else if((menuTextThirdVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
             }
-            else if((menuTextFourthVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            else if((menuTextFourthVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
             {
                 currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
             }
@@ -224,6 +224,7 @@ void MenuRenderer::evaluteMouseMotionEvent()
 
 void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
 {
+    //TODO: CHANGE MOUSE CLICK HITBOX TO INCLUDE HORIZONTAL BOUNDARIES OF TEXT
     switch(currentlyDisplayedMenu)
     {
         case MAIN_MENU_INDEX:
@@ -332,16 +333,27 @@ void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
 
 void MenuRenderer::toggleFullScreen()
 {
+    //grab current resolution so mouse position can be kept proportionally the same
+    int previousHorizontalResolution = currentHorizontalResolution;
+    int previousVerticalResolution = currentVerticalResolution;
+
     fullscreen = !fullscreen;
     SDL_SetWindowFullscreen(mainWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     SDL_GetWindowSize(mainWindow, &currentHorizontalResolution, &currentVerticalResolution);
 
+    //determine where to place the mouse cursor within the new window so it's in the same spot as it was before proportionally
+    int newMouseHorziontalPositionProportionalToPreviousResolution = (currentHorizontalMousePosition * currentHorizontalResolution) / previousHorizontalResolution;
+    int newMouseVerticalPositionProportionalToPreviousResolution = (currentVerticalMousePosition * currentVerticalResolution) / previousVerticalResolution;
+
+    SDL_WarpMouseInWindow(mainWindow, newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
+
     //update UI vertical position for new resolution
+    //TODO: COMBINE THIS CODE HERE WITH THAT IN HEADER INTO HELPER FUNCTION
     menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
-    menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + 100;
-    menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + 50;
-    menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + 50;
-    menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + 50;
+    menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + (currentVerticalResolution / 10);
+    menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (currentVerticalResolution / 20);
+    menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (currentVerticalResolution / 20);
+    menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (currentVerticalResolution / 20);
 
     menuOptionsPositionMap = 
     {
@@ -350,8 +362,6 @@ void MenuRenderer::toggleFullScreen()
         {2, menuTextThirdVerticalPosition},
         {3, menuTextFourthVerticalPosition}
     };
-
-    //TODO: MOVE MOUSE TO PROPORTIONAL POSITION FOR NEW RESOLUTION
 }
 
 int MenuRenderer::getCurrentlyDisplayedMenu()

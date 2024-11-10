@@ -213,18 +213,18 @@ class MenuRenderer
         int currentVerticalResolution = DEFAULT_VERTICAL_RESOLUTION;
 
         int menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
-        int menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + 100;
-        int menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + 50;
-        int menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + 50;
-        int menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + 50;
+        int menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + (currentVerticalResolution / 10);
+        int menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (currentVerticalResolution / 20);
+        int menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (currentVerticalResolution / 20);
+        int menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (currentVerticalResolution / 20);
 
         int currentlyDisplayedMenu = MAIN_MENU_INDEX;
 
         int currentlySelectedMainMenuOption = CONTINUE_INDEX;
         int currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
 
-        int horizontalMousePosition;
-        int verticalMousePosition;
+        int currentHorizontalMousePosition;
+        int currentVerticalMousePosition;
 
         std::map<int, int> menuOptionsPositionMap = 
         {
