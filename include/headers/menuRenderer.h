@@ -92,11 +92,18 @@ class MenuRenderer
         void evaluteMouseWheelEvent(const SDL_Event event);
 
         /**
-         * toggles fullscreen and adjusts UI positions to keep proportions even
+         * sets fullscreen and adjusts UI positions to keep proportions even
          * 
          * \returns void
          */
-        void toggleFullScreen();
+        void setFullScreen(const bool newFullscreen);
+
+        /**
+         * adjusts UI positions for new resolution
+         * 
+         * \returns void
+         */
+        void updateUIPositions();
 
         /**
          * getter for currentlyDisplayedMenu
@@ -212,16 +219,16 @@ class MenuRenderer
         int currentHorizontalResolution = DEFAULT_HORIZONTAL_RESOLUTION;
         int currentVerticalResolution = DEFAULT_VERTICAL_RESOLUTION;
 
-        int menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
-        int menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + (currentVerticalResolution / 10);
-        int menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (currentVerticalResolution / 20);
-        int menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (currentVerticalResolution / 20);
-        int menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (currentVerticalResolution / 20);
-
         int currentlyDisplayedMenu = MAIN_MENU_INDEX;
 
         int currentlySelectedMainMenuOption = CONTINUE_INDEX;
         int currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
+
+        int menuTitleTextVerticalPosition;
+        int menuTextFirstVerticalPosition;
+        int menuTextSecondVerticalPosition;
+        int menuTextThirdVerticalPosition;
+        int menuTextFourthVerticalPosition;
 
         int currentHorizontalMousePosition;
         int currentVerticalMousePosition;

@@ -2,7 +2,7 @@
 
 MenuRenderer::MenuRenderer()
 {
-
+    updateUIPositions();
 }
 
 void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTitleTextRenderer, TextRenderer menuSubtextRenderer)
@@ -156,7 +156,7 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                 {
                     case FULLSCREEN_INDEX:
                     {
-                        toggleFullScreen();
+                        setFullScreen(!fullscreen);
                         break;
                     }
                     case RETURN_TO_MAIN_MENU_INDEX:
@@ -257,7 +257,7 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
             {
                 case FULLSCREEN_INDEX:
                 {
-                    toggleFullScreen();
+                    setFullScreen(!fullscreen);
                     break;
                 }
                 case MUSIC_VOLUME_INDEX:
@@ -270,7 +270,8 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
                 }
                 case RETURN_TO_MAIN_MENU_INDEX:
                 {
-                    setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
+                    //select exit game as highlighted option as that is where user's mouse will be upon exiting settings menu
+                    setCurrentMenu(MAIN_MENU_INDEX, EXIT_GAME_INDEX);
                     break;
                 }            
             }
@@ -331,13 +332,13 @@ void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
     }
 }
 
-void MenuRenderer::toggleFullScreen()
+void MenuRenderer::setFullScreen(const bool newFullscreen)
 {
     //grab current resolution so mouse position can be kept proportionally the same
     int previousHorizontalResolution = currentHorizontalResolution;
     int previousVerticalResolution = currentVerticalResolution;
 
-    fullscreen = !fullscreen;
+    fullscreen = newFullscreen;
     SDL_SetWindowFullscreen(mainWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     SDL_GetWindowSize(mainWindow, &currentHorizontalResolution, &currentVerticalResolution);
 
@@ -348,7 +349,21 @@ void MenuRenderer::toggleFullScreen()
     SDL_WarpMouseInWindow(mainWindow, newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
 
     //update UI vertical position for new resolution
-    //TODO: COMBINE THIS CODE HERE WITH THAT IN HEADER INTO HELPER FUNCTION
+    updateUIPositions();
+
+    menuOptionsPositionMap = 
+    {
+        {0, menuTextFirstVerticalPosition},
+        {1, menuTextSecondVerticalPosition},
+        {2, menuTextThirdVerticalPosition},
+        {3, menuTextFourthVerticalPosition}
+    };
+
+    //TODO: SAVE SETTINGS BETWEEN POWER CYCLES
+}
+
+void MenuRenderer::updateUIPositions()
+{
     menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
     menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + (currentVerticalResolution / 10);
     menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (currentVerticalResolution / 20);
