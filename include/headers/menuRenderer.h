@@ -14,11 +14,8 @@
 #include "textRenderer.h"
 #include "textureRenderer.h"
 
-constexpr int MENU_TITLE_TEXT_VERTICAL_POSITION = 200;
-constexpr int MENU_TEXT_FIRST_VERTICAL_POSITION = MENU_TITLE_TEXT_VERTICAL_POSITION + 100;
-constexpr int MENU_TEXT_SECOND_VERTICAL_POSITION = MENU_TEXT_FIRST_VERTICAL_POSITION + 50;
-constexpr int MENU_TEXT_THIRD_VERTICAL_POSITION = MENU_TEXT_SECOND_VERTICAL_POSITION + 50;
-constexpr int MENU_TEXT_FOURTH_VERTICAL_POSITION = MENU_TEXT_THIRD_VERTICAL_POSITION + 50;
+//fine tune hitbox of menu options
+constexpr int HEIGHT_OF_MENU_OPTION_TEXT = SUBTITLE_TEXT_POINT_SIZE - 8;
 
 constexpr int CONTINUE_INDEX = 0;
 constexpr int NEW_GAME_INDEX = 1;
@@ -74,10 +71,9 @@ class MenuRenderer
         /**
          * manipulates menu based off of mouse motion event
          *
-         * \param event mouse motion event to be acted upon
          * \returns void
          */
-        void evaluteMouseMotionEvent(const SDL_Event event);
+        void evaluteMouseMotionEvent();
 
         /**
          * manipulates menu based off of mouse button event
@@ -95,6 +91,12 @@ class MenuRenderer
          */
         void evaluteMouseWheelEvent(const SDL_Event event);
 
+        /**
+         * toggles fullscreen and adjusts UI positions to keep proportions even
+         * 
+         * \returns void
+         */
+        void toggleFullScreen();
 
         /**
          * getter for currentlyDisplayedMenu
@@ -102,6 +104,15 @@ class MenuRenderer
          * \returns currentlyDisplayedMenu
          */
         int getCurrentlyDisplayedMenu();
+
+        /**
+         * setter for currently displayed menu
+         * 
+         * \param newMenu new menu to be displayed
+         * \param selectedMenuOption which menu option is to be selected upon showing the new menu
+         * \returns void
+         */
+        void setCurrentMenu(const int newMenu, const int selectedMenuOption);
 
         /**
          * getter for mainWindow
@@ -197,21 +208,30 @@ class MenuRenderer
 
         #define SETTING_NOT_SELECTED_TEXT "[ ]"
         #define SETTING_SELECTED_TEXT "[X]"
+        
+        int currentHorizontalResolution = DEFAULT_HORIZONTAL_RESOLUTION;
+        int currentVerticalResolution = DEFAULT_VERTICAL_RESOLUTION;
+
+        int menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
+        int menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + 100;
+        int menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + 50;
+        int menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + 50;
+        int menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + 50;
 
         int currentlyDisplayedMenu = MAIN_MENU_INDEX;
 
         int currentlySelectedMainMenuOption = CONTINUE_INDEX;
         int currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
 
-        int currentHorizontalResolution = DEFAULT_HORIZONTAL_RESOLUTION;
-        int currentVerticalResolution = DEFAULT_VERTICAL_RESOLUTION;
+        int horizontalMousePosition;
+        int verticalMousePosition;
 
         std::map<int, int> menuOptionsPositionMap = 
         {
-            {0, MENU_TEXT_FIRST_VERTICAL_POSITION},
-            {1, MENU_TEXT_SECOND_VERTICAL_POSITION},
-            {2, MENU_TEXT_THIRD_VERTICAL_POSITION},
-            {3, MENU_TEXT_FOURTH_VERTICAL_POSITION}
+            {0, menuTextFirstVerticalPosition},
+            {1, menuTextSecondVerticalPosition},
+            {2, menuTextThirdVerticalPosition},
+            {3, menuTextFourthVerticalPosition}
         };
 };
 

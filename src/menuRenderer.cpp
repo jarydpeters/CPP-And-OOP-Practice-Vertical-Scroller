@@ -21,12 +21,12 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
             mainMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
-            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, mainWindow);
 
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_CONTINUE_TEXT, MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_NEW_GAME_TEXT, MENU_TEXT_SECOND_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_SETTINGS_TEXT, MENU_TEXT_THIRD_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_EXIT_TEXT, MENU_TEXT_FOURTH_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_CONTINUE_TEXT, menuTextFirstVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_NEW_GAME_TEXT, menuTextSecondVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_SETTINGS_TEXT, menuTextThirdVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_EXIT_TEXT, menuTextFourthVerticalPosition, white, mainWindow);
 
             SDL_RenderCopy(mainWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
             SDL_RenderPresent(mainWindowRenderer);
@@ -45,17 +45,14 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             SDL_Texture* settingsMenuSelectionTexture = menuSelectionIconTextureWithRect.texture;
             SDL_Rect settingsMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
-            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, MENU_TITLE_TEXT_VERTICAL_POSITION, white, mainWindow);
+            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, mainWindow);
 
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_FULLSCREEN_TEXT, MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_MUSIC_VOLUME_TEXT, MENU_TEXT_SECOND_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, MENU_TEXT_THIRD_VERTICAL_POSITION, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, MENU_TEXT_FOURTH_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_FULLSCREEN_TEXT, menuTextFirstVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_MUSIC_VOLUME_TEXT, menuTextSecondVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, menuTextThirdVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, menuTextFourthVerticalPosition, white, mainWindow);
 
-            //TODO: MAKE OPTION ENABLED BUTTON DYNAMIC TO WINDOW SIZE
-            SDL_GetWindowSize(mainWindow, &currentHorizontalResolution, &currentVerticalResolution);
-
-            menuSubtextRenderer.renderText(mainWindowRenderer, (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), (currentHorizontalResolution * 2 / 3), MENU_TEXT_FIRST_VERTICAL_POSITION, white, mainWindow);
+            menuSubtextRenderer.renderText(mainWindowRenderer, (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), (currentHorizontalResolution * 2 / 3), menuTextFirstVerticalPosition, white, mainWindow);
 
             SDL_RenderCopy(mainWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
             SDL_RenderPresent(mainWindowRenderer);
@@ -80,7 +77,7 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
         }
         case SDL_MOUSEMOTION:
         {
-            evaluteMouseMotionEvent(event);
+            evaluteMouseMotionEvent();
             break;
         }
         case SDL_MOUSEBUTTONDOWN:
@@ -128,8 +125,7 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                     }
                     case SETTINGS_INDEX:
                     {
-                        currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
-                        currentlyDisplayedMenu = SETTINGS_MENU_INDEX;
+                        setCurrentMenu(SETTINGS_MENU_INDEX, RETURN_TO_MAIN_MENU_INDEX);
                         break;
                     }
                 }
@@ -160,36 +156,125 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                 {
                     case FULLSCREEN_INDEX:
                     {
-                        fullscreen = !fullscreen;
-                        SDL_SetWindowFullscreen(mainWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
+                        toggleFullScreen();
                         break;
                     }
                     case RETURN_TO_MAIN_MENU_INDEX:
                     {
-                        currentlySelectedMainMenuOption = CONTINUE_INDEX;
-                        currentlyDisplayedMenu = MAIN_MENU_INDEX;
+                        setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
                         break;
                     }
                 }
             } 
             if(event.key.keysym.sym == SDLK_ESCAPE)
             {
-                currentlySelectedMainMenuOption = CONTINUE_INDEX;
-                currentlyDisplayedMenu = MAIN_MENU_INDEX;
+                setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
             }   
             break;
         }
     }
 }
 
-void MenuRenderer::evaluteMouseMotionEvent(const SDL_Event event)
+void MenuRenderer::evaluteMouseMotionEvent()
 {
+    SDL_GetMouseState(&horizontalMousePosition, &verticalMousePosition);
 
+    switch(currentlyDisplayedMenu)
+    {
+        case MAIN_MENU_INDEX:
+        {
+            if((menuTextFirstVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedMainMenuOption = CONTINUE_INDEX;
+            }
+            else if((menuTextSecondVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedMainMenuOption = NEW_GAME_INDEX;
+            }
+            else if((menuTextThirdVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedMainMenuOption = SETTINGS_INDEX;
+            }
+            else if((menuTextFourthVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
+            }
+        }
+        case SETTINGS_MENU_INDEX:
+        {
+            if((menuTextFirstVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
+            }
+            else if((menuTextSecondVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;
+            }
+            else if((menuTextThirdVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
+            }
+            else if((menuTextFourthVerticalPosition < verticalMousePosition) && (verticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+            {
+                currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+            }
+        }
+    }
 }
 
 void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
 {
-
+    switch(currentlyDisplayedMenu)
+    {
+        case MAIN_MENU_INDEX:
+        {
+            switch(currentlySelectedMainMenuOption)
+            {
+                case CONTINUE_INDEX:
+                {
+                    break;
+                }
+                case NEW_GAME_INDEX:
+                {
+                    break;
+                }
+                case SETTINGS_INDEX:
+                {
+                    setCurrentMenu(SETTINGS_MENU_INDEX, RETURN_TO_MAIN_MENU_INDEX);
+                    break;
+                }
+                case EXIT_GAME_INDEX:
+                {
+                    quitGame = true;
+                    break;
+                }
+            }
+        }
+        case SETTINGS_MENU_INDEX:
+        {
+            switch(currentlySelectedSettingsMenuOption)
+            {
+                case FULLSCREEN_INDEX:
+                {
+                    toggleFullScreen();
+                    break;
+                }
+                case MUSIC_VOLUME_INDEX:
+                {
+                    break;
+                }
+                case SOUND_EFFECTS_VOLUME_INDEX:
+                {
+                    break;
+                }
+                case RETURN_TO_MAIN_MENU_INDEX:
+                {
+                    setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
+                    break;
+                }            
+            }
+        }
+    }
 }
 
 void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
@@ -245,9 +330,39 @@ void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
     }
 }
 
+void MenuRenderer::toggleFullScreen()
+{
+    fullscreen = !fullscreen;
+    SDL_SetWindowFullscreen(mainWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
+    SDL_GetWindowSize(mainWindow, &currentHorizontalResolution, &currentVerticalResolution);
+
+    //update UI vertical position for new resolution
+    menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
+    menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + 100;
+    menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + 50;
+    menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + 50;
+    menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + 50;
+
+    menuOptionsPositionMap = 
+    {
+        {0, menuTextFirstVerticalPosition},
+        {1, menuTextSecondVerticalPosition},
+        {2, menuTextThirdVerticalPosition},
+        {3, menuTextFourthVerticalPosition}
+    };
+
+    //TODO: MOVE MOUSE TO PROPORTIONAL POSITION FOR NEW RESOLUTION
+}
+
 int MenuRenderer::getCurrentlyDisplayedMenu()
 {
     return currentlyDisplayedMenu;
+}
+
+void MenuRenderer::setCurrentMenu(const int newMenu, const int selectedMenuOption)
+{
+    currentlySelectedMainMenuOption = selectedMenuOption;
+    currentlyDisplayedMenu = newMenu;
 }
 
 SDL_Window* MenuRenderer::getMainWindow()
