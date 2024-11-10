@@ -55,92 +55,83 @@ class MenuRenderer
          */
         void renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTitleTextRenderer, TextRenderer menuSubtextRenderer);
 
-//TODO: FINISH FUNCTION COMMENTS
         /**
-         * 
+         * controls menu operations based off of user's mouse and key actions
          *
-         * \param 
-         * \returns 
+         * \param event mouse or key event to be evaluated and acted upon
+         * \returns void
          */
         void executeMenuActionBasedOnEvent(const SDL_Event event);
 
         /**
-         * 
+         * getter for currentlyDisplayedMenu
          *
-         * \param 
-         * \returns 
+         * \returns currentlyDisplayedMenu
          */
         int getCurrentlyDisplayedMenu();
 
         /**
-         * 
+         * getter for mainWindow
          *
-         * \param 
-         * \returns 
+         * \returns mainWindow
          */
         SDL_Window* getMainWindow();
 
         /**
-         * 
+         * setter for mainWindow
          *
-         * \param 
-         * \returns 
+         * \param window new window to be set
+         * \returns void
          */
         void setMainWindow(SDL_Window* window);
 
         /**
-         * 
+         * getter for mainWindowRenderer
          *
-         * \param 
-         * \returns 
+         * \returns mainWindowRenderer
          */
         SDL_Renderer* getMainWindowRenderer();
 
         /**
-         * 
+         * setter for mainWindowRenderer
          *
-         * \param 
-         * \returns 
+         * \param renderer new renderer to be set
+         * \returns void
          */
         void setMainWindowRenderer(SDL_Renderer* renderer);
 
         /**
-         * 
+         * getter for menuTitleFont
          *
-         * \param 
-         * \returns 
+         * \returns menuTitleFont
          */
         TTF_Font* getMenuTitleTextFont();
 
         /**
-         * 
+         * setter for menuTitleFont
          *
-         * \param 
-         * \returns 
+         * \param new new menuTitleFont to be set
          */
         void setMenuTitleTextFont(TTF_Font* font);
 
         /**
-         * 
+         * getter for menuSubtitleFont
          *
-         * \param 
-         * \returns 
+         * \returns menuSubtitleFont
          */
         TTF_Font* getMenuSubtitleTextFont();
         
         /**
-         * 
+         * setter for menuSubtitleFont
          *
-         * \param 
-         * \returns 
+         * \param menuSubtitleFont new font to be set
          */
         void setMenuSubtitleTextFont(TTF_Font* font);
 
         /**
-         * 
+         * getter for getMenuSelectionIconTexture
          *
-         * \param 
-         * \returns 
+         * \returns getMenuSelectionIconTexture
          */
         SDL_Texture* getMenuSelectionIconTexture();
 
