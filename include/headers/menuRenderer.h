@@ -53,73 +53,11 @@ class MenuRenderer
         void renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTitleTextRenderer, TextRenderer menuSubtextRenderer);
 
         /**
-         * controls menu operations based off of user's mouse and key actions
-         *
-         * \param event mouse or key event to be evaluated and acted upon
-         * \returns void
-         */
-        void executeMenuActionBasedOnEvent(const SDL_Event event);
-
-        /**
-         * manipulates menu based off of keystroke event
-         *
-         * \param event keystroke event to be acted upon
-         * \returns void
-         */
-        void evaluateKeystrokeEvent(const SDL_Event event);
-
-        /**
-         * manipulates menu based off of mouse motion event
-         *
-         * \returns void
-         */
-        void evaluteMouseMotionEvent();
-
-        /**
-         * manipulates menu based off of mouse button event
-         *
-         * \param event mouse button event to be acted upon
-         * \returns void
-         */
-        void evaluteMouseButtonEvent(const SDL_Event event);
-
-        /**
-         * manipulates menu based off of mousewheel event
-         *
-         * \param event mousewheel event to be acted upon
-         * \returns void
-         */
-        void evaluteMouseWheelEvent(const SDL_Event event);
-
-        /**
-         * sets fullscreen and adjusts UI positions to keep proportions even
-         * 
-         * \returns void
-         */
-        void setFullScreen(const bool newFullscreen);
-
-        /**
-         * adjusts UI positions for new resolution
-         * 
-         * \returns void
-         */
-        void updateUIPositions();
-
-        /**
          * getter for currentlyDisplayedMenu
          *
          * \returns currentlyDisplayedMenu
          */
         int getCurrentlyDisplayedMenu();
-
-        /**
-         * setter for currently displayed menu
-         * 
-         * \param newMenu new menu to be displayed
-         * \param selectedMenuOption which menu option is to be selected upon showing the new menu
-         * \returns void
-         */
-        void setCurrentMenu(const int newMenu, const int selectedMenuOption);
 
         /**
          * getter for mainWindow
@@ -240,6 +178,68 @@ class MenuRenderer
             {2, menuTextThirdVerticalPosition},
             {3, menuTextFourthVerticalPosition}
         };
+
+                /**
+         * controls menu operations based off of user's mouse and key actions
+         *
+         * \param event mouse or key event to be evaluated and acted upon
+         * \returns void
+         */
+        void executeMenuActionBasedOnEvent(const SDL_Event event);
+
+        /**
+         * manipulates menu based off of keystroke event
+         *
+         * \param event keystroke event to be acted upon
+         * \returns void
+         */
+        void evaluateKeystrokeEvent(const SDL_Event event);
+
+        /**
+         * manipulates menu based off of mouse motion event
+         *
+         * \returns void
+         */
+        void evaluteMouseMotionEvent();
+
+        /**
+         * manipulates menu based off of mouse button event
+         *
+         * \param event mouse button event to be acted upon
+         * \returns void
+         */
+        void evaluteMouseButtonEvent(const SDL_Event event);
+
+        /**
+         * manipulates menu based off of mousewheel event
+         *
+         * \param event mousewheel event to be acted upon
+         * \returns void
+         */
+        void evaluteMouseWheelEvent(const SDL_Event event);
+
+        /**
+         * sets fullscreen and adjusts UI positions to keep proportions even
+         * 
+         * \returns void
+         */
+        void setFullScreen(const bool newFullscreen);
+
+        /**
+         * adjusts UI positions for new resolution
+         * 
+         * \returns void
+         */
+        void updateUIPositions();
+
+        /**
+         * setter for currently displayed menu
+         * 
+         * \param newMenu new menu to be displayed
+         * \param selectedMenuOption which menu option is to be selected upon showing the new menu
+         * \returns void
+         */
+        void setCurrentMenu(const int newMenu, const int selectedMenuOption);
 };
 
 #endif // MENU_RENDERER_H
