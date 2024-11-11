@@ -12,23 +12,41 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
         case MAIN_MENU_INDEX:
         {
             menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
-                ((currentHorizontalResolution / 2) - 100), //set in middle of screen and then offset left to sit on left side of menu options
-                (menuOptionsPositionMap[currentlySelectedMainMenuOption] - 10), //offset up to account for texture height
-                TITLE_IMAGE_PATH, 
+                0, //place on far left side of screen
+                (menuOptionsPositionMap[currentlySelectedMainMenuOption] - 6), //offset up to account for texture height
+                MENU_SELECTION_ICON_IMAGE_PATH, 
                 mainWindow, 
                 mainWindowRenderer);
 
             menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
             mainMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
+            //render menu option selection rectangle first so text appears on top of it
+            SDL_RenderCopy(mainWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
+
             menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, mainWindow);
 
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_CONTINUE_TEXT, menuTextFirstVerticalPosition, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_NEW_GAME_TEXT, menuTextSecondVerticalPosition, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_SETTINGS_TEXT, menuTextThirdVerticalPosition, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_EXIT_TEXT, menuTextFourthVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                MAIN_MENU_CONTINUE_TEXT, 
+                menuTextFirstVerticalPosition, 
+                ((currentlySelectedMainMenuOption == CONTINUE_INDEX) ? black : white), 
+                mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                MAIN_MENU_NEW_GAME_TEXT, 
+                menuTextSecondVerticalPosition, 
+                ((currentlySelectedMainMenuOption == NEW_GAME_INDEX) ? black : white), 
+                mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                MAIN_MENU_SETTINGS_TEXT, 
+                menuTextThirdVerticalPosition, 
+                ((currentlySelectedMainMenuOption == SETTINGS_INDEX) ? black : white), 
+                mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                MAIN_MENU_EXIT_TEXT, 
+                menuTextFourthVerticalPosition, 
+                ((currentlySelectedMainMenuOption == EXIT_GAME_INDEX) ? black : white), 
+                mainWindow);
 
-            SDL_RenderCopy(mainWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
             SDL_RenderPresent(mainWindowRenderer);
 
             break;
@@ -36,25 +54,48 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
         case SETTINGS_MENU_INDEX:
         {
             menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
-                ((currentHorizontalResolution / 2) - 200), //set in middle of screen and then offset left to sit on left side of menu options
-                (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - 10), //offset up to account for texture height
-                TITLE_IMAGE_PATH, 
+                0, //place on far left side of screen
+                (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - 6), //offset up to account for texture height
+                MENU_SELECTION_ICON_IMAGE_PATH, 
                 mainWindow, 
                 mainWindowRenderer);
 
             SDL_Texture* settingsMenuSelectionTexture = menuSelectionIconTextureWithRect.texture;
             SDL_Rect settingsMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
+            //render menu option selection rectangle first so text appears on top of it
+            SDL_RenderCopy(mainWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
+
             menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, mainWindow);
 
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_FULLSCREEN_TEXT, menuTextFirstVerticalPosition, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_MUSIC_VOLUME_TEXT, menuTextSecondVerticalPosition, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, menuTextThirdVerticalPosition, white, mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, menuTextFourthVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                SETTINGS_MENU_FULLSCREEN_TEXT, 
+                menuTextFirstVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
+                mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
+                menuTextSecondVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
+                mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
+                menuTextThirdVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
+                mainWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
+                menuTextFourthVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
+                mainWindow);
 
-            menuSubtextRenderer.renderText(mainWindowRenderer, (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), (currentHorizontalResolution * 2 / 3), menuTextFirstVerticalPosition, white, mainWindow);
+            menuSubtextRenderer.renderText(mainWindowRenderer, 
+                (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
+                (currentHorizontalResolution * 2 / 3), 
+                menuTextFirstVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
+                mainWindow);
 
-            SDL_RenderCopy(mainWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
             SDL_RenderPresent(mainWindowRenderer);
 
             break;
@@ -179,51 +220,55 @@ void MenuRenderer::evaluteMouseMotionEvent()
 {
     SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
 
-    switch(currentlyDisplayedMenu)
+    if((menuTextFirstVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
     {
-        case MAIN_MENU_INDEX:
+        if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
         {
-            if((menuTextFirstVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedMainMenuOption = CONTINUE_INDEX;
-            }
-            else if((menuTextSecondVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedMainMenuOption = NEW_GAME_INDEX;
-            }
-            else if((menuTextThirdVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedMainMenuOption = SETTINGS_INDEX;
-            }
-            else if((menuTextFourthVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
-            }
+            currentlySelectedMainMenuOption = CONTINUE_INDEX;
         }
-        case SETTINGS_MENU_INDEX:
+        else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
         {
-            if((menuTextFirstVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
-            }
-            else if((menuTextSecondVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;
-            }
-            else if((menuTextThirdVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
-            }
-            else if((menuTextFourthVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
-            {
-                currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
-            }
+            currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
         }
+    }
+    else if((menuTextSecondVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+    {
+        if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
+        {
+            currentlySelectedMainMenuOption = NEW_GAME_INDEX;
+        }
+        else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
+        {
+            currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;
+        }    
+    }
+    else if((menuTextThirdVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+    {
+        if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
+        {
+            currentlySelectedMainMenuOption = SETTINGS_INDEX;
+        }
+        else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
+        {
+            currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
+        }    
+    }
+    else if((menuTextFourthVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+    {
+        if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
+        {
+            currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
+        }
+        else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
+        {
+            currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+        }    
     }
 }
 
 void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
 {
+    printf("\nevaluteMouseButtonEvent: currentlyDisplayedMenu: %u", currentlyDisplayedMenu);
     //TODO: CHANGE MOUSE CLICK HITBOX TO INCLUDE HORIZONTAL BOUNDARIES OF TEXT
     switch(currentlyDisplayedMenu)
     {
@@ -250,6 +295,7 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
                     break;
                 }
             }
+            break;
         }
         case SETTINGS_MENU_INDEX:
         {
@@ -275,6 +321,7 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
                     break;
                 }            
             }
+            break;
         }
     }
 }

@@ -15,7 +15,7 @@
 #include "textureRenderer.h"
 
 //fine tune hitbox of menu options
-constexpr int HEIGHT_OF_MENU_OPTION_TEXT = SUBTITLE_TEXT_POINT_SIZE - 8;
+constexpr int HEIGHT_OF_MENU_OPTION_TEXT = SUBTITLE_TEXT_POINT_SIZE - 4;
 
 constexpr int CONTINUE_INDEX = 0;
 constexpr int NEW_GAME_INDEX = 1;
@@ -143,7 +143,7 @@ class MenuRenderer
         #define MAIN_MENU_CONTINUE_TEXT "CONTINUE"
         #define MAIN_MENU_NEW_GAME_TEXT "NEW GAME"
         #define MAIN_MENU_SETTINGS_TEXT "SETTINGS"
-        #define MAIN_MENU_EXIT_TEXT "QUIT"
+        #define MAIN_MENU_EXIT_TEXT "EXIT GAME"
 
         #define SETTINGS_MENU_TITLE_TEXT "SETTINGS"
         #define SETTINGS_MENU_FULLSCREEN_TEXT "FULL SCREEN"

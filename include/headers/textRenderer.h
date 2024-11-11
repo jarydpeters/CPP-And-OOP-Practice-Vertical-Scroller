@@ -73,6 +73,7 @@ class TextRenderer
     private:
 
         TTF_Font* font;
+        
         int windowWidth;
         int windowHeight;
 
