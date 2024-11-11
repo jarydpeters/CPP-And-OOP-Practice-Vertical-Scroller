@@ -1,58 +1,83 @@
 #include "globalValues.h"
+#include "mainGameRenderer.h"
 #include "menuRenderer.h"
 #include "sdlUtility.h"
 #include "textRenderer.h"
 
+//TODO: LIMIT FRAMERATE
+//TODO: MAKE GAME ENGINE FRAMERATE INDEPENDENT
+
 int main(int argc, char* argv[])
 {
-    bool firstLoop = true;
-
+    MainGameRenderer mainGameRenderer;
     MenuRenderer menuRenderer;
     SdlUtility sdlUtility;
+
+    bool firstLoop = true;
 
     if(!sdlUtility.successfulSDLInit())
     {
         return -1;
     }
 
-    menuRenderer.setMainWindow(sdlUtility.createAndVerifySDLWindow(
-        "mainWindow", 
+    menuRenderer.setTitleScreensWindow(sdlUtility.createAndVerifySDLWindow(
+        "titleScreensWindow", 
         DEFAULT_HORIZONTAL_RESOLUTION, 
         DEFAULT_VERTICAL_RESOLUTION, 
         SDL_WINDOW_OPENGL));
 
-    SDL_SetWindowResizable(menuRenderer.getMainWindow(), SDL_bool::SDL_FALSE);
+    SDL_SetWindowResizable(menuRenderer.getTitleScreensWindow(), SDL_bool::SDL_FALSE);
 
-    menuRenderer.setMainWindowRenderer(sdlUtility.createAndVerifySDLRenderer(menuRenderer.getMainWindow(), -1, SDL_RENDERER_ACCELERATED));
-    menuRenderer.setMenuTitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, TITLE_TEXT_POINT_SIZE, menuRenderer.getMainWindow(), menuRenderer.getMainWindowRenderer()));
-    menuRenderer.setMenuSubtitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, SUBTITLE_TEXT_POINT_SIZE, menuRenderer.getMainWindow(), menuRenderer.getMainWindowRenderer()));
+    menuRenderer.setTitleScreensRenderer(sdlUtility.createAndVerifySDLRenderer(menuRenderer.getTitleScreensWindow(), -1, SDL_RENDERER_ACCELERATED));
+    menuRenderer.setMenuTitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, TITLE_TEXT_POINT_SIZE, menuRenderer.getTitleScreensWindow(), menuRenderer.getTitleScreensRenderer()));
+    menuRenderer.setMenuSubtitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, SUBTITLE_TEXT_POINT_SIZE, menuRenderer.getTitleScreensWindow(), menuRenderer.getTitleScreensRenderer()));
 
     TextRenderer menuTitleTextRenderer(menuRenderer.getMenuTitleTextFont());
     TextRenderer menuSubtextRenderer(menuRenderer.getMenuSubtitleTextFont());
 
     SDL_Event event;
 
-    while(!menuRenderer.quitGame)
+    while(!quitGame)
     {
-        SDL_SetRenderDrawColor(menuRenderer.getMainWindowRenderer(), black.r, black.g, black.b, black.a);
-        SDL_RenderClear(menuRenderer.getMainWindowRenderer());
-
-        while (SDL_PollEvent(&event))
+        switch(currentScreen)
         {
-            menuRenderer.executeMenuActionBasedOnEvent(event);
-        }
-        
-        menuRenderer.renderCurrentlyDisplayedMenu(menuRenderer.getCurrentlyDisplayedMenu(), menuTitleTextRenderer, menuSubtextRenderer);
+            case(TITLE_MENU_SCREEN):
+            {
+                SDL_SetRenderDrawColor(menuRenderer.getTitleScreensRenderer(), black.r, black.g, black.b, black.a);
+                SDL_RenderClear(menuRenderer.getTitleScreensRenderer());
 
-        if(firstLoop)
-        {
-            menuRenderer.setFullscreen(menuRenderer.getFullscreen());
-        }
+                while (SDL_PollEvent(&event))
+                {
+                    menuRenderer.executeMenuActionBasedOnEvent(event);
+                }
+                
+                if(firstLoop)
+                {
+                    menuRenderer.setFullscreen(menuRenderer.getFullscreen());
+                }
 
+                menuRenderer.renderCurrentlyDisplayedMenu(menuRenderer.getCurrentlyDisplayedMenu(), menuTitleTextRenderer, menuSubtextRenderer);
+
+                break;
+            }
+            case MAIN_GAME_SCREEN:
+            {
+                quitGame = true;
+                break;
+            }
+            case CUTSCENE_SCREEN:
+            {
+                break;
+            }
+            case UPGRADE_MENU_SCREEN:
+            {
+                break;
+            }
+        }
         firstLoop = false;
     }
 
-    sdlUtility.cleanup(menuRenderer.getMenuSubtitleTextFont(), menuRenderer.getMainWindow(), menuRenderer.getMainWindowRenderer(), menuRenderer.getMenuSelectionIconTexture());
+    sdlUtility.cleanup(menuRenderer.getMenuSubtitleTextFont(), menuRenderer.getTitleScreensWindow(), menuRenderer.getTitleScreensRenderer(), menuRenderer.getMenuSelectionIconTexture());
 
     return 0;
 

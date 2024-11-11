@@ -16,39 +16,39 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
                 0, //place on far left side of screen
                 (menuOptionsPositionMap[currentlySelectedMainMenuOption] - 6), //offset up to account for texture height
                 MENU_SELECTION_ICON_IMAGE_PATH, 
-                mainWindow, 
-                mainWindowRenderer);
+                titleScreensWindow, 
+                titleScreensWindowRenderer);
 
             menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
             mainMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
             //render menu option selection rectangle first so text appears on top of it
-            SDL_RenderCopy(mainWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
+            SDL_RenderCopy(titleScreensWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
 
-            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, MAIN_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, mainWindow);
+            menuTitleTextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, MAIN_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, titleScreensWindow);
 
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 MAIN_MENU_CONTINUE_TEXT, 
                 menuTextFirstVerticalPosition, 
                 ((currentlySelectedMainMenuOption == CONTINUE_INDEX) ? black : white), 
-                mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                titleScreensWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 MAIN_MENU_NEW_GAME_TEXT, 
                 menuTextSecondVerticalPosition, 
                 ((currentlySelectedMainMenuOption == NEW_GAME_INDEX) ? black : white), 
-                mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                titleScreensWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 MAIN_MENU_SETTINGS_TEXT, 
                 menuTextThirdVerticalPosition, 
                 ((currentlySelectedMainMenuOption == SETTINGS_INDEX) ? black : white), 
-                mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                titleScreensWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 MAIN_MENU_EXIT_TEXT, 
                 menuTextFourthVerticalPosition, 
                 ((currentlySelectedMainMenuOption == EXIT_GAME_INDEX) ? black : white), 
-                mainWindow);
+                titleScreensWindow);
 
-            SDL_RenderPresent(mainWindowRenderer);
+            SDL_RenderPresent(titleScreensWindowRenderer);
 
             break;
         }
@@ -58,62 +58,62 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
                 0, //place on far left side of screen
                 (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - 6), //offset up to account for texture height
                 MENU_SELECTION_ICON_IMAGE_PATH, 
-                mainWindow, 
-                mainWindowRenderer);
+                titleScreensWindow, 
+                titleScreensWindowRenderer);
 
             SDL_Texture* settingsMenuSelectionTexture = menuSelectionIconTextureWithRect.texture;
             SDL_Rect settingsMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
 
             //render menu option selection rectangle first so text appears on top of it
-            SDL_RenderCopy(mainWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
+            SDL_RenderCopy(titleScreensWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
 
-            menuTitleTextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, SETTINGS_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, mainWindow);
+            menuTitleTextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, SETTINGS_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, titleScreensWindow);
 
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 SETTINGS_MENU_FULLSCREEN_TEXT, 
                 menuTextFirstVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
-                mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                titleScreensWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
                 menuTextSecondVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
-                mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                titleScreensWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
                 menuTextThirdVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
-                mainWindow);
-            menuSubtextRenderer.renderHorizontallyCenteredText(mainWindowRenderer, 
+                titleScreensWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
                 menuTextFourthVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
-                mainWindow);
+                titleScreensWindow);
 
             //render fullscreen toggle icon
-            menuSubtextRenderer.renderText(mainWindowRenderer, 
+            menuSubtextRenderer.renderText(titleScreensWindowRenderer, 
                 (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
-                (currentHorizontalResolution * 2 / 3), 
+                (currentHorizontalResolution * (2.0 / 3.0 )), 
                 menuTextFirstVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
-                mainWindow);
+                titleScreensWindow);
 
             //render music and sound effects volume selection icons
-            menuSubtextRenderer.renderText(mainWindowRenderer, 
+            menuSubtextRenderer.renderText(titleScreensWindowRenderer, 
                 variableSettingSelectionMap[currentMusicVolumeSetting], 
-                (currentHorizontalResolution * 2 / 3), 
+                (currentHorizontalResolution * (2.0 / 3.0 )), 
                 menuTextSecondVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
-                mainWindow);
+                titleScreensWindow);
 
-            menuSubtextRenderer.renderText(mainWindowRenderer, 
+            menuSubtextRenderer.renderText(titleScreensWindowRenderer, 
                 variableSettingSelectionMap[currentSoundEffectVolumeSetting], 
-                (currentHorizontalResolution * 2 / 3), 
+                (currentHorizontalResolution * (2.0 / 3.0 )), 
                 menuTextThirdVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
-                mainWindow);
+                titleScreensWindow);
 
-            SDL_RenderPresent(mainWindowRenderer);
+            SDL_RenderPresent(titleScreensWindowRenderer);
 
             break;
         }
@@ -224,7 +224,6 @@ void MenuRenderer::loadSavedSettings()
     }
 }
 
-
 void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     switch(currentlyDisplayedMenu)
@@ -251,6 +250,11 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             {
                 switch(currentlySelectedMainMenuOption)
                 {
+                    case CONTINUE_INDEX:
+                    {
+                        currentScreen = MAIN_GAME_SCREEN;
+                        break;
+                    }
                     case EXIT_GAME_INDEX:
                     {
                         quitGame = true;
@@ -539,14 +543,14 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
     int previousVerticalResolution = currentVerticalResolution;
 
     fullscreen = newFullscreen;
-    SDL_SetWindowFullscreen(mainWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
-    SDL_GetWindowSize(mainWindow, &currentHorizontalResolution, &currentVerticalResolution);
+    SDL_SetWindowFullscreen(titleScreensWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
+    SDL_GetWindowSize(titleScreensWindow, &currentHorizontalResolution, &currentVerticalResolution);
 
     //determine where to place the mouse cursor within the new window so it's in the same spot as it was before proportionally
     int newMouseHorziontalPositionProportionalToPreviousResolution = (currentHorizontalMousePosition * currentHorizontalResolution) / previousHorizontalResolution;
     int newMouseVerticalPositionProportionalToPreviousResolution = (currentVerticalMousePosition * currentVerticalResolution) / previousVerticalResolution;
 
-    SDL_WarpMouseInWindow(mainWindow, newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
+    SDL_WarpMouseInWindow(titleScreensWindow, newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
 
     //update UI vertical position for new resolution
     updateUIPositions();
@@ -600,24 +604,24 @@ void MenuRenderer::setCurrentMenu(const int newMenu, const int selectedMenuOptio
     currentlyDisplayedMenu = newMenu;
 }
 
-SDL_Window* MenuRenderer::getMainWindow()
+SDL_Window* MenuRenderer::getTitleScreensWindow()
 {
-    return mainWindow;
+    return titleScreensWindow;
 }
 
-void MenuRenderer::setMainWindow(SDL_Window* window)
+void MenuRenderer::setTitleScreensWindow(SDL_Window* window)
 {
-    mainWindow = window;
+    titleScreensWindow = window;
 }
 
-SDL_Renderer* MenuRenderer::getMainWindowRenderer()
+SDL_Renderer* MenuRenderer::getTitleScreensRenderer()
 {
-    return mainWindowRenderer;
+    return titleScreensWindowRenderer;
 }
 
-void MenuRenderer::setMainWindowRenderer(SDL_Renderer* renderer)
+void MenuRenderer::setTitleScreensRenderer(SDL_Renderer* renderer)
 {
-    mainWindowRenderer = renderer;
+    titleScreensWindowRenderer = renderer;
 }
 
 TTF_Font* MenuRenderer::getMenuTitleTextFont()
