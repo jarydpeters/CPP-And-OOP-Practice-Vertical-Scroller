@@ -1,7 +1,11 @@
 #include "menuRenderer.h"
 
+#include <filesystem>
+#include <iostream>
+
 MenuRenderer::MenuRenderer()
 {
+    loadSavedSettings();
     updateUIPositions();
 }
 
@@ -89,11 +93,27 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
                 ((currentlySelectedSettingsMenuOption == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
                 mainWindow);
 
+            //render fullscreen toggle icon
             menuSubtextRenderer.renderText(mainWindowRenderer, 
                 (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
                 (currentHorizontalResolution * 2 / 3), 
                 menuTextFirstVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
+                mainWindow);
+
+            //render music and sound effects volume selection icons
+            menuSubtextRenderer.renderText(mainWindowRenderer, 
+                variableSettingSelectionMap[currentMusicVolumeSetting], 
+                (currentHorizontalResolution * 2 / 3), 
+                menuTextSecondVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
+                mainWindow);
+
+            menuSubtextRenderer.renderText(mainWindowRenderer, 
+                variableSettingSelectionMap[currentSoundEffectVolumeSetting], 
+                (currentHorizontalResolution * 2 / 3), 
+                menuTextThirdVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
                 mainWindow);
 
             SDL_RenderPresent(mainWindowRenderer);
@@ -133,6 +153,83 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
     }
 }
 
+//TODO: separate settings to a SettingsManager class
+//TODO: make file read order independent so settings can be read/written in any order
+void MenuRenderer::saveSettings()
+{
+    std::ofstream outFile(settingsFilePath);
+    if(outFile.is_open())
+    {
+        outFile << "fullscreen: " << fullscreen << std::endl;
+        outFile << "music volume: " << currentMusicVolumeSetting << std::endl;
+        outFile << "sound effects volume: " << currentSoundEffectVolumeSetting << std::endl;
+        
+        outFile.close();
+    }
+    else
+    {
+        printf("Unable to open file!");
+    }
+}
+
+//TODO: separate settings to a SettingsManager class
+//TODO: make file read order independent so settings can be read/written in any order
+void MenuRenderer::loadSavedSettings()
+{
+    std::ifstream inFile(settingsFilePath);
+    if(inFile.is_open())
+    {
+        std::string line;
+
+        // Read the file line by line
+        while (std::getline(inFile, line))
+        {
+            std::stringstream stringStream(line);
+            std::string settingName;
+            std::string settingValue;
+
+            // Get the setting name (before the colon)
+            if (std::getline(stringStream, settingName, ':'))
+            {
+                // Trim leading/trailing spaces from the setting name and value
+                settingName.erase(0, settingName.find_first_not_of(" \t"));
+                settingName.erase(settingName.find_last_not_of(" \t") + 1);
+
+                // Get the setting value (after the colon)
+                if (std::getline(stringStream, settingValue))
+                {
+                    // trim leading space
+                    settingValue.erase(0, settingValue.find_first_not_of(" \t"));
+
+                    // Compare the setting name and assign the value
+                    if (settingName == "fullscreen")
+                    {
+                        fullscreen = std::stoi(settingValue);  // Convert string to integer
+                    }
+                    else if(settingName == "music volume")
+                    {
+                        currentMusicVolumeSetting = std::stoi(settingValue);
+                    }
+                    else if(settingName == "sound effects volume")
+                    {
+                        currentSoundEffectVolumeSetting = std::stoi(settingValue);
+                    }
+                    else
+                    {
+                        std::cout << "Unknown setting: " << settingName << std::endl;
+                    }
+                }
+            }
+        }
+        inFile.close();
+    }
+    else
+    {
+        printf("Unable to open file!");
+    }
+}
+
+
 void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     switch(currentlyDisplayedMenu)
@@ -147,7 +244,7 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                     currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
                 }
             }   
-            if(event.key.keysym.sym == SDLK_DOWN)
+            else if(event.key.keysym.sym == SDLK_DOWN)
             {
                 currentlySelectedMainMenuOption++;
                 if(currentlySelectedMainMenuOption > EXIT_GAME_INDEX)
@@ -155,7 +252,7 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                     currentlySelectedMainMenuOption = CONTINUE_INDEX;
                 }
             } 
-            if(event.key.keysym.sym == SDLK_RETURN)
+            else if(event.key.keysym.sym == SDLK_RETURN)
             {
                 switch(currentlySelectedMainMenuOption)
                 {
@@ -183,7 +280,7 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                     currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
                 }
             }   
-            if(event.key.keysym.sym == SDLK_DOWN)
+            else if(event.key.keysym.sym == SDLK_DOWN)
             {
                 currentlySelectedSettingsMenuOption++;
                 if(currentlySelectedSettingsMenuOption > RETURN_TO_MAIN_MENU_INDEX)
@@ -191,23 +288,70 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                     currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
                 }
             } 
-            if(event.key.keysym.sym == SDLK_RETURN)
+            else if(event.key.keysym.sym == SDLK_LEFT)
+            {
+                //TODO: ADD MOUSE CONTROLS
+                switch(currentlySelectedSettingsMenuOption)
+                {
+                    case MUSIC_VOLUME_INDEX:
+                    {
+                        if(currentMusicVolumeSetting > 0)
+                        {
+                            currentMusicVolumeSetting--;
+                        }
+                        break;
+                    }
+                    case SOUND_EFFECTS_VOLUME_INDEX:
+                    {
+                        if(currentSoundEffectVolumeSetting > 0)
+                        {
+                            currentSoundEffectVolumeSetting--;
+                        }                        
+                        break;
+                    }
+                }
+            }
+            else if(event.key.keysym.sym == SDLK_RIGHT)
+            {
+                //TODO: ADD MOUSE CONTROLS
+                switch(currentlySelectedSettingsMenuOption)
+                {
+                    case MUSIC_VOLUME_INDEX:
+                    {
+                        if(currentMusicVolumeSetting < 10)
+                        {
+                            currentMusicVolumeSetting++;
+                        }
+                        break;
+                    }
+                    case SOUND_EFFECTS_VOLUME_INDEX:
+                    {
+                        if(currentSoundEffectVolumeSetting < 10)
+                        {
+                            currentSoundEffectVolumeSetting++;
+                        }                        
+                        break;
+                    }
+                }
+            }
+            else if(event.key.keysym.sym == SDLK_RETURN)
             {
                 switch(currentlySelectedSettingsMenuOption)
                 {
                     case FULLSCREEN_INDEX:
                     {
-                        setFullScreen(!fullscreen);
+                        setFullscreen(!fullscreen);
                         break;
                     }
                     case RETURN_TO_MAIN_MENU_INDEX:
                     {
+                        saveSettings();
                         setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
                         break;
                     }
                 }
             } 
-            if(event.key.keysym.sym == SDLK_ESCAPE)
+            else if(event.key.keysym.sym == SDLK_ESCAPE)
             {
                 setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
             }   
@@ -268,7 +412,6 @@ void MenuRenderer::evaluteMouseMotionEvent()
 
 void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
 {
-    printf("\nevaluteMouseButtonEvent: currentlyDisplayedMenu: %u", currentlyDisplayedMenu);
     //TODO: CHANGE MOUSE CLICK HITBOX TO INCLUDE HORIZONTAL BOUNDARIES OF TEXT
     switch(currentlyDisplayedMenu)
     {
@@ -303,7 +446,7 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
             {
                 case FULLSCREEN_INDEX:
                 {
-                    setFullScreen(!fullscreen);
+                    setFullscreen(!fullscreen);
                     break;
                 }
                 case MUSIC_VOLUME_INDEX:
@@ -316,6 +459,7 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
                 }
                 case RETURN_TO_MAIN_MENU_INDEX:
                 {
+                    saveSettings(); 
                     //select exit game as highlighted option as that is where user's mouse will be upon exiting settings menu
                     setCurrentMenu(MAIN_MENU_INDEX, EXIT_GAME_INDEX);
                     break;
@@ -379,8 +523,9 @@ void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
     }
 }
 
-void MenuRenderer::setFullScreen(const bool newFullscreen)
+void MenuRenderer::setFullscreen(const bool newFullscreen)
 {
+    printf("\nsetting fullscreen...");
     //grab current resolution so mouse position can be kept proportionally the same
     int previousHorizontalResolution = currentHorizontalResolution;
     int previousVerticalResolution = currentVerticalResolution;
@@ -405,8 +550,11 @@ void MenuRenderer::setFullScreen(const bool newFullscreen)
         {2, menuTextThirdVerticalPosition},
         {3, menuTextFourthVerticalPosition}
     };
+}
 
-    //TODO: SAVE SETTINGS BETWEEN POWER CYCLES
+bool MenuRenderer::getFullscreen()
+{
+    return fullscreen;
 }
 
 void MenuRenderer::updateUIPositions()

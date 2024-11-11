@@ -3,6 +3,7 @@
 #ifndef MENU_RENDERER_H
 #define MENU_RENDERER_H
 
+#include <fstream>
 #include <map>
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -34,8 +35,9 @@ class MenuRenderer
 {
     public:
 
-        bool fullscreen = false;
         bool quitGame = false;
+
+        const std::string settingsFilePath = "settings/settings.txt";
 
         /**
          * default constructor
@@ -99,7 +101,7 @@ class MenuRenderer
         /**
          * setter for menuTitleFont
          *
-         * \param new new menuTitleFont to be set
+         * \param font new menuTitleFont to be set
          */
         void setMenuTitleTextFont(TTF_Font* font);
 
@@ -123,6 +125,28 @@ class MenuRenderer
          * \returns getMenuSelectionIconTexture
          */
         SDL_Texture* getMenuSelectionIconTexture();
+
+        /**
+         * setter for fullscreen. Also adjusts UI positions to keep proportions even after updating fullscreen value
+         * 
+         * \returns void
+         */
+        void setFullscreen(const bool newFullscreen);
+
+        /**
+         * setter for fullscreen. Also adjusts UI positions to keep proportions even after updating fullscreen value
+         * 
+         * \returns boolean value indicating if fullscreen is enabled
+         */
+        bool getFullscreen();
+
+        /**
+         * controls menu operations based off of user's mouse and key actions
+         *
+         * \param event mouse or key event to be evaluated and acted upon
+         * \returns void
+         */
+        void executeMenuActionBasedOnEvent(const SDL_Event event);
 
     private:
 
@@ -171,6 +195,11 @@ class MenuRenderer
         int currentHorizontalMousePosition;
         int currentVerticalMousePosition;
 
+        int currentMusicVolumeSetting;
+        int currentSoundEffectVolumeSetting;
+
+        bool fullscreen = false;
+
         std::map<int, int> menuOptionsPositionMap = 
         {
             {0, menuTextFirstVerticalPosition},
@@ -179,13 +208,34 @@ class MenuRenderer
             {3, menuTextFourthVerticalPosition}
         };
 
-                /**
-         * controls menu operations based off of user's mouse and key actions
+        std::map<int, const char*> variableSettingSelectionMap = 
+        {
+            {0,  ".........."},
+            {1,  "|........."},
+            {2,  "||........"},
+            {3,  "|||......."},
+            {4,  "||||......"},
+            {5,  "|||||....."},
+            {6,  "||||||...."},
+            {7,  "|||||||..."},
+            {8,  "||||||||.."},
+            {9,  "|||||||||."},
+            {10, "||||||||||"}
+        };
+
+        /**
+         * saves user's selected settings
          *
-         * \param event mouse or key event to be evaluated and acted upon
          * \returns void
          */
-        void executeMenuActionBasedOnEvent(const SDL_Event event);
+        void saveSettings();
+
+        /**
+         * loads user's previously selected settings
+         *
+         * \returns void
+         */
+        void loadSavedSettings();
 
         /**
          * manipulates menu based off of keystroke event
@@ -217,13 +267,6 @@ class MenuRenderer
          * \returns void
          */
         void evaluteMouseWheelEvent(const SDL_Event event);
-
-        /**
-         * sets fullscreen and adjusts UI positions to keep proportions even
-         * 
-         * \returns void
-         */
-        void setFullScreen(const bool newFullscreen);
 
         /**
          * adjusts UI positions for new resolution

@@ -1,0 +1,3 @@
+fullscreen: 1
+music volume: 1
+sound effects volume: 2

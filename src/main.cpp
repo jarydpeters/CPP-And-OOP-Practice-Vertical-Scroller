@@ -3,11 +3,13 @@
 #include "sdlUtility.h"
 #include "textRenderer.h"
 
-MenuRenderer menuRenderer;
-SdlUtility sdlUtility;
-
 int main(int argc, char* argv[])
 {
+    bool firstLoop = true;
+
+    MenuRenderer menuRenderer;
+    SdlUtility sdlUtility;
+
     if(!sdlUtility.successfulSDLInit())
     {
         return -1;
@@ -41,9 +43,17 @@ int main(int argc, char* argv[])
         }
         
         menuRenderer.renderCurrentlyDisplayedMenu(menuRenderer.getCurrentlyDisplayedMenu(), menuTitleTextRenderer, menuSubtextRenderer);
+
+        if(firstLoop)
+        {
+            menuRenderer.setFullscreen(menuRenderer.getFullscreen());
+        }
+
+        firstLoop = false;
     }
 
     sdlUtility.cleanup(menuRenderer.getMenuSubtitleTextFont(), menuRenderer.getMainWindow(), menuRenderer.getMainWindowRenderer(), menuRenderer.getMenuSelectionIconTexture());
 
     return 0;
+
 }
