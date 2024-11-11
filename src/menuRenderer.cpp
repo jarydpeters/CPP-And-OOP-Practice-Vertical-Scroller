@@ -154,7 +154,6 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
 }
 
 //TODO: separate settings to a SettingsManager class
-//TODO: make file read order independent so settings can be read/written in any order
 void MenuRenderer::saveSettings()
 {
     std::ofstream outFile(settingsFilePath);
@@ -173,7 +172,6 @@ void MenuRenderer::saveSettings()
 }
 
 //TODO: separate settings to a SettingsManager class
-//TODO: make file read order independent so settings can be read/written in any order
 void MenuRenderer::loadSavedSettings()
 {
     std::ifstream inFile(settingsFilePath);
@@ -290,7 +288,7 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             } 
             else if(event.key.keysym.sym == SDLK_LEFT)
             {
-                //TODO: ADD MOUSE CONTROLS
+                //TODO: ADD MOUSE CONTROLS FOR MUSIC VOLUME
                 switch(currentlySelectedSettingsMenuOption)
                 {
                     case MUSIC_VOLUME_INDEX:
@@ -313,7 +311,7 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             }
             else if(event.key.keysym.sym == SDLK_RIGHT)
             {
-                //TODO: ADD MOUSE CONTROLS
+                //TODO: ADD MOUSE CONTROLS FOR SOUND EFFECTS VOLUME
                 switch(currentlySelectedSettingsMenuOption)
                 {
                     case MUSIC_VOLUME_INDEX:
@@ -362,9 +360,23 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 
 void MenuRenderer::evaluteMouseMotionEvent()
 {
+    //TODO: CHANGE MOUSE CLICK HITBOX FOR BETTER UX
     SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
 
-    if((menuTextFirstVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFirstVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+    int UISelectionMargin = 4;
+
+    //fine tune hitbox of menu options
+    int menuTextFirtVerticalUIUpperEdgePosition = menuTextFirstVerticalPosition - UISelectionMargin;
+    int menuTextSecondVerticalUIUpperEdgePosition = menuTextSecondVerticalPosition - UISelectionMargin;
+    int menuTextThirdVerticalUIUpperEdgePosition = menuTextThirdVerticalPosition - UISelectionMargin;
+    int menuTextFourthVerticalUIUpperEdgePosition = menuTextFourthVerticalPosition - UISelectionMargin;
+
+    int menuTextFirtVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    int menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    int menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    int menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+
+    if((menuTextFirtVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFirtVerticalUILowerEdgePosition))
     {
         if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
         {
@@ -375,7 +387,7 @@ void MenuRenderer::evaluteMouseMotionEvent()
             currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
         }
     }
-    else if((menuTextSecondVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextSecondVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+    else if((menuTextSecondVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextSecondVerticalUILowerEdgePosition))
     {
         if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
         {
@@ -386,7 +398,7 @@ void MenuRenderer::evaluteMouseMotionEvent()
             currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;
         }    
     }
-    else if((menuTextThirdVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextThirdVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+    else if((menuTextThirdVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextThirdVerticalUILowerEdgePosition))
     {
         if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
         {
@@ -397,7 +409,7 @@ void MenuRenderer::evaluteMouseMotionEvent()
             currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
         }    
     }
-    else if((menuTextFourthVerticalPosition < currentVerticalMousePosition) && (currentVerticalMousePosition < (menuTextFourthVerticalPosition + HEIGHT_OF_MENU_OPTION_TEXT)))
+    else if((menuTextFourthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFourthVerticalUILowerEdgePosition))
     {
         if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
         {
@@ -412,7 +424,6 @@ void MenuRenderer::evaluteMouseMotionEvent()
 
 void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
 {
-    //TODO: CHANGE MOUSE CLICK HITBOX TO INCLUDE HORIZONTAL BOUNDARIES OF TEXT
     switch(currentlyDisplayedMenu)
     {
         case MAIN_MENU_INDEX:
@@ -429,7 +440,8 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
                 }
                 case SETTINGS_INDEX:
                 {
-                    setCurrentMenu(SETTINGS_MENU_INDEX, RETURN_TO_MAIN_MENU_INDEX);
+                    //select sound effects volume as highlighted option as that is where user's mouse will be upon entering settings menu
+                    setCurrentMenu(SETTINGS_MENU_INDEX, SOUND_EFFECTS_VOLUME_INDEX);
                     break;
                 }
                 case EXIT_GAME_INDEX:
@@ -525,7 +537,6 @@ void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
 
 void MenuRenderer::setFullscreen(const bool newFullscreen)
 {
-    printf("\nsetting fullscreen...");
     //grab current resolution so mouse position can be kept proportionally the same
     int previousHorizontalResolution = currentHorizontalResolution;
     int previousVerticalResolution = currentVerticalResolution;
@@ -560,10 +571,10 @@ bool MenuRenderer::getFullscreen()
 void MenuRenderer::updateUIPositions()
 {
     menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
-    menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + (currentVerticalResolution / 10);
-    menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (currentVerticalResolution / 20);
-    menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (currentVerticalResolution / 20);
-    menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (currentVerticalResolution / 20);
+    menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + (currentVerticalResolution / 8);
+    menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (currentVerticalResolution / 16);
+    menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (currentVerticalResolution / 16);
+    menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (currentVerticalResolution / 16);
 
     menuOptionsPositionMap = 
     {
@@ -581,7 +592,14 @@ int MenuRenderer::getCurrentlyDisplayedMenu()
 
 void MenuRenderer::setCurrentMenu(const int newMenu, const int selectedMenuOption)
 {
-    currentlySelectedMainMenuOption = selectedMenuOption;
+    if(newMenu == MAIN_MENU_INDEX)
+    {
+        currentlySelectedMainMenuOption = selectedMenuOption;
+    }
+    else if(newMenu == SETTINGS_MENU_INDEX)
+    {
+        currentlySelectedSettingsMenuOption = selectedMenuOption;
+    }
     currentlyDisplayedMenu = newMenu;
 }
 
