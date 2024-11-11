@@ -3,15 +3,16 @@
 #ifndef MENU_RENDERER_H
 #define MENU_RENDERER_H
 
+#include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <map>
-#include <SDL.h>
 #include <SDL_ttf.h>
 #include <string>
 
 #include "assetFilePaths.h"
 #include "colorDefines.h"
-#include "commonDefines.h"
+#include "globalValues.h"
 #include "textRenderer.h"
 #include "textureRenderer.h"
 
@@ -32,8 +33,6 @@ class MenuRenderer
 {
     public:
 
-        bool quitGame = false;
-
         const std::string settingsFilePath = "settings/settings.txt";
 
         /**
@@ -51,91 +50,24 @@ class MenuRenderer
          */
         void renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTitleTextRenderer, TextRenderer menuSubtextRenderer);
 
-        /**
-         * getter for currentlyDisplayedMenu
-         *
-         * \returns currentlyDisplayedMenu
-         */
         int getCurrentlyDisplayedMenu();
 
-        /**
-         * getter for mainWindow
-         *
-         * \returns mainWindow
-         */
-        SDL_Window* getMainWindow();
+        SDL_Window* getTitleScreensWindow();
+        void setTitleScreensWindow(SDL_Window* window);
 
-        /**
-         * setter for mainWindow
-         *
-         * \param window new window to be set
-         * \returns void
-         */
-        void setMainWindow(SDL_Window* window);
+        SDL_Renderer* getTitleScreensRenderer();
+        void setTitleScreensRenderer(SDL_Renderer* renderer);
 
-        /**
-         * getter for mainWindowRenderer
-         *
-         * \returns mainWindowRenderer
-         */
-        SDL_Renderer* getMainWindowRenderer();
-
-        /**
-         * setter for mainWindowRenderer
-         *
-         * \param renderer new renderer to be set
-         * \returns void
-         */
-        void setMainWindowRenderer(SDL_Renderer* renderer);
-
-        /**
-         * getter for menuTitleFont
-         *
-         * \returns menuTitleFont
-         */
         TTF_Font* getMenuTitleTextFont();
-
-        /**
-         * setter for menuTitleFont
-         *
-         * \param font new menuTitleFont to be set
-         */
         void setMenuTitleTextFont(TTF_Font* font);
 
-        /**
-         * getter for menuSubtitleFont
-         *
-         * \returns menuSubtitleFont
-         */
         TTF_Font* getMenuSubtitleTextFont();
-        
-        /**
-         * setter for menuSubtitleFont
-         *
-         * \param menuSubtitleFont new font to be set
-         */
         void setMenuSubtitleTextFont(TTF_Font* font);
 
-        /**
-         * getter for getMenuSelectionIconTexture
-         *
-         * \returns getMenuSelectionIconTexture
-         */
         SDL_Texture* getMenuSelectionIconTexture();
 
-        /**
-         * setter for fullscreen. Also adjusts UI positions to keep proportions even after updating fullscreen value
-         * 
-         * \returns void
-         */
-        void setFullscreen(const bool newFullscreen);
-
-        /**
-         * setter for fullscreen. Also adjusts UI positions to keep proportions even after updating fullscreen value
-         * 
-         * \returns boolean value indicating if fullscreen is enabled
-         */
         bool getFullscreen();
+        void setFullscreen(const bool newFullscreen);
 
         /**
          * controls menu operations based off of user's mouse and key actions
@@ -154,8 +86,8 @@ class MenuRenderer
 
         SDL_Rect mainMenuSelectionRect;
 
-        SDL_Window* mainWindow;
-        SDL_Renderer* mainWindowRenderer;
+        SDL_Window* titleScreensWindow;
+        SDL_Renderer* titleScreensWindowRenderer;
 
         TTF_Font* menuTitleFont;
         TTF_Font* menuSubtitleFont;
@@ -174,15 +106,11 @@ class MenuRenderer
 
         #define SETTING_NOT_SELECTED_TEXT "[ ]"
         #define SETTING_SELECTED_TEXT "[X]"
-        
-        int currentHorizontalResolution = DEFAULT_HORIZONTAL_RESOLUTION;
-        int currentVerticalResolution = DEFAULT_VERTICAL_RESOLUTION;
 
         int currentlyDisplayedMenu = MAIN_MENU_INDEX;
 
         int currentlySelectedMainMenuOption = CONTINUE_INDEX;
-        //int currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
-        int currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
+        int currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
 
         int menuTitleTextVerticalPosition;
         int menuTextFirstVerticalPosition;
@@ -273,13 +201,6 @@ class MenuRenderer
          */
         void updateUIPositions();
 
-        /**
-         * setter for currently displayed menu
-         * 
-         * \param newMenu new menu to be displayed
-         * \param selectedMenuOption which menu option is to be selected upon showing the new menu
-         * \returns void
-         */
         void setCurrentMenu(const int newMenu, const int selectedMenuOption);
 };
 
