@@ -1,4 +1,4 @@
-#include "commonDefines.h"
+#include "globalValues.h"
 #include "menuRenderer.h"
 #include "sdlUtility.h"
 #include "textRenderer.h"

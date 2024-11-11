@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include "globalValues.h"
 #include <SDL_ttf.h>
 #include <string>
 

@@ -5,6 +5,7 @@ LDFLAGS = -Llib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # Specify all your source files here
 SRCS = src/colorDefines.cpp \
+	   src/globalValues.cpp \
 	   src/main.cpp \
 	   src/menuRenderer.cpp \
 	   src/sdlUtility.cpp \

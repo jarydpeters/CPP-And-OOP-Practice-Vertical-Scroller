@@ -1,7 +1,3 @@
-#include <iostream>
-#include <SDL.h>
-#include <SDL_image.h>
-
 #include "textureRenderer.h"
 
 TextureRenderer::TextureRenderer()

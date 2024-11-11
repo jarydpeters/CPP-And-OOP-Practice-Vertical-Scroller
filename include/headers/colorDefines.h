@@ -1,7 +1,7 @@
 #ifndef COLOR_DEFINES_H
 #define COLOR_DEFINES_H
 
-#include <SDL.h>
+#include "globalValues.h"
 
 constexpr int MAX_RGB_HEX = 0xFF;
 constexpr int MAX_TRANSPARENCY_HEX = 0xFF;

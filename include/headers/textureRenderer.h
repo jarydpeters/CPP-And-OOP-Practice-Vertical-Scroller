@@ -1,8 +1,10 @@
 #ifndef TEXTURE_RENDERER_H
 #define TEXTURE_RENDERER_H
 
-#include <SDL.h>
+#include <iostream>
 #include <SDL_image.h>
+
+#include "globalValues.h"
 
 class TextureRenderer
 {

@@ -1,8 +1,5 @@
 #include "menuRenderer.h"
 
-#include <filesystem>
-#include <iostream>
-
 MenuRenderer::MenuRenderer()
 {
     loadSavedSettings();

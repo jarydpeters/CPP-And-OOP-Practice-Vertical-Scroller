@@ -2,10 +2,9 @@
 #define SDL_UTILITY_H
 
 #include <iostream>
-#include <SDL.h>
 #include <SDL_ttf.h>
 
-#include "commonDefines.h"
+#include "globalValues.h"
 
 class SdlUtility
 {
