@@ -29,6 +29,11 @@ constexpr int RETURN_TO_MAIN_MENU_INDEX = 3;
 constexpr int MAIN_MENU_INDEX = 0;
 constexpr int SETTINGS_MENU_INDEX = 1;
 
+constexpr int menuSelectionIconVerticalOffset = 6;
+
+constexpr int mainMenuLogoVerticalOffset = 100;
+constexpr int mainMenuLogoHorizontalOffset = 210;
+
 class MenuRenderer
 {
     public:
@@ -82,9 +87,12 @@ class MenuRenderer
         TextureRenderer textureRenderer;
 
         SDL_Texture* menuSelectionIconTexture;
+        SDL_Rect mainMenuSelectionRect;
         TextureRenderer::TextureWithRect menuSelectionIconTextureWithRect;
 
-        SDL_Rect mainMenuSelectionRect;
+        SDL_Texture* mainMenuLogoTexture;
+        SDL_Rect mainMenuLogoRect;
+        TextureRenderer::TextureWithRect mainMenuLogoTextureWithRect;
 
         SDL_Window* titleScreensWindow;
         SDL_Renderer* titleScreensWindowRenderer;
@@ -92,7 +100,6 @@ class MenuRenderer
         TTF_Font* menuTitleFont;
         TTF_Font* menuSubtitleFont;
 
-        #define MAIN_MENU_TITLE_TEXT "VERT SCROLLER"
         #define MAIN_MENU_CONTINUE_TEXT "CONTINUE"
         #define MAIN_MENU_NEW_GAME_TEXT "NEW GAME"
         #define MAIN_MENU_SETTINGS_TEXT "SETTINGS"
@@ -112,7 +119,8 @@ class MenuRenderer
         int currentlySelectedMainMenuOption = CONTINUE_INDEX;
         int currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
 
-        int menuTitleTextVerticalPosition;
+        int menuTitleLogoVerticalPosition;
+
         int menuTextFirstVerticalPosition;
         int menuTextSecondVerticalPosition;
         int menuTextThirdVerticalPosition;
@@ -200,6 +208,13 @@ class MenuRenderer
          * \returns void
          */
         void updateUIPositions();
+
+        /**
+         * renders main menu logo sprite as well as main menu selection icon sprite
+         * 
+         * \returns void
+         */
+        void renderLogoAndMenuOptionSelectionSprites();
 
         void setCurrentMenu(const int newMenu, const int selectedMenuOption);
 };

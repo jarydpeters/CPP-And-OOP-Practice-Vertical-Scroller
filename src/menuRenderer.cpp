@@ -12,20 +12,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
     {
         case MAIN_MENU_INDEX:
         {
-            menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
-                0, //place on far left side of screen
-                (menuOptionsPositionMap[currentlySelectedMainMenuOption] - 6), //offset up to account for texture height
-                MENU_SELECTION_ICON_IMAGE_PATH, 
-                titleScreensWindow, 
-                titleScreensWindowRenderer);
-
-            menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
-            mainMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
-
-            //render menu option selection rectangle first so text appears on top of it
-            SDL_RenderCopy(titleScreensWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
-
-            menuTitleTextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, MAIN_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, titleScreensWindow);
+            renderLogoAndMenuOptionSelectionSprites();
 
             menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 MAIN_MENU_CONTINUE_TEXT, 
@@ -54,20 +41,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
         }
         case SETTINGS_MENU_INDEX:
         {
-            menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
-                0, //place on far left side of screen
-                (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - 6), //offset up to account for texture height
-                MENU_SELECTION_ICON_IMAGE_PATH, 
-                titleScreensWindow, 
-                titleScreensWindowRenderer);
-
-            SDL_Texture* settingsMenuSelectionTexture = menuSelectionIconTextureWithRect.texture;
-            SDL_Rect settingsMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
-
-            //render menu option selection rectangle first so text appears on top of it
-            SDL_RenderCopy(titleScreensWindowRenderer, settingsMenuSelectionTexture, NULL, &settingsMenuSelectionRect);
-
-            menuTitleTextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, SETTINGS_MENU_TITLE_TEXT, menuTitleTextVerticalPosition, white, titleScreensWindow);
+            renderLogoAndMenuOptionSelectionSprites();
 
             menuSubtextRenderer.renderHorizontallyCenteredText(titleScreensWindowRenderer, 
                 SETTINGS_MENU_FULLSCREEN_TEXT, 
@@ -93,7 +67,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             //render fullscreen toggle icon
             menuSubtextRenderer.renderText(titleScreensWindowRenderer, 
                 (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
-                (currentHorizontalResolution * (2.0 / 3.0 )), 
+                (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextFirstVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
                 titleScreensWindow);
@@ -101,14 +75,14 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             //render music and sound effects volume selection icons
             menuSubtextRenderer.renderText(titleScreensWindowRenderer, 
                 variableSettingSelectionMap[currentMusicVolumeSetting], 
-                (currentHorizontalResolution * (2.0 / 3.0 )), 
+                (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextSecondVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
                 titleScreensWindow);
 
             menuSubtextRenderer.renderText(titleScreensWindowRenderer, 
                 variableSettingSelectionMap[currentSoundEffectVolumeSetting], 
-                (currentHorizontalResolution * (2.0 / 3.0 )), 
+                (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextThirdVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
                 titleScreensWindow);
@@ -118,6 +92,55 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             break;
         }
     }
+}
+
+void MenuRenderer::renderLogoAndMenuOptionSelectionSprites()
+{
+    //render main logo
+    mainMenuLogoTextureWithRect = textureRenderer.createAndVerifyTexture(
+        ((currentHorizontalResolution / 2) - mainMenuLogoHorizontalOffset), //place in horizontal center of screen
+        (menuTitleLogoVerticalPosition - mainMenuLogoVerticalOffset),
+        MENU_LOGO_IMAGE_PATH,
+        titleScreensWindow,
+        titleScreensWindowRenderer);
+
+    mainMenuLogoTexture = mainMenuLogoTextureWithRect.texture;
+    mainMenuLogoRect = mainMenuLogoTextureWithRect.rectangle;
+
+    //render menu logo
+    SDL_RenderCopy(titleScreensWindowRenderer, mainMenuLogoTexture, NULL, &mainMenuLogoRect);
+
+    //render menu option selection sprite
+    int menuSelectionIconVerticalPosition;
+    switch(currentlyDisplayedMenu)
+    {
+        case MAIN_MENU_INDEX:
+        {
+            menuSelectionIconVerticalPosition = (menuOptionsPositionMap[currentlySelectedMainMenuOption] - menuSelectionIconVerticalOffset);
+            break;
+        }
+        case SETTINGS_MENU_INDEX:
+        {
+            menuSelectionIconVerticalPosition = (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - menuSelectionIconVerticalOffset);
+            break;
+        }
+    }
+
+    menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
+        0, //place on far left side of screen
+        menuSelectionIconVerticalPosition,
+        MENU_SELECTION_ICON_IMAGE_PATH, 
+        titleScreensWindow, 
+        titleScreensWindowRenderer);
+
+    menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
+    mainMenuSelectionRect = menuSelectionIconTextureWithRect.rectangle;
+
+    //render menu option selection rectangle first so text appears on top of it
+    SDL_RenderCopy(titleScreensWindowRenderer, menuSelectionIconTexture, NULL, &mainMenuSelectionRect);
+
+    //render menu logo
+    SDL_RenderCopy(titleScreensWindowRenderer, mainMenuLogoTexture, NULL, &mainMenuLogoRect);
 }
 
 void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
@@ -571,8 +594,9 @@ bool MenuRenderer::getFullscreen()
 
 void MenuRenderer::updateUIPositions()
 {
-    menuTitleTextVerticalPosition = currentVerticalResolution / 3.0;
-    menuTextFirstVerticalPosition = menuTitleTextVerticalPosition + (currentVerticalResolution / 8);
+    menuTitleLogoVerticalPosition = currentVerticalResolution / 3.0;
+
+    menuTextFirstVerticalPosition = menuTitleLogoVerticalPosition + (currentVerticalResolution / 8);
     menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (currentVerticalResolution / 16);
     menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (currentVerticalResolution / 16);
     menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (currentVerticalResolution / 16);
