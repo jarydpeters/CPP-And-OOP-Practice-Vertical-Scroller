@@ -84,6 +84,13 @@ class MenuRenderer : public WindowRenderer
          */
         void executeMenuActionBasedOnEvent(const SDL_Event event);
 
+        /**
+         * destoys texture to prevent a memory leak
+         * 
+         * \returns void
+         */
+        void destroyTextures();
+
     private:
 
         TextureRenderer textureRenderer;
@@ -123,6 +130,7 @@ class MenuRenderer : public WindowRenderer
         int currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
 
         int menuTitleLogoVerticalPosition;
+        int menuSelectionIconVerticalPosition;
 
         int menuTextFirstVerticalPosition;
         int menuTextSecondVerticalPosition;

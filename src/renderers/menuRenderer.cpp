@@ -114,16 +114,6 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
 
 void MenuRenderer::renderLogoAndMenuOptionSelectionSprites()
 {
-    // Destroy old textures to prevent memory leaks
-    if(mainMenuLogoTexture != nullptr) {
-        SDL_DestroyTexture(mainMenuLogoTexture);
-        mainMenuLogoTexture = nullptr;  // Prevent dangling pointer
-    }
-    if(menuSelectionIconTexture != nullptr) {
-        SDL_DestroyTexture(menuSelectionIconTexture);
-        menuSelectionIconTexture = nullptr;  // Prevent dangling pointer
-    }
-
     //render main logo
     mainMenuLogoTextureWithRect = textureRenderer.createAndVerifyTexture(
         ((currentHorizontalResolution / 2) - MAIN_MENU_LOGO_HORIZONTAL_OFFSET), //place in horizontal center of screen
@@ -140,9 +130,6 @@ void MenuRenderer::renderLogoAndMenuOptionSelectionSprites()
 
     mainMenuLogoRect.w *= FOUR_TIMES_SCALAR;
     mainMenuLogoRect.h *= FOUR_TIMES_SCALAR;
-
-    //render menu logo
-    SDL_RenderCopy(titleScreenWindowRenderer, mainMenuLogoTexture, NULL, &mainMenuLogoRect);
 
     //render menu option selection sprite
     int menuSelectionIconVerticalPosition;
@@ -175,6 +162,21 @@ void MenuRenderer::renderLogoAndMenuOptionSelectionSprites()
 
     //render menu logo
     SDL_RenderCopy(titleScreenWindowRenderer, mainMenuLogoTexture, NULL, &mainMenuLogoRect);
+}
+
+void MenuRenderer::destroyTextures()
+{
+    // Destroy old textures to prevent memory leaks
+    if(mainMenuLogoTexture != nullptr) 
+    {
+        SDL_DestroyTexture(mainMenuLogoTexture);
+        mainMenuLogoTexture = nullptr;  // Prevent dangling pointer
+    }
+    if(menuSelectionIconTexture != nullptr) 
+    {
+        SDL_DestroyTexture(menuSelectionIconTexture);
+        menuSelectionIconTexture = nullptr;  // Prevent dangling pointer
+    }
 }
 
 void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
@@ -273,7 +275,8 @@ void MenuRenderer::loadSavedSettings()
                     }
                     else
                     {
-                        std::cout << "Unknown setting: " << settingName << std::endl;
+                        //suppress for now
+                        // std::cout << "Unknown setting: " << settingName << std::endl;
                     }
                 }
             }

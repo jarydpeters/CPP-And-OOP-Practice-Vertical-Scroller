@@ -4,13 +4,8 @@
 #include "sdlUtility.h"
 #include "textRenderer.h"
 
-//TODO: LIMIT FRAMERATE
-//TODO: MAKE GAME ENGINE FRAMERATE INDEPENDENT
-
 int main(int argc, char* argv[])
 {    
-    bool firstLoop = true;
-
     SdlUtility sdlUtility;
 
     if(!sdlUtility.successfulSDLInit())
@@ -62,9 +57,11 @@ int main(int argc, char* argv[])
 
     SDL_Event event;
 
+    bool firstLoop = true;
+
     while(!quitGame)
     {
-        // Uint32 timeAtStartOfFrame = SDL_GetTicks();
+        Uint32 timeAtStartOfFrame = SDL_GetTicks();
 
         switch(currentScreen)
         {
@@ -84,7 +81,6 @@ int main(int argc, char* argv[])
                 }
 
                 mainMenu.renderCurrentlyDisplayedMenu(mainMenu.getCurrentlyDisplayedMenu(), menuTitleTextRenderer, menuSubtextRenderer);
-
                 break;
             }
             case MAIN_GAME_SCREEN:
@@ -103,12 +99,15 @@ int main(int argc, char* argv[])
         }
         firstLoop = false;
 
-        // Uint32 timeElapsedOverLoop = SDL_GetTicks() - timeAtStartOfFrame;
+        Uint32 timeElapsedOverLoop = SDL_GetTicks() - timeAtStartOfFrame;
 
-        // if(timeElapsedOverLoop < FRAME_DELAY)
-        // {
-        //     SDL_Delay(FRAME_DELAY - timeElapsedOverLoop);
-        // }
+        //TODO: RENDER FPS FOR DEBUG/AS OPTION
+        if(timeElapsedOverLoop < FRAME_DELAY)
+        {
+            SDL_Delay(FRAME_DELAY - timeElapsedOverLoop);
+        }
+
+        mainMenu.destroyTextures();
     }
 
     sdlUtility.cleanup(mainMenu.getMenuSubtitleTextFont(), 
