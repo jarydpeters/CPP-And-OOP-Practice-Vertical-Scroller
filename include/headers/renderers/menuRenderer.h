@@ -1,5 +1,3 @@
-//TODO MAKE MENURENDERER INHERIT FROM A NEW WINDOWRENDERER
-
 #ifndef MENU_RENDERER_H
 #define MENU_RENDERER_H
 
@@ -8,13 +6,15 @@
 #include <iostream>
 #include <map>
 #include <SDL_ttf.h>
-#include <string>
 
 #include "assetFilePaths.h"
 #include "colorDefines.h"
 #include "globalValues.h"
 #include "textRenderer.h"
 #include "textureRenderer.h"
+#include "windowRenderer.h"
+
+constexpr int FOUR_TIMES_SCALAR = 4;
 
 constexpr int CONTINUE_INDEX = 0;
 constexpr int NEW_GAME_INDEX = 1;
@@ -29,21 +29,21 @@ constexpr int RETURN_TO_MAIN_MENU_INDEX = 3;
 constexpr int MAIN_MENU_INDEX = 0;
 constexpr int SETTINGS_MENU_INDEX = 1;
 
-constexpr int menuSelectionIconVerticalOffset = 6;
+constexpr int MENU_SELECTION_ICON_VERTICAL_OFFSET = 6;
 
-constexpr int mainMenuLogoVerticalOffset = 100;
-constexpr int mainMenuLogoHorizontalOffset = 210;
+constexpr int MAIN_MENU_LOGO_HORIZONTAL_SIZE = 130;
+constexpr int MAIN_MENU_LOGO_VERTICAL_SIZE = 46;
+constexpr int MAIN_MENU_LOGO_VERTICAL_OFFSET = 100;
+constexpr int MAIN_MENU_LOGO_HORIZONTAL_OFFSET = ((MAIN_MENU_LOGO_HORIZONTAL_SIZE / 2) * FOUR_TIMES_SCALAR);
 
-class MenuRenderer
+class MenuRenderer : public WindowRenderer
 {
     public:
-
-        const std::string settingsFilePath = "settings/settings.txt";
 
         /**
          * default constructor
          */
-        MenuRenderer();
+        MenuRenderer(SDL_Window* win, SDL_Renderer* ren);
 
         /**
          * renders currently displayed menu based off of currentlyDisplayedMenu parameter
@@ -57,11 +57,11 @@ class MenuRenderer
 
         int getCurrentlyDisplayedMenu();
 
-        SDL_Window* getTitleScreensWindow();
-        void setTitleScreensWindow(SDL_Window* window);
+        SDL_Window* getTitleScreenWindow();
+        void setTitleScreenWindow(SDL_Window* window);
 
-        SDL_Renderer* getTitleScreensRenderer();
-        void setTitleScreensRenderer(SDL_Renderer* renderer);
+        SDL_Renderer* getTitleScreenRenderer();
+        void setTitleScreenRenderer(SDL_Renderer* renderer);
 
         TTF_Font* getMenuTitleTextFont();
         void setMenuTitleTextFont(TTF_Font* font);
@@ -94,8 +94,8 @@ class MenuRenderer
         SDL_Rect mainMenuLogoRect;
         TextureRenderer::TextureWithRect mainMenuLogoTextureWithRect;
 
-        SDL_Window* titleScreensWindow;
-        SDL_Renderer* titleScreensWindowRenderer;
+        SDL_Window* titleScreenWindow;
+        SDL_Renderer* titleScreenWindowRenderer;
 
         TTF_Font* menuTitleFont;
         TTF_Font* menuSubtitleFont;

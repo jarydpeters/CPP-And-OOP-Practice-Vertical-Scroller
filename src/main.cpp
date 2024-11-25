@@ -8,32 +8,55 @@
 //TODO: MAKE GAME ENGINE FRAMERATE INDEPENDENT
 
 int main(int argc, char* argv[])
-{
-    MainGameRenderer mainGameRenderer;
-    MenuRenderer menuRenderer;
-    SdlUtility sdlUtility;
-
+{    
     bool firstLoop = true;
+
+    SdlUtility sdlUtility;
 
     if(!sdlUtility.successfulSDLInit())
     {
+        std::cout << "SDL Init Unsuccessful!" << std::endl;
         return -1;
     }
 
-    menuRenderer.setTitleScreensWindow(sdlUtility.createAndVerifySDLWindow(
-        "titleScreensWindow", 
+    // Create the window for the title screen
+    SDL_Window* titleScreenWindow = sdlUtility.createAndVerifySDLWindow(
+        "titleScreenWindow", 
         DEFAULT_HORIZONTAL_RESOLUTION, 
         DEFAULT_VERTICAL_RESOLUTION, 
-        SDL_WINDOW_OPENGL));
+        SDL_WINDOW_OPENGL);
 
-    SDL_SetWindowResizable(menuRenderer.getTitleScreensWindow(), SDL_bool::SDL_FALSE);
+    if (!titleScreenWindow) 
+    {
+        std::cout << "titleScreenWindow Init Unsuccessful!" << std::endl;
+        return -1;
+    }
 
-    menuRenderer.setTitleScreensRenderer(sdlUtility.createAndVerifySDLRenderer(menuRenderer.getTitleScreensWindow(), -1, SDL_RENDERER_ACCELERATED));
-    menuRenderer.setMenuTitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, TITLE_TEXT_POINT_SIZE, menuRenderer.getTitleScreensWindow(), menuRenderer.getTitleScreensRenderer()));
-    menuRenderer.setMenuSubtitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, SUBTITLE_TEXT_POINT_SIZE, menuRenderer.getTitleScreensWindow(), menuRenderer.getTitleScreensRenderer()));
+    // Create the renderer for the title screens window
+    SDL_Renderer* titleScreenWindowRenderer = sdlUtility.createAndVerifySDLRenderer(titleScreenWindow, -1, SDL_RENDERER_ACCELERATED);
+    
+    if (!titleScreenWindowRenderer) 
+    {
+        std::cout << "titleScreenWindowRenderer Init Unsuccessful!" << std::endl;
+        return -1;
+    }
 
-    TextRenderer menuTitleTextRenderer(menuRenderer.getMenuTitleTextFont());
-    TextRenderer menuSubtextRenderer(menuRenderer.getMenuSubtitleTextFont());
+    MenuRenderer mainMenu = MenuRenderer(titleScreenWindow, titleScreenWindowRenderer);
+
+    SDL_SetWindowResizable(mainMenu.getTitleScreenWindow(), SDL_bool::SDL_FALSE);
+
+    mainMenu.setMenuTitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
+        TITLE_TEXT_POINT_SIZE, 
+        mainMenu.getTitleScreenWindow(), 
+        mainMenu.getTitleScreenRenderer()));
+
+    mainMenu.setMenuSubtitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
+        SUBTITLE_TEXT_POINT_SIZE, 
+        mainMenu.getTitleScreenWindow(), 
+        mainMenu.getTitleScreenRenderer()));
+
+    TextRenderer menuTitleTextRenderer(mainMenu.getMenuTitleTextFont());
+    TextRenderer menuSubtextRenderer(mainMenu.getMenuSubtitleTextFont());
 
     SDL_Event event;
 
@@ -43,20 +66,20 @@ int main(int argc, char* argv[])
         {
             case(TITLE_MENU_SCREEN):
             {
-                SDL_SetRenderDrawColor(menuRenderer.getTitleScreensRenderer(), black.r, black.g, black.b, black.a);
-                SDL_RenderClear(menuRenderer.getTitleScreensRenderer());
+                SDL_SetRenderDrawColor(mainMenu.getTitleScreenRenderer(), black.r, black.g, black.b, black.a);
+                SDL_RenderClear(mainMenu.getTitleScreenRenderer());
 
                 while (SDL_PollEvent(&event))
                 {
-                    menuRenderer.executeMenuActionBasedOnEvent(event);
+                    mainMenu.executeMenuActionBasedOnEvent(event);
                 }
                 
                 if(firstLoop)
                 {
-                    menuRenderer.setFullscreen(menuRenderer.getFullscreen());
+                    mainMenu.setFullscreen(mainMenu.getFullscreen());
                 }
 
-                menuRenderer.renderCurrentlyDisplayedMenu(menuRenderer.getCurrentlyDisplayedMenu(), menuTitleTextRenderer, menuSubtextRenderer);
+                mainMenu.renderCurrentlyDisplayedMenu(mainMenu.getCurrentlyDisplayedMenu(), menuTitleTextRenderer, menuSubtextRenderer);
 
                 break;
             }
@@ -77,8 +100,10 @@ int main(int argc, char* argv[])
         firstLoop = false;
     }
 
-    sdlUtility.cleanup(menuRenderer.getMenuSubtitleTextFont(), menuRenderer.getTitleScreensWindow(), menuRenderer.getTitleScreensRenderer(), menuRenderer.getMenuSelectionIconTexture());
+    sdlUtility.cleanup(mainMenu.getMenuSubtitleTextFont(), 
+        mainMenu.getTitleScreenWindow(), 
+        mainMenu.getTitleScreenRenderer(), 
+        mainMenu.getMenuSelectionIconTexture());
 
     return 0;
-
 }
