@@ -8,7 +8,7 @@ MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     titleScreenWindowRenderer = getRenderer();
 
     loadSavedSettings();
-    updateUIPositions();
+    updateResolution();
 }
 
 void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, TextRenderer menuTitleTextRenderer, TextRenderer menuSubtextRenderer)
@@ -80,6 +80,14 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
                 (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextFirstVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
+                titleScreenWindow);
+
+            //render resolution selection icon
+            menuSubtextRenderer.renderText(titleScreenWindowRenderer, 
+                (fullscreen ? usersMonitorResolution : windowedResolutionSelectionMap[currentWindowedResolutionSetting]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
+                (currentHorizontalResolution * (2.0 / 3.0)), 
+                menuTextSecondVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == RESOLUTION_INDEX) ? black : white), 
                 titleScreenWindow);
 
             //render music and sound effects volume selection icons
@@ -196,6 +204,7 @@ void MenuRenderer::saveSettings()
     if(outFile.is_open())
     {
         outFile << "fullscreen: " << fullscreen << std::endl;
+        outFile << "resolution: " << currentWindowedResolutionSetting << std::endl;
         outFile << "music volume: " << currentMusicVolumeSetting << std::endl;
         outFile << "sound effects volume: " << currentSoundEffectVolumeSetting << std::endl;
         
@@ -216,29 +225,33 @@ void MenuRenderer::loadSavedSettings()
         std::string line;
 
         // Read the file line by line
-        while (std::getline(inFile, line))
+        while(std::getline(inFile, line))
         {
             std::stringstream stringStream(line);
             std::string settingName;
             std::string settingValue;
 
             // Get the setting name (before the colon)
-            if (std::getline(stringStream, settingName, ':'))
+            if(std::getline(stringStream, settingName, ':'))
             {
                 // Trim leading/trailing spaces from the setting name and value
                 settingName.erase(0, settingName.find_first_not_of(" \t"));
                 settingName.erase(settingName.find_last_not_of(" \t") + 1);
 
                 // Get the setting value (after the colon)
-                if (std::getline(stringStream, settingValue))
+                if(std::getline(stringStream, settingValue))
                 {
                     // trim leading space
                     settingValue.erase(0, settingValue.find_first_not_of(" \t"));
 
                     // Compare the setting name and assign the value
-                    if (settingName == "fullscreen")
+                    if(settingName == "full screen")
                     {
-                        fullscreen = std::stoi(settingValue);  // Convert string to integer
+                        fullscreen = std::stoi(settingValue);
+                    }
+                    if(settingName == "resolution")
+                    {
+                        currentWindowedResolutionSetting = std::stoi(settingValue);
                     }
                     else if(settingName == "music volume")
                     {
@@ -328,9 +341,20 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             } 
             else if(event.key.keysym.sym == SDLK_LEFT)
             {
-                //TODO: ADD MOUSE CONTROLS FOR MUSIC VOLUME
+                //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
                 switch(currentlySelectedSettingsMenuOption)
                 {
+                    case RESOLUTION_INDEX:
+                    {
+                        currentWindowedResolutionSetting--;
+                        if(currentWindowedResolutionSetting < 0)
+                        {
+                            currentWindowedResolutionSetting = 2;
+                        }
+                        //TODO: MAKE CHANGES APPLY ON "APPLY" RATHER THAN INSTANTLY
+                        updateResolution();
+                        break;
+                    }
                     case MUSIC_VOLUME_INDEX:
                     {
                         if(currentMusicVolumeSetting > 0)
@@ -351,9 +375,20 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             }
             else if(event.key.keysym.sym == SDLK_RIGHT)
             {
-                //TODO: ADD MOUSE CONTROLS FOR SOUND EFFECTS VOLUME
+                //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
                 switch(currentlySelectedSettingsMenuOption)
                 {
+                    case RESOLUTION_INDEX:
+                    {
+                        currentWindowedResolutionSetting++;
+                        if(currentWindowedResolutionSetting > 2)
+                        {
+                            currentWindowedResolutionSetting = 0;
+                        }
+                        //TODO: MAKE CHANGES APPLY ON "APPLY" RATHER THAN INSTANTLY
+                        updateResolution();
+                        break;
+                    }
                     case MUSIC_VOLUME_INDEX:
                     {
                         if(currentMusicVolumeSetting < 10)
@@ -610,6 +645,16 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
 
     SDL_WarpMouseInWindow(titleScreenWindow, newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
 
+    if(fullscreen)
+    {
+        SDL_DisplayMode displayMode;
+        int displayIndex = 0; //TODO: Multi-Monitor support
+
+        SDL_GetDesktopDisplayMode(displayIndex, &displayMode);
+
+        usersMonitorResolution = std::to_string(displayMode.w) + " x " + std::to_string(displayMode.h);
+    }
+
     //update UI vertical position for new resolution
     updateUIPositions();
 }
@@ -637,6 +682,36 @@ void MenuRenderer::updateUIPositions()
         {3, menuTextFourthVerticalPosition},
         {4, menuTextFifthVerticalPosition}
     };
+}
+
+void MenuRenderer::updateResolution()
+{
+    switch(currentWindowedResolutionSetting)
+    {
+        case(0):
+        {
+            currentHorizontalResolution = 1280;
+            currentVerticalResolution = 720;
+            break;
+        }
+        case(1):
+        {
+            currentHorizontalResolution = 1600;
+            currentVerticalResolution = 900;
+            break;
+        }
+        case(2):
+        {
+            currentHorizontalResolution = 1920;
+            currentVerticalResolution = 1080;
+            break;
+        }
+    }
+
+    SDL_SetWindowSize(titleScreenWindow, currentHorizontalResolution, currentVerticalResolution);
+    SDL_SetWindowPosition(titleScreenWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+    updateUIPositions();
 }
 
 int MenuRenderer::getCurrentlyDisplayedMenu()

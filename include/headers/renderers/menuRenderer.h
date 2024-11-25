@@ -133,6 +133,7 @@ class MenuRenderer : public WindowRenderer
         int currentHorizontalMousePosition;
         int currentVerticalMousePosition;
 
+        int currentWindowedResolutionSetting;
         int currentMusicVolumeSetting;
         int currentSoundEffectVolumeSetting;
 
@@ -147,7 +148,16 @@ class MenuRenderer : public WindowRenderer
             {4, menuTextFifthVerticalPosition}
         };
 
-        std::map<int, const char*> variableSettingSelectionMap = 
+        std::map<int, const std::string> windowedResolutionSelectionMap =
+        {
+            {0, "< 1280 x  720 >"},
+            {1, "< 1600 x  900 >"},
+            {2, "< 1920 x 1080 >"},
+        };
+
+        std::string usersMonitorResolution;
+
+        std::map<int, const std::string> variableSettingSelectionMap = 
         {
             {0,  ".........."},
             {1,  "|........."},
@@ -213,6 +223,13 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         void updateUIPositions();
+
+        /**
+         * updates window size based off of new resolution
+         * 
+         * \returns void
+         */
+        void updateResolution();
 
         /**
          * renders main menu logo sprite as well as main menu selection icon sprite
