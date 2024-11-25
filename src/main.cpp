@@ -58,16 +58,20 @@ int main(int argc, char* argv[])
     TextRenderer menuTitleTextRenderer(mainMenu.getMenuTitleTextFont());
     TextRenderer menuSubtextRenderer(mainMenu.getMenuSubtitleTextFont());
 
+    SDL_Renderer* mainMenuRenderer = mainMenu.getTitleScreenRenderer();
+
     SDL_Event event;
 
     while(!quitGame)
     {
+        // Uint32 timeAtStartOfFrame = SDL_GetTicks();
+
         switch(currentScreen)
         {
             case(TITLE_MENU_SCREEN):
             {
-                SDL_SetRenderDrawColor(mainMenu.getTitleScreenRenderer(), black.r, black.g, black.b, black.a);
-                SDL_RenderClear(mainMenu.getTitleScreenRenderer());
+                SDL_SetRenderDrawColor(mainMenuRenderer, black.r, black.g, black.b, black.a);
+                SDL_RenderClear(mainMenuRenderer);
 
                 while (SDL_PollEvent(&event))
                 {
@@ -98,6 +102,13 @@ int main(int argc, char* argv[])
             }
         }
         firstLoop = false;
+
+        // Uint32 timeElapsedOverLoop = SDL_GetTicks() - timeAtStartOfFrame;
+
+        // if(timeElapsedOverLoop < FRAME_DELAY)
+        // {
+        //     SDL_Delay(FRAME_DELAY - timeElapsedOverLoop);
+        // }
     }
 
     sdlUtility.cleanup(mainMenu.getMenuSubtitleTextFont(), 
