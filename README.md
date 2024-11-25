@@ -1,6 +1,6 @@
 ![The Red Ball Express](https://github.com/jarydpeters/VertScroller/blob/main/assets/sprites/menuLogo.png)
 
-**The Red Ball Express** is a C++ game made using the SDL2 development library.
+_**The Red Ball Express**_ is a C++ game made using the SDL2 development library.
 
 It is intended to become a vertical scrolling shooter similar to the game Strikers: 1945.
 
