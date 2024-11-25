@@ -1,5 +1,7 @@
 # VertScroller
 
+https://github.com/jarydpeters/VertScroller/blob/main/assets/sprites/menuLogo.png
+
 this is a C++ game made using the SDL2 development library.
 
 It is intended to become a vertical scrolling shooter similar to the game Strikers: 1945.
