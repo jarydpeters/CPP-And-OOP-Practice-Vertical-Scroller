@@ -1,6 +1,6 @@
 # VertScroller
 
-![The Red Ball Express]https://github.com/jarydpeters/VertScroller/blob/main/assets/sprites/menuLogo.png
+[The Red Ball Express]https://github.com/jarydpeters/VertScroller/blob/main/assets/sprites/menuLogo.png
 
 this is a C++ game made using the SDL2 development library.
 
