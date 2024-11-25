@@ -22,9 +22,10 @@ constexpr int SETTINGS_INDEX = 2;
 constexpr int EXIT_GAME_INDEX = 3;
 
 constexpr int FULLSCREEN_INDEX = 0;
-constexpr int MUSIC_VOLUME_INDEX = 1;
-constexpr int SOUND_EFFECTS_VOLUME_INDEX = 2;
-constexpr int RETURN_TO_MAIN_MENU_INDEX = 3;
+constexpr int RESOLUTION_INDEX = 1;
+constexpr int MUSIC_VOLUME_INDEX = 2;
+constexpr int SOUND_EFFECTS_VOLUME_INDEX = 3;
+constexpr int RETURN_TO_MAIN_MENU_INDEX = 4;
 
 constexpr int MAIN_MENU_INDEX = 0;
 constexpr int SETTINGS_MENU_INDEX = 1;
@@ -71,6 +72,7 @@ class MenuRenderer : public WindowRenderer
 
         SDL_Texture* getMenuSelectionIconTexture();
 
+        //TODO: MOVE TO WINDOWRENDERER AND LOOK FOR OTHER FUNCTIONALITY TO MOVE WITH IT
         bool getFullscreen();
         void setFullscreen(const bool newFullscreen);
 
@@ -107,6 +109,7 @@ class MenuRenderer : public WindowRenderer
 
         #define SETTINGS_MENU_TITLE_TEXT "SETTINGS"
         #define SETTINGS_MENU_FULLSCREEN_TEXT "FULL SCREEN"
+        #define SETTINGS_MENU_RESOLUTION_TEXT "RESOLUTION"
         #define SETTINGS_MENU_MUSIC_VOLUME_TEXT "MUSIC VOLUME"
         #define SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT "SOUND EFFECTS VOLUME"
         #define SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT "RETURN TO MAIN MENU"
@@ -125,6 +128,7 @@ class MenuRenderer : public WindowRenderer
         int menuTextSecondVerticalPosition;
         int menuTextThirdVerticalPosition;
         int menuTextFourthVerticalPosition;
+        int menuTextFifthVerticalPosition;
 
         int currentHorizontalMousePosition;
         int currentVerticalMousePosition;
@@ -139,7 +143,8 @@ class MenuRenderer : public WindowRenderer
             {0, menuTextFirstVerticalPosition},
             {1, menuTextSecondVerticalPosition},
             {2, menuTextThirdVerticalPosition},
-            {3, menuTextFourthVerticalPosition}
+            {3, menuTextFourthVerticalPosition},
+            {4, menuTextFifthVerticalPosition}
         };
 
         std::map<int, const char*> variableSettingSelectionMap = 

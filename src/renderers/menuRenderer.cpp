@@ -4,8 +4,8 @@ MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     : WindowRenderer(win, ren)
 {
     //set member variables to inherited values from windowRenderer
-    titleScreenWindow = window;
-    titleScreenWindowRenderer = renderer;
+    titleScreenWindow = getWindow();
+    titleScreenWindowRenderer = getRenderer();
 
     loadSavedSettings();
     updateUIPositions();
@@ -54,18 +54,23 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
                 ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
                 titleScreenWindow);
             menuSubtextRenderer.renderHorizontallyCenteredText(titleScreenWindowRenderer, 
-                SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
+                SETTINGS_MENU_RESOLUTION_TEXT, 
                 menuTextSecondVerticalPosition, 
+                ((currentlySelectedSettingsMenuOption == RESOLUTION_INDEX) ? black : white), 
+                titleScreenWindow);
+            menuSubtextRenderer.renderHorizontallyCenteredText(titleScreenWindowRenderer, 
+                SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
+                menuTextThirdVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
                 titleScreenWindow);
             menuSubtextRenderer.renderHorizontallyCenteredText(titleScreenWindowRenderer, 
                 SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
-                menuTextThirdVerticalPosition, 
+                menuTextFourthVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
                 titleScreenWindow);
             menuSubtextRenderer.renderHorizontallyCenteredText(titleScreenWindowRenderer, 
                 SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
-                menuTextFourthVerticalPosition, 
+                menuTextFifthVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
                 titleScreenWindow);
 
@@ -81,14 +86,14 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
             menuSubtextRenderer.renderText(titleScreenWindowRenderer, 
                 variableSettingSelectionMap[currentMusicVolumeSetting], 
                 (currentHorizontalResolution * (2.0 / 3.0)), 
-                menuTextSecondVerticalPosition, 
+                menuTextThirdVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
                 titleScreenWindow);
 
             menuSubtextRenderer.renderText(titleScreenWindowRenderer, 
                 variableSettingSelectionMap[currentSoundEffectVolumeSetting], 
                 (currentHorizontalResolution * (2.0 / 3.0)), 
-                menuTextThirdVerticalPosition, 
+                menuTextFourthVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
                 titleScreenWindow);
 
@@ -405,11 +410,13 @@ void MenuRenderer::evaluteMouseMotionEvent()
     int menuTextSecondVerticalUIUpperEdgePosition = menuTextSecondVerticalPosition - UISelectionMargin;
     int menuTextThirdVerticalUIUpperEdgePosition = menuTextThirdVerticalPosition - UISelectionMargin;
     int menuTextFourthVerticalUIUpperEdgePosition = menuTextFourthVerticalPosition - UISelectionMargin;
+    int menuTextFifthVerticalUIUpperEdgePosition = menuTextFifthVerticalPosition - UISelectionMargin;
 
     int menuTextFirtVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
     int menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
     int menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
     int menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    int menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
 
     if((menuTextFirtVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFirtVerticalUILowerEdgePosition))
     {
@@ -430,7 +437,7 @@ void MenuRenderer::evaluteMouseMotionEvent()
         }
         else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
         {
-            currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;
+            currentlySelectedSettingsMenuOption = RESOLUTION_INDEX;
         }    
     }
     else if((menuTextThirdVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextThirdVerticalUILowerEdgePosition))
@@ -441,7 +448,7 @@ void MenuRenderer::evaluteMouseMotionEvent()
         }
         else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
         {
-            currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
+            currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;
         }    
     }
     else if((menuTextFourthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFourthVerticalUILowerEdgePosition))
@@ -449,6 +456,17 @@ void MenuRenderer::evaluteMouseMotionEvent()
         if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
         {
             currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
+        }
+        else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
+        {
+            currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX;
+        }    
+    }
+        else if((menuTextFifthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFifthVerticalUILowerEdgePosition))
+    {
+        if(currentlyDisplayedMenu == MAIN_MENU_INDEX)
+        {
+            //no fifth option on main menu
         }
         else if(currentlyDisplayedMenu == SETTINGS_MENU_INDEX)
         {
@@ -494,6 +512,10 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
                 case FULLSCREEN_INDEX:
                 {
                     setFullscreen(!fullscreen);
+                    break;
+                }
+                case RESOLUTION_INDEX:
+                {
                     break;
                 }
                 case MUSIC_VOLUME_INDEX:
@@ -577,6 +599,7 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
     int previousVerticalResolution = currentVerticalResolution;
 
     fullscreen = newFullscreen;
+    bool fullscreen = newFullscreen;
     SDL_SetWindowFullscreen(titleScreenWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     
     SDL_GetWindowSize(titleScreenWindow, &currentHorizontalResolution, &currentVerticalResolution);
@@ -589,14 +612,6 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
 
     //update UI vertical position for new resolution
     updateUIPositions();
-
-    menuOptionsPositionMap = 
-    {
-        {0, menuTextFirstVerticalPosition},
-        {1, menuTextSecondVerticalPosition},
-        {2, menuTextThirdVerticalPosition},
-        {3, menuTextFourthVerticalPosition}
-    };
 }
 
 bool MenuRenderer::getFullscreen()
@@ -612,13 +627,15 @@ void MenuRenderer::updateUIPositions()
     menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (50);
     menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (50);
     menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (50);
+    menuTextFifthVerticalPosition = menuTextFourthVerticalPosition + (50);
 
     menuOptionsPositionMap = 
     {
         {0, menuTextFirstVerticalPosition},
         {1, menuTextSecondVerticalPosition},
         {2, menuTextThirdVerticalPosition},
-        {3, menuTextFourthVerticalPosition}
+        {3, menuTextFourthVerticalPosition},
+        {4, menuTextFifthVerticalPosition}
     };
 }
 
