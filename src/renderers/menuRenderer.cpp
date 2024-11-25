@@ -203,7 +203,7 @@ void MenuRenderer::saveSettings()
     std::ofstream outFile(settingsFilePath);
     if(outFile.is_open())
     {
-        outFile << "fullscreen: " << fullscreen << std::endl;
+        outFile << "full screen: " << fullscreen << std::endl;
         outFile << "resolution: " << currentWindowedResolutionSetting << std::endl;
         outFile << "music volume: " << currentMusicVolumeSetting << std::endl;
         outFile << "sound effects volume: " << currentSoundEffectVolumeSetting << std::endl;
