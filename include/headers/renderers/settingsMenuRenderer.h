@@ -21,9 +21,7 @@ class SettingsMenuRenderer : public MenuRenderer
          * \param menuSubtextRenderer text renderer for menu subtitle text
          * \returns void
          */
-        void renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, 
-            TextRenderer& menuTitleTextRenderer, 
-            TextRenderer& menuSubtextRenderer) override;
+        void renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
 
     private:
 
@@ -51,6 +49,37 @@ class SettingsMenuRenderer : public MenuRenderer
             {9,  "|||||||||."},
             {10, "||||||||||"}
         };
+
+        /**
+         * manipulates menu based off of keystroke event
+         *
+         * \param event keystroke event to be acted upon
+         * \returns void
+         */
+        void evaluateKeystrokeEvent(const SDL_Event event) override;
+
+        /**
+         * manipulates menu based off of mouse motion event
+         *
+         * \returns void
+         */
+        void evaluateMouseMotionEvent() override;
+
+        /**
+         * manipulates menu based off of mouse button event
+         *
+         * \param event mouse button event to be acted upon
+         * \returns void
+         */
+        void evaluateMouseButtonEvent(const SDL_Event event) override;
+
+        /**
+         * manipulates menu based off of mousewheel event
+         *
+         * \param event mousewheel event to be acted upon
+         * \returns void
+         */
+        void evaluateMouseWheelEvent(const SDL_Event event) override;
 
 };
 

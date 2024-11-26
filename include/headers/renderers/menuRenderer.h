@@ -44,11 +44,31 @@ class MenuRenderer : public WindowRenderer
          */
         MenuRenderer(SDL_Window* win, SDL_Renderer* ren);
 
-        virtual void renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, 
-            TextRenderer& menuTitleTextRenderer, 
-            TextRenderer& menuSubtextRenderer) = 0;
+        /**
+         * controls menu operations based off of user's mouse and key actions
+         *
+         * \param event mouse or key event to be evaluated and acted upon
+         * \returns void
+         */
+        void executeMenuActionBasedOnEvent(const SDL_Event event);
+
+        /**
+         * destoys texture to prevent a memory leak
+         * 
+         * \returns void
+         */
+        void destroyTextures();
+
+        //overloads setFullscreen from settingsManager.cpp
+        void setFullscreen(const bool newFullscreen);
+
+        virtual void renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) = 0;
 
         SDL_Texture* getMenuSelectionIconTexture();
+
+        bool getFullscreen();
+
+        int getCurrentlyDisplayedMenu();
 
     protected:
 
@@ -63,8 +83,8 @@ class MenuRenderer : public WindowRenderer
         SDL_Rect mainMenuLogoRect;
         TextureRenderer::TextureWithRect mainMenuLogoTextureWithRect;
 
-        SDL_Window* titleScreenWindow;
-        SDL_Renderer* titleScreenWindowRenderer;
+        SDL_Window* menuScreenWindow;
+        SDL_Renderer* menuScreenWindowRenderer;
 
         TTF_Font* menuTitleFont;
         TTF_Font* menuSubtitleFont;
@@ -85,6 +105,22 @@ class MenuRenderer : public WindowRenderer
 
         int currentHorizontalMousePosition;
         int currentVerticalMousePosition;
+
+        int UISelectionMargin = 4;
+
+        //fine tune hitbox of menu options
+        int menuTextFirtVerticalUIUpperEdgePosition = menuTextFirstVerticalPosition - UISelectionMargin;
+        int menuTextSecondVerticalUIUpperEdgePosition = menuTextSecondVerticalPosition - UISelectionMargin;
+        int menuTextThirdVerticalUIUpperEdgePosition = menuTextThirdVerticalPosition - UISelectionMargin;
+        int menuTextFourthVerticalUIUpperEdgePosition = menuTextFourthVerticalPosition - UISelectionMargin;
+        int menuTextFifthVerticalUIUpperEdgePosition = menuTextFifthVerticalPosition - UISelectionMargin;
+
+        int menuTextFirtVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+        int menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+        int menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+        int menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+        int menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+
 
         std::map<int, int> menuOptionsPositionMap = 
         {
@@ -119,6 +155,43 @@ class MenuRenderer : public WindowRenderer
          */
         void updateUIPositions();
 
+        /**
+         * updates window size based off of new resolution
+         * 
+         * \returns void
+         */
+        void updateResolution();
+
+        /**
+         * manipulates menu based off of keystroke event
+         *
+         * \param event keystroke event to be acted upon
+         * \returns void
+         */
+        virtual void evaluateKeystrokeEvent(const SDL_Event event) = 0;
+
+        /**
+         * manipulates menu based off of mouse motion event
+         *
+         * \returns void
+         */
+        virtual void evaluateMouseMotionEvent() = 0;
+
+        /**
+         * manipulates menu based off of mouse button event
+         *
+         * \param event mouse button event to be acted upon
+         * \returns void
+         */
+        virtual void evaluateMouseButtonEvent(const SDL_Event event) = 0;
+
+        /**
+         * manipulates menu based off of mousewheel event
+         *
+         * \param event mousewheel event to be acted upon
+         * \returns void
+         */
+        virtual void evaluateMouseWheelEvent(const SDL_Event event) = 0;
 };
 
 #endif //MENU_RENDERER_H

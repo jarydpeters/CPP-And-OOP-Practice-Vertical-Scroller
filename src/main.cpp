@@ -1,6 +1,7 @@
 #include "globalValues.h"
 #include "mainGameRenderer.h"
 #include "mainMenuRenderer.h"
+#include "settingsMenuRenderer.h"
 #include "sdlUtility.h"
 #include "textRenderer.h"
 
@@ -15,29 +16,31 @@ int main(int argc, char* argv[])
     }
 
     // Create the window for the title screen
-    SDL_Window* titleScreenWindow = sdlUtility.createAndVerifySDLWindow(
-        "titleScreenWindow", 
+    SDL_Window* menuScreenWindow = sdlUtility.createAndVerifySDLWindow(
+        "menuScreenWindow", 
         DEFAULT_HORIZONTAL_RESOLUTION, 
         DEFAULT_VERTICAL_RESOLUTION, 
         SDL_WINDOW_OPENGL);
 
-    if (!titleScreenWindow) 
+    if (!menuScreenWindow) 
     {
-        std::cout << "titleScreenWindow Init Unsuccessful!" << std::endl;
+        std::cout << "menuScreenWindow Init Unsuccessful!" << std::endl;
         return -1;
     }
 
     // Create the renderer for the title screens window
-    SDL_Renderer* titleScreenWindowRenderer = sdlUtility.createAndVerifySDLRenderer(titleScreenWindow, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* menuScreenWindowRenderer = sdlUtility.createAndVerifySDLRenderer(menuScreenWindow, -1, SDL_RENDERER_ACCELERATED);
     
-    if (!titleScreenWindowRenderer) 
+    if (!menuScreenWindowRenderer) 
     {
-        std::cout << "titleScreenWindowRenderer Init Unsuccessful!" << std::endl;
+        std::cout << "menuScreenWindowRenderer Init Unsuccessful!" << std::endl;
         return -1;
     }
 
-    MainMenuRenderer mainMenu = MainMenuRenderer(titleScreenWindow, titleScreenWindowRenderer);
+    //set up main menu 
+    MainMenuRenderer mainMenu = MainMenuRenderer(menuScreenWindow, menuScreenWindowRenderer);
 
+    //TODO: MOVE TO CONSTRUCTOR?
     SDL_SetWindowResizable(mainMenu.getTitleScreenWindow(), SDL_bool::SDL_FALSE);
 
     mainMenu.setMenuTitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
@@ -55,6 +58,13 @@ int main(int argc, char* argv[])
 
     SDL_Renderer* mainMenuRenderer = mainMenu.getTitleScreenRenderer();
 
+    //set up settings menu
+    SettingsMenuRenderer settingsMenu = SettingsMenuRenderer(menuScreenWindow, menuScreenWindowRenderer);
+
+    //TODO: MOVE TO CONSTRUCTOR?
+    //SDL_SetWindowResizable(settingsMenu.getTitleScreenWindow(), SDL_bool::SDL_FALSE);
+
+
     SDL_Event event;
 
     bool firstLoop = true;
@@ -65,7 +75,7 @@ int main(int argc, char* argv[])
 
         switch(currentScreen)
         {
-            case(TITLE_MENU_SCREEN):
+            case(MAIN_MENU_SCREEN):
             {
                 SDL_SetRenderDrawColor(mainMenuRenderer, black.r, black.g, black.b, black.a);
                 SDL_RenderClear(mainMenuRenderer);
@@ -80,7 +90,26 @@ int main(int argc, char* argv[])
                     mainMenu.setFullscreen(mainMenu.getFullscreen());
                 }
 
-                mainMenu.renderCurrentlyDisplayedMenu(mainMenu.getCurrentlyDisplayedMenu(), menuTitleTextRenderer, menuSubtextRenderer);
+                mainMenu.renderCurrentlyDisplayedMenu(menuTitleTextRenderer, menuSubtextRenderer);
+                break;
+            }
+            case(SETTINGS_MENU_SCREEN):
+            {
+                SDL_SetRenderDrawColor(mainMenuRenderer, black.r, black.g, black.b, black.a);
+                SDL_RenderClear(mainMenuRenderer);
+
+                while (SDL_PollEvent(&event))
+                {
+                    settingsMenu.executeMenuActionBasedOnEvent(event);
+                }
+                
+                if(firstLoop)
+                {
+                    settingsMenu.setFullscreen(settingsMenu.getFullscreen());
+                }
+
+                settingsMenu.renderCurrentlyDisplayedMenu(menuTitleTextRenderer, menuSubtextRenderer);
+                break;
                 break;
             }
             case MAIN_GAME_SCREEN:

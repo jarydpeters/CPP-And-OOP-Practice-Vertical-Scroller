@@ -20,12 +20,7 @@ class MainMenuRenderer : public MenuRenderer
          * \param menuSubtextRenderer text renderer for menu subtitle text
          * \returns void
          */
-        void renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu, 
-            TextRenderer& menuTitleTextRenderer, 
-            TextRenderer& menuSubtextRenderer) override;
-
-
-        int getCurrentlyDisplayedMenu();
+        void renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
 
         SDL_Window* getTitleScreenWindow();
         void setTitleScreenWindow(SDL_Window* window);
@@ -38,24 +33,6 @@ class MainMenuRenderer : public MenuRenderer
 
         TTF_Font* getMenuSubtitleTextFont();
         void setMenuSubtitleTextFont(TTF_Font* font);
-
-        bool getFullscreen();
-        void setFullscreen(const bool newFullscreen);
-
-        /**
-         * controls menu operations based off of user's mouse and key actions
-         *
-         * \param event mouse or key event to be evaluated and acted upon
-         * \returns void
-         */
-        void executeMenuActionBasedOnEvent(const SDL_Event event);
-
-        /**
-         * destoys texture to prevent a memory leak
-         * 
-         * \returns void
-         */
-        void destroyTextures();
 
     private:
 
@@ -70,14 +47,14 @@ class MainMenuRenderer : public MenuRenderer
          * \param event keystroke event to be acted upon
          * \returns void
          */
-        void evaluateKeystrokeEvent(const SDL_Event event);
+        void evaluateKeystrokeEvent(const SDL_Event event) override;
 
         /**
          * manipulates menu based off of mouse motion event
          *
          * \returns void
          */
-        void evaluteMouseMotionEvent();
+        void evaluateMouseMotionEvent() override;
 
         /**
          * manipulates menu based off of mouse button event
@@ -85,7 +62,7 @@ class MainMenuRenderer : public MenuRenderer
          * \param event mouse button event to be acted upon
          * \returns void
          */
-        void evaluteMouseButtonEvent(const SDL_Event event);
+        void evaluateMouseButtonEvent(const SDL_Event event) override;
 
         /**
          * manipulates menu based off of mousewheel event
@@ -93,21 +70,7 @@ class MainMenuRenderer : public MenuRenderer
          * \param event mousewheel event to be acted upon
          * \returns void
          */
-        void evaluteMouseWheelEvent(const SDL_Event event);
-
-        /**
-         * adjusts UI positions for new resolution
-         * 
-         * \returns void
-         */
-        void updateUIPositions();
-
-        /**
-         * updates window size based off of new resolution
-         * 
-         * \returns void
-         */
-        void updateResolution();
+        void evaluateMouseWheelEvent(const SDL_Event event) override;
 };
 
 #endif // MAIN_MENU_RENDERER_H
