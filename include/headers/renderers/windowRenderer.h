@@ -9,21 +9,30 @@ class WindowRenderer
 {
     public:
 
-    /**
-     * 
-     */
-    WindowRenderer(SDL_Window* win, SDL_Renderer* ren);
+        /**
+         * 
+         */
+        WindowRenderer(SDL_Window* win, SDL_Renderer* ren);
 
     protected:
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+        SDL_Window* window;
+        SDL_Renderer* renderer;
 
-    SDL_Window* getWindow();
-    void setWindow(SDL_Window* win);
+        SDL_Window* getWindow();
+        void setWindow(SDL_Window* win);
 
-    SDL_Renderer* getRenderer();
-    void setRenderer(SDL_Renderer* ren);
+        SDL_Renderer* getRenderer();
+        void setRenderer(SDL_Renderer* ren);
+
+        std::string usersMonitorResolution;
+
+        std::map<int, const std::string> windowedResolutionSelectionMap =
+        {
+            {0, "< 1280 x  720 >"},
+            {1, "< 1600 x  900 >"},
+            {2, "< 1920 x 1080 >"},
+        };
 
     private:
 

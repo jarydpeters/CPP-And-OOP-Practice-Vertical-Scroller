@@ -1,6 +1,6 @@
 #include "globalValues.h"
 #include "mainGameRenderer.h"
-#include "menuRenderer.h"
+#include "mainMenuRenderer.h"
 #include "sdlUtility.h"
 #include "textRenderer.h"
 
@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    MenuRenderer mainMenu = MenuRenderer(titleScreenWindow, titleScreenWindowRenderer);
+    MainMenuRenderer mainMenu = MainMenuRenderer(titleScreenWindow, titleScreenWindowRenderer);
 
     SDL_SetWindowResizable(mainMenu.getTitleScreenWindow(), SDL_bool::SDL_FALSE);
 
