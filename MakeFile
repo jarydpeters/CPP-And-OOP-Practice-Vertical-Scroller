@@ -8,6 +8,7 @@ SRCS = src/colorDefines.cpp \
 	   src/globalValues.cpp \
 	   src/main.cpp \
 	   src/sdlUtility.cpp \
+	   src/settingsManager.cpp \
 	   src/renderers/mainGameRenderer.cpp \
 	   src/renderers/menuRenderer.cpp \
        src/renderers/textRenderer.cpp \

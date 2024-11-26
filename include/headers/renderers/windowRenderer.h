@@ -16,14 +16,14 @@ class WindowRenderer
 
     protected:
 
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+
     SDL_Window* getWindow();
     void setWindow(SDL_Window* win);
 
     SDL_Renderer* getRenderer();
     void setRenderer(SDL_Renderer* ren);
-
-    SDL_Window* window;
-    SDL_Renderer* renderer;
 
     private:
 

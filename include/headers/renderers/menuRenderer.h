@@ -1,15 +1,13 @@
 #ifndef MENU_RENDERER_H
 #define MENU_RENDERER_H
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
 #include <map>
 #include <SDL_ttf.h>
 
 #include "assetFilePaths.h"
 #include "colorDefines.h"
 #include "globalValues.h"
+#include "settingsManager.h"
 #include "textRenderer.h"
 #include "textureRenderer.h"
 #include "windowRenderer.h"
@@ -42,7 +40,7 @@ class MenuRenderer : public WindowRenderer
     public:
 
         /**
-         * default constructor
+         * constructor
          */
         MenuRenderer(SDL_Window* win, SDL_Renderer* ren);
 
@@ -72,7 +70,6 @@ class MenuRenderer : public WindowRenderer
 
         SDL_Texture* getMenuSelectionIconTexture();
 
-        //TODO: MOVE TO WINDOWRENDERER AND LOOK FOR OTHER FUNCTIONALITY TO MOVE WITH IT
         bool getFullscreen();
         void setFullscreen(const bool newFullscreen);
 
@@ -93,6 +90,7 @@ class MenuRenderer : public WindowRenderer
 
     private:
 
+        SettingsManager settingsManager;
         TextureRenderer textureRenderer;
 
         SDL_Texture* menuSelectionIconTexture;
@@ -141,11 +139,7 @@ class MenuRenderer : public WindowRenderer
         int currentHorizontalMousePosition;
         int currentVerticalMousePosition;
 
-        int currentWindowedResolutionSetting;
-        int currentMusicVolumeSetting;
-        int currentSoundEffectVolumeSetting;
-
-        bool fullscreen = false;
+        std::string usersMonitorResolution;
 
         std::map<int, int> menuOptionsPositionMap = 
         {
@@ -163,8 +157,6 @@ class MenuRenderer : public WindowRenderer
             {2, "< 1920 x 1080 >"},
         };
 
-        std::string usersMonitorResolution;
-
         std::map<int, const std::string> variableSettingSelectionMap = 
         {
             {0,  ".........."},
@@ -179,20 +171,6 @@ class MenuRenderer : public WindowRenderer
             {9,  "|||||||||."},
             {10, "||||||||||"}
         };
-
-        /**
-         * saves user's selected settings
-         *
-         * \returns void
-         */
-        void saveSettings();
-
-        /**
-         * loads user's previously selected settings
-         *
-         * \returns void
-         */
-        void loadSavedSettings();
 
         /**
          * manipulates menu based off of keystroke event

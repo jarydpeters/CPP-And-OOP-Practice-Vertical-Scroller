@@ -7,7 +7,7 @@ MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     titleScreenWindow = getWindow();
     titleScreenWindowRenderer = getRenderer();
 
-    loadSavedSettings();
+    settingsManager.loadSavedSettings();
     updateResolution();
 }
 
@@ -76,7 +76,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
 
             //render fullscreen toggle icon
             menuSubtextRenderer.renderText(titleScreenWindowRenderer, 
-                (fullscreen ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
+                (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
                 (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextFirstVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
@@ -84,7 +84,7 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
 
             //render resolution selection icon
             menuSubtextRenderer.renderText(titleScreenWindowRenderer, 
-                (fullscreen ? usersMonitorResolution : windowedResolutionSelectionMap[currentWindowedResolutionSetting]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
+                (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
                 (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextSecondVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == RESOLUTION_INDEX) ? black : white), 
@@ -92,14 +92,14 @@ void MenuRenderer::renderCurrentlyDisplayedMenu(const int currentlyDisplayedMenu
 
             //render music and sound effects volume selection icons
             menuSubtextRenderer.renderText(titleScreenWindowRenderer, 
-                variableSettingSelectionMap[currentMusicVolumeSetting], 
+                variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
                 (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextThirdVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
                 titleScreenWindow);
 
             menuSubtextRenderer.renderText(titleScreenWindowRenderer, 
-                variableSettingSelectionMap[currentSoundEffectVolumeSetting], 
+                variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
                 (currentHorizontalResolution * (2.0 / 3.0)), 
                 menuTextFourthVerticalPosition, 
                 ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
@@ -209,86 +209,6 @@ void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
     }
 }
 
-//TODO: separate settings to a SettingsManager class
-void MenuRenderer::saveSettings()
-{
-    std::ofstream outFile(settingsFilePath);
-    if(outFile.is_open())
-    {
-        outFile << "full screen: " << fullscreen << std::endl;
-        outFile << "resolution: " << currentWindowedResolutionSetting << std::endl;
-        outFile << "music volume: " << currentMusicVolumeSetting << std::endl;
-        outFile << "sound effects volume: " << currentSoundEffectVolumeSetting << std::endl;
-        
-        outFile.close();
-    }
-    else
-    {
-        printf("Unable to open file!");
-    }
-}
-
-//TODO: separate settings to a SettingsManager class
-void MenuRenderer::loadSavedSettings()
-{
-    std::ifstream inFile(settingsFilePath);
-    if(inFile.is_open())
-    {
-        std::string line;
-
-        // Read the file line by line
-        while(std::getline(inFile, line))
-        {
-            std::stringstream stringStream(line);
-            std::string settingName;
-            std::string settingValue;
-
-            // Get the setting name (before the colon)
-            if(std::getline(stringStream, settingName, ':'))
-            {
-                // Trim leading/trailing spaces from the setting name and value
-                settingName.erase(0, settingName.find_first_not_of(" \t"));
-                settingName.erase(settingName.find_last_not_of(" \t") + 1);
-
-                // Get the setting value (after the colon)
-                if(std::getline(stringStream, settingValue))
-                {
-                    // trim leading space
-                    settingValue.erase(0, settingValue.find_first_not_of(" \t"));
-
-                    // Compare the setting name and assign the value
-                    if(settingName == "full screen")
-                    {
-                        fullscreen = std::stoi(settingValue);
-                    }
-                    if(settingName == "resolution")
-                    {
-                        currentWindowedResolutionSetting = std::stoi(settingValue);
-                    }
-                    else if(settingName == "music volume")
-                    {
-                        currentMusicVolumeSetting = std::stoi(settingValue);
-                    }
-                    else if(settingName == "sound effects volume")
-                    {
-                        currentSoundEffectVolumeSetting = std::stoi(settingValue);
-                    }
-                    else
-                    {
-                        //suppress for now
-                        // std::cout << "Unknown setting: " << settingName << std::endl;
-                    }
-                }
-            }
-        }
-        inFile.close();
-    }
-    else
-    {
-        printf("Unable to open file!");
-    }
-}
-
 void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     switch(currentlyDisplayedMenu)
@@ -359,10 +279,13 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                 {
                     case RESOLUTION_INDEX:
                     {
-                        currentWindowedResolutionSetting--;
-                        if(currentWindowedResolutionSetting < 0)
+                        int currentWindowedResolutionSetting = settingsManager.getCurrentWindowedResolutionSetting();
+                        
+                        settingsManager.setCurrentWindowedResolutionSetting(currentWindowedResolutionSetting - 1);
+                        
+                        if(settingsManager.getCurrentWindowedResolutionSetting() < 0)
                         {
-                            currentWindowedResolutionSetting = 2;
+                            settingsManager.setCurrentWindowedResolutionSetting(2);
                         }
                         //TODO: MAKE CHANGES APPLY ON "APPLY" RATHER THAN INSTANTLY
                         updateResolution();
@@ -370,17 +293,21 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                     }
                     case MUSIC_VOLUME_INDEX:
                     {
-                        if(currentMusicVolumeSetting > 0)
+                        int currentMusicVolumeSetting = settingsManager.getCurrentMusicVolumeSetting();
+                        
+                        if(settingsManager.getCurrentMusicVolumeSetting() > 0)
                         {
-                            currentMusicVolumeSetting--;
+                            settingsManager.setCurrentMusicVolumeSetting(currentMusicVolumeSetting - 1);
                         }
                         break;
                     }
                     case SOUND_EFFECTS_VOLUME_INDEX:
                     {
-                        if(currentSoundEffectVolumeSetting > 0)
+                        int currentSoundEffectVolumeSetting = settingsManager.getCurrentSoundEffectVolumeSetting();
+                        
+                        if(settingsManager.getCurrentSoundEffectVolumeSetting() > 0)
                         {
-                            currentSoundEffectVolumeSetting--;
+                            settingsManager.setCurrentSoundEffectVolumeSetting(currentSoundEffectVolumeSetting - 1);
                         }                        
                         break;
                     }
@@ -393,10 +320,13 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                 {
                     case RESOLUTION_INDEX:
                     {
-                        currentWindowedResolutionSetting++;
-                        if(currentWindowedResolutionSetting > 2)
+                        int currentWindowedResolutionSetting = settingsManager.getCurrentWindowedResolutionSetting();
+                        
+                        settingsManager.setCurrentWindowedResolutionSetting(currentWindowedResolutionSetting + 1);
+                        
+                        if(settingsManager.getCurrentWindowedResolutionSetting() > 2)
                         {
-                            currentWindowedResolutionSetting = 0;
+                            settingsManager.setCurrentWindowedResolutionSetting(0);
                         }
                         //TODO: MAKE CHANGES APPLY ON "APPLY" RATHER THAN INSTANTLY
                         updateResolution();
@@ -404,17 +334,21 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                     }
                     case MUSIC_VOLUME_INDEX:
                     {
-                        if(currentMusicVolumeSetting < 10)
+                        int currentMusicVolumeSetting = settingsManager.getCurrentMusicVolumeSetting();
+                        
+                        if(settingsManager.getCurrentMusicVolumeSetting() < 10)
                         {
-                            currentMusicVolumeSetting++;
+                            settingsManager.setCurrentMusicVolumeSetting(currentMusicVolumeSetting + 1);
                         }
                         break;
                     }
                     case SOUND_EFFECTS_VOLUME_INDEX:
                     {
-                        if(currentSoundEffectVolumeSetting < 10)
+                        int currentSoundEffectVolumeSetting = settingsManager.getCurrentSoundEffectVolumeSetting();
+                        
+                        if(settingsManager.getCurrentSoundEffectVolumeSetting() < 10)
                         {
-                            currentSoundEffectVolumeSetting++;
+                            settingsManager.setCurrentSoundEffectVolumeSetting(currentSoundEffectVolumeSetting + 1);
                         }                        
                         break;
                     }
@@ -426,12 +360,12 @@ void MenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                 {
                     case FULLSCREEN_INDEX:
                     {
-                        setFullscreen(!fullscreen);
+                        setFullscreen(!settingsManager.getFullscreen());
                         break;
                     }
                     case RETURN_TO_MAIN_MENU_INDEX:
                     {
-                        saveSettings();
+                        settingsManager.saveSettings();
                         setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
                         break;
                     }
@@ -559,7 +493,7 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
             {
                 case FULLSCREEN_INDEX:
                 {
-                    setFullscreen(!fullscreen);
+                    setFullscreen(!settingsManager.getFullscreen());
                     break;
                 }
                 case RESOLUTION_INDEX:
@@ -576,7 +510,7 @@ void MenuRenderer::evaluteMouseButtonEvent(const SDL_Event event)
                 }
                 case RETURN_TO_MAIN_MENU_INDEX:
                 {
-                    saveSettings(); 
+                    settingsManager.saveSettings(); 
                     //select exit game as highlighted option as that is where user's mouse will be upon exiting settings menu
                     setCurrentMenu(MAIN_MENU_INDEX, EXIT_GAME_INDEX);
                     break;
@@ -640,15 +574,19 @@ void MenuRenderer::evaluteMouseWheelEvent(const SDL_Event event)
     }
 }
 
+bool MenuRenderer::getFullscreen()
+{
+    return settingsManager.getFullscreen();
+}
+
 void MenuRenderer::setFullscreen(const bool newFullscreen)
 {
     //grab current resolution so mouse position can be kept proportionally the same
     int previousHorizontalResolution = currentHorizontalResolution;
     int previousVerticalResolution = currentVerticalResolution;
 
-    fullscreen = newFullscreen;
-    bool fullscreen = newFullscreen;
-    SDL_SetWindowFullscreen(titleScreenWindow, (fullscreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
+    settingsManager.setFullscreen(newFullscreen);
+    SDL_SetWindowFullscreen(titleScreenWindow, (settingsManager.getFullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     
     SDL_GetWindowSize(titleScreenWindow, &currentHorizontalResolution, &currentVerticalResolution);
 
@@ -658,7 +596,7 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
 
     SDL_WarpMouseInWindow(titleScreenWindow, newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
 
-    if(fullscreen)
+    if(settingsManager.getFullscreen())
     {
         SDL_DisplayMode displayMode;
         int displayIndex = 0; //TODO: Multi-Monitor support
@@ -670,11 +608,6 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
 
     //update UI vertical position for new resolution
     updateUIPositions();
-}
-
-bool MenuRenderer::getFullscreen()
-{
-    return fullscreen;
 }
 
 void MenuRenderer::updateUIPositions()
@@ -699,7 +632,7 @@ void MenuRenderer::updateUIPositions()
 
 void MenuRenderer::updateResolution()
 {
-    switch(currentWindowedResolutionSetting)
+    switch(settingsManager.getCurrentWindowedResolutionSetting())
     {
         case(0):
         {
@@ -789,3 +722,10 @@ SDL_Texture* MenuRenderer::getMenuSelectionIconTexture()
 {
     return menuSelectionIconTexture;
 }
+
+//TODO: FILE IS GETTING LONG, LOOK FOR WAYS TO SPLIT UP
+//CANDIDATES: 
+//            SPLIT MAIN MENU AND SETTINGS MENU TO SEPARATE FILES
+//            LOOK FOR REPEATED LOGIC AND REDUCE
+//            MOVE COMMON FUNCTIONALITY TO WINDOW RENDERER
+//            MOVE MOUSE/KEYBOARD LISTENERS TO SEPARATE FILE

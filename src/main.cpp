@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
 
         Uint32 timeElapsedOverLoop = SDL_GetTicks() - timeAtStartOfFrame;
 
-        //TODO: RENDER FPS FOR DEBUG/AS OPTION
+        //TODO: SET UP WINDOW RENDERER TO RENDER FPS FOR DEBUG/AS OPTION
         if(timeElapsedOverLoop < FRAME_DELAY)
         {
             SDL_Delay(FRAME_DELAY - timeElapsedOverLoop);
