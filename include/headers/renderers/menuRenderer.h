@@ -137,7 +137,7 @@ class MenuRenderer : public WindowRenderer
          * 
          * \returns void
          */
-        void renderLogoAndMenuOptionSelectionSprites();
+        virtual void renderLogoAndMenuOptionSelectionSprites() = 0;
 
         /**
          * switches the currently displayed menu and the selected menu option

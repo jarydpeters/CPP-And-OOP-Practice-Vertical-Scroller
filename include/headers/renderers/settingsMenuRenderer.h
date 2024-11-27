@@ -98,6 +98,13 @@ class SettingsMenuRenderer : public MenuRenderer
          * \returns void
          */
         void evaluateMouseWheelEvent(const SDL_Event event) override;
+
+        /**
+         * renders main menu logo sprite as well as main menu selection icon sprite
+         * 
+         * \returns void
+         */
+        void renderLogoAndMenuOptionSelectionSprites() override;
 };
 
 #endif // SETTINGS_MENU_RENDERER_H
