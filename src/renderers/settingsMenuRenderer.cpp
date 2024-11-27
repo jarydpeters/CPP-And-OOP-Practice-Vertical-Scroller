@@ -29,6 +29,7 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
     setMenuSubtitleTextFont(subtitleFont);
 
     settingsManager.loadSavedSettings();
+    setFullscreen(getFullscreen());
     updateResolution();
 }
 
@@ -160,7 +161,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
     else if(event.key.keysym.sym == SDLK_LEFT)
     {
         //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
-        //TODO: MOVE MOUSE TO NEW SPOT AFTER RESOLUTION CHANGE
+        //TODO: MOVE MOUSE TO NEW SPOT AFTER RESOLUTION CHANGE (MAKE INTO MENURENDER/WINDOWRENDERER FEATURE?)
         switch(currentlySelectedSettingsMenuOption)
         {
             case RESOLUTION_INDEX:
@@ -202,6 +203,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
     else if(event.key.keysym.sym == SDLK_RIGHT)
     {
         //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
+        //TODO: MOVE MOUSE TO NEW SPOT AFTER RESOLUTION CHANGE (MAKE INTO MENURENDER/WINDOWRENDERER FEATURE?)
         switch(currentlySelectedSettingsMenuOption)
         {
             case RESOLUTION_INDEX:

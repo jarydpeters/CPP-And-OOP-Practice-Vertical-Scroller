@@ -29,6 +29,7 @@ MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
     setMenuSubtitleTextFont(subtitleFont);
 
     settingsManager.loadSavedSettings();
+    setFullscreen(getFullscreen());
     updateResolution();
 }
 
