@@ -38,20 +38,13 @@ int main(int argc, char* argv[])
     }
 
     //set up main menu 
-    MainMenuRenderer mainMenu = MainMenuRenderer(menuScreenWindow, menuScreenWindowRenderer);
-
-    //TODO: MOVE TO CONSTRUCTOR?
-    SDL_SetWindowResizable(mainMenu.getTitleScreenWindow(), SDL_bool::SDL_FALSE);
-
-    mainMenu.setMenuTitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
-        TITLE_TEXT_POINT_SIZE, 
-        mainMenu.getTitleScreenWindow(), 
-        mainMenu.getTitleScreenRenderer()));
-
-    mainMenu.setMenuSubtitleTextFont(sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
-        SUBTITLE_TEXT_POINT_SIZE, 
-        mainMenu.getTitleScreenWindow(), 
-        mainMenu.getTitleScreenRenderer()));
+    MainMenuRenderer mainMenu = MainMenuRenderer(sdlUtility,
+        menuScreenWindow, 
+        menuScreenWindowRenderer,
+        FONT_PATH,
+        FONT_PATH,
+        TITLE_TEXT_POINT_SIZE,
+        SUBTITLE_TEXT_POINT_SIZE);
 
     TextRenderer menuTitleTextRenderer(mainMenu.getMenuTitleTextFont());
     TextRenderer menuSubtextRenderer(mainMenu.getMenuSubtitleTextFont());
@@ -59,12 +52,18 @@ int main(int argc, char* argv[])
     SDL_Renderer* mainMenuRenderer = mainMenu.getTitleScreenRenderer();
 
     //set up settings menu
-    SettingsMenuRenderer settingsMenu = SettingsMenuRenderer(menuScreenWindow, menuScreenWindowRenderer);
+    SettingsMenuRenderer settingsMenu = SettingsMenuRenderer(sdlUtility,
+        menuScreenWindow, 
+        menuScreenWindowRenderer,
+        FONT_PATH,
+        FONT_PATH,
+        TITLE_TEXT_POINT_SIZE,
+        SUBTITLE_TEXT_POINT_SIZE);
 
-    //TODO: MOVE TO CONSTRUCTOR?
-    //SDL_SetWindowResizable(settingsMenu.getTitleScreenWindow(), SDL_bool::SDL_FALSE);
+    TextRenderer settingsMenuTitleTextRenderer(settingsMenu.getMenuTitleTextFont());
+    TextRenderer settingsMenuSubtextRenderer(settingsMenu.getMenuSubtitleTextFont());
 
-
+    SDL_Renderer* settingsMenuRenderer = settingsMenu.getTitleScreenRenderer();
     SDL_Event event;
 
     bool firstLoop = true;
@@ -91,12 +90,15 @@ int main(int argc, char* argv[])
                 }
 
                 mainMenu.renderCurrentlyDisplayedMenu(menuTitleTextRenderer, menuSubtextRenderer);
+
+                mainMenu.destroyTextures();
+
                 break;
             }
             case(SETTINGS_MENU_SCREEN):
             {
-                SDL_SetRenderDrawColor(mainMenuRenderer, black.r, black.g, black.b, black.a);
-                SDL_RenderClear(mainMenuRenderer);
+                SDL_SetRenderDrawColor(settingsMenuRenderer, black.r, black.g, black.b, black.a);
+                SDL_RenderClear(settingsMenuRenderer);
 
                 while (SDL_PollEvent(&event))
                 {
@@ -108,8 +110,10 @@ int main(int argc, char* argv[])
                     settingsMenu.setFullscreen(settingsMenu.getFullscreen());
                 }
 
-                settingsMenu.renderCurrentlyDisplayedMenu(menuTitleTextRenderer, menuSubtextRenderer);
-                break;
+                settingsMenu.renderCurrentlyDisplayedMenu(settingsMenuTitleTextRenderer, settingsMenuSubtextRenderer);
+
+                settingsMenu.destroyTextures();
+
                 break;
             }
             case MAIN_GAME_SCREEN:
@@ -135,8 +139,6 @@ int main(int argc, char* argv[])
         {
             SDL_Delay(FRAME_DELAY - timeElapsedOverLoop);
         }
-
-        mainMenu.destroyTextures();
     }
 
     sdlUtility.cleanup(mainMenu.getMenuSubtitleTextFont(), 

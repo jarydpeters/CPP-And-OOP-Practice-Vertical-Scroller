@@ -1,14 +1,35 @@
 #include "settingsMenuRenderer.h"
 
-SettingsMenuRenderer::SettingsMenuRenderer(SDL_Window* win, SDL_Renderer* ren)
+SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
+            SDL_Window* win, 
+            SDL_Renderer* ren,
+            std::string titleFontPath,
+            std::string subtitleFontPath,
+            int titleTextPointSize,
+            int subtitleTextPointSize)
     : MenuRenderer(win, ren)
 {
     //set member variables to inherited values from windowRenderer
     menuScreenWindow = getWindow();
     menuScreenWindowRenderer = getRenderer();
+    
+    SDL_SetWindowResizable(menuScreenWindow, SDL_bool::SDL_FALSE);
+
+    TTF_Font* titleFont = sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
+        TITLE_TEXT_POINT_SIZE, 
+        getWindow(), 
+        getRenderer());
+
+    TTF_Font* subtitleFont = sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
+        SUBTITLE_TEXT_POINT_SIZE, 
+        getWindow(), 
+        getRenderer());
+
+    setMenuTitleTextFont(titleFont);
+    setMenuSubtitleTextFont(subtitleFont);
 
     settingsManager.loadSavedSettings();
-    //updateResolution();
+    updateResolution();
 }
 
 void SettingsMenuRenderer::renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
@@ -279,4 +300,44 @@ void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
             break;
         }
     }
+}
+
+SDL_Window* SettingsMenuRenderer::getTitleScreenWindow()
+{
+    return WindowRenderer::getWindow();
+}
+
+void SettingsMenuRenderer::setTitleScreenWindow(SDL_Window* window)
+{
+    WindowRenderer::setWindow(window);
+}
+
+SDL_Renderer* SettingsMenuRenderer::getTitleScreenRenderer()
+{
+    return WindowRenderer::getRenderer();
+}
+
+void SettingsMenuRenderer::setTitleScreenRenderer(SDL_Renderer* renderer)
+{
+    WindowRenderer::setRenderer(renderer);
+}
+
+TTF_Font* SettingsMenuRenderer::getMenuTitleTextFont()
+{
+    return menuTitleFont;
+}
+
+void SettingsMenuRenderer::setMenuTitleTextFont(TTF_Font* font)
+{
+    menuTitleFont = font;
+}
+
+TTF_Font* SettingsMenuRenderer::getMenuSubtitleTextFont()
+{
+    return menuSubtitleFont;
+}
+
+void SettingsMenuRenderer::setMenuSubtitleTextFont(TTF_Font* font)
+{
+    menuSubtitleFont = font;
 }

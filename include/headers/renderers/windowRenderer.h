@@ -3,6 +3,9 @@
 
 #endif // WINDOW_RENDERER_H
 
+#include <map>
+#include <string>
+
 #include "globalValues.h"
 
 class WindowRenderer

@@ -7,6 +7,7 @@
 #include "assetFilePaths.h"
 #include "colorDefines.h"
 #include "globalValues.h"
+#include "sdlUtility.h"
 #include "settingsManager.h"
 #include "textRenderer.h"
 #include "textureRenderer.h"
@@ -192,6 +193,18 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         virtual void evaluateMouseWheelEvent(const SDL_Event event) = 0;
+
+        virtual SDL_Window* getTitleScreenWindow() = 0;
+        virtual void setTitleScreenWindow(SDL_Window* window) = 0;
+
+        virtual SDL_Renderer* getTitleScreenRenderer() = 0;
+        virtual void setTitleScreenRenderer(SDL_Renderer* renderer) = 0;
+
+        virtual TTF_Font* getMenuTitleTextFont() = 0;
+        virtual void setMenuTitleTextFont(TTF_Font* font) = 0;
+
+        virtual TTF_Font* getMenuSubtitleTextFont() = 0;
+        virtual void setMenuSubtitleTextFont(TTF_Font* font) = 0;
 };
 
 #endif //MENU_RENDERER_H

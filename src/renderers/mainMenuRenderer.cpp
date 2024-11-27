@@ -1,11 +1,32 @@
 #include "mainMenuRenderer.h"
 
-MainMenuRenderer::MainMenuRenderer(SDL_Window* win, SDL_Renderer* ren)
+MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
+            SDL_Window* win, 
+            SDL_Renderer* ren,
+            std::string titleFontPath,
+            std::string subtitleFontPath,
+            int titleTextPointSize,
+            int subtitleTextPointSize)
     : MenuRenderer(win, ren)
 {
     //set member variables to inherited values from windowRenderer
     menuScreenWindow = getWindow();
     menuScreenWindowRenderer = getRenderer();
+
+    SDL_SetWindowResizable(menuScreenWindow, SDL_bool::SDL_FALSE);
+
+    TTF_Font* titleFont = sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
+        TITLE_TEXT_POINT_SIZE, 
+        getWindow(), 
+        getRenderer());
+
+    TTF_Font* subtitleFont = sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
+        SUBTITLE_TEXT_POINT_SIZE, 
+        getWindow(), 
+        getRenderer());
+
+    setMenuTitleTextFont(titleFont);
+    setMenuSubtitleTextFont(subtitleFont);
 
     settingsManager.loadSavedSettings();
     updateResolution();

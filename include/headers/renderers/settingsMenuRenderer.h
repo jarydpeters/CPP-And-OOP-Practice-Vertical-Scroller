@@ -11,7 +11,13 @@ class SettingsMenuRenderer : public MenuRenderer
         /**
          * constructor
          */
-        SettingsMenuRenderer(SDL_Window* win, SDL_Renderer* ren);
+        SettingsMenuRenderer(SdlUtility sdlUtility,
+            SDL_Window* win, 
+            SDL_Renderer* ren,
+            std::string titleFontPath,
+            std::string subtitleFontPath,
+            int titleTextPointSize,
+            int subtitleTextPointSize);
 
         /**
          * renders currently displayed menu based off of currentlyDisplayedMenu parameter
@@ -22,6 +28,18 @@ class SettingsMenuRenderer : public MenuRenderer
          * \returns void
          */
         void renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
+
+        SDL_Window* getTitleScreenWindow() override;
+        void setTitleScreenWindow(SDL_Window* window) override;
+
+        SDL_Renderer* getTitleScreenRenderer() override;
+        void setTitleScreenRenderer(SDL_Renderer* renderer) override;
+
+        TTF_Font* getMenuTitleTextFont() override;
+        void setMenuTitleTextFont(TTF_Font* font) override;
+
+        TTF_Font* getMenuSubtitleTextFont() override;
+        void setMenuSubtitleTextFont(TTF_Font* font) override;
 
     private:
 
@@ -80,7 +98,6 @@ class SettingsMenuRenderer : public MenuRenderer
          * \returns void
          */
         void evaluateMouseWheelEvent(const SDL_Event event) override;
-
 };
 
-#endif //SETTINGS_MENU_RENDERER_H
+#endif // SETTINGS_MENU_RENDERER_H

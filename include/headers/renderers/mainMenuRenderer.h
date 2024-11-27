@@ -9,8 +9,15 @@ class MainMenuRenderer : public MenuRenderer
 
         /**
          * constructor
+         * 
          */
-        MainMenuRenderer(SDL_Window* win, SDL_Renderer* ren);
+        MainMenuRenderer(SdlUtility sdlUtility,
+            SDL_Window* win, 
+            SDL_Renderer* ren,
+            std::string titleFontPath,
+            std::string subtitleFontPath,
+            int titleTextPointSize,
+            int subtitleTextPointSize);
 
         /**
          * renders currently displayed menu based off of currentlyDisplayedMenu parameter
@@ -22,17 +29,17 @@ class MainMenuRenderer : public MenuRenderer
          */
         void renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
 
-        SDL_Window* getTitleScreenWindow();
-        void setTitleScreenWindow(SDL_Window* window);
+        SDL_Window* getTitleScreenWindow() override;
+        void setTitleScreenWindow(SDL_Window* window) override;
 
-        SDL_Renderer* getTitleScreenRenderer();
-        void setTitleScreenRenderer(SDL_Renderer* renderer);
+        SDL_Renderer* getTitleScreenRenderer() override;
+        void setTitleScreenRenderer(SDL_Renderer* renderer) override;
 
-        TTF_Font* getMenuTitleTextFont();
-        void setMenuTitleTextFont(TTF_Font* font);
+        TTF_Font* getMenuTitleTextFont() override;
+        void setMenuTitleTextFont(TTF_Font* font) override;
 
-        TTF_Font* getMenuSubtitleTextFont();
-        void setMenuSubtitleTextFont(TTF_Font* font);
+        TTF_Font* getMenuSubtitleTextFont() override;
+        void setMenuSubtitleTextFont(TTF_Font* font) override;
 
     private:
 
