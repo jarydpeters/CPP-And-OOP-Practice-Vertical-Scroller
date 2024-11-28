@@ -3,11 +3,6 @@ CXXFLAGS = -std=c++17 -Wall -Iinclude -Iinclude/sdl -Iinclude/headers -Iinclude/
 LDFLAGS = -Llib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 
 # Specify all your source files here
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Iinclude -Iinclude/sdl -Iinclude/headers -Iinclude/headers/renderers -IC:/msys64/ucrt64/include/SDL2
-LDFLAGS = -Llib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
-
-# Specify all your source files here
 SRCS = src/colorDefines.cpp \
 	   src/globalValues.cpp \
 	   src/main.cpp \
@@ -48,5 +43,6 @@ $(RENDERERS_OBJDIR):
 
 # Clean rule to remove generated files
 clean:
-	del /Q "obj\\*.o" "VertScroller" || echo "No files to delete."
+	del /Q /S obj\\*.o obj\\renderers\\*.o "VertScroller" || echo "No files to delete."
+
 

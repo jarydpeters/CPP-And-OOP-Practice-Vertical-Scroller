@@ -20,26 +20,13 @@ class MainMenuRenderer : public MenuRenderer
             int subtitleTextPointSize);
 
         /**
-         * renders currently displayed menu based off of currentlyDisplayedMenu parameter
+         * renders currently displayed menu based off of currentScreen parameter
          *
-         * \param currentlyDisplayedMenu menu to be displayed
          * \param menuTitleTextRenderer text renderer for menu title text
          * \param menuSubtextRenderer text renderer for menu subtitle text
          * \returns void
          */
-        void renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
-
-        SDL_Window* getTitleScreenWindow() override;
-        void setTitleScreenWindow(SDL_Window* window) override;
-
-        SDL_Renderer* getTitleScreenRenderer() override;
-        void setTitleScreenRenderer(SDL_Renderer* renderer) override;
-
-        TTF_Font* getMenuTitleTextFont() override;
-        void setMenuTitleTextFont(TTF_Font* font) override;
-
-        TTF_Font* getMenuSubtitleTextFont() override;
-        void setMenuSubtitleTextFont(TTF_Font* font) override;
+        void renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
 
     private:
 
@@ -78,13 +65,6 @@ class MainMenuRenderer : public MenuRenderer
          * \returns void
          */
         void evaluateMouseWheelEvent(const SDL_Event event) override;
-
-        /**
-         * renders main menu logo sprite as well as main menu selection icon sprite
-         * 
-         * \returns void
-         */
-        void renderLogoAndMenuOptionSelectionSprites() override;
 };
 
 #endif // MAIN_MENU_RENDERER_H

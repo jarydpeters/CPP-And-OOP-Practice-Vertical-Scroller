@@ -63,13 +63,25 @@ class MenuRenderer : public WindowRenderer
         //overloads setFullscreen from settingsManager.cpp
         void setFullscreen(const bool newFullscreen);
 
-        virtual void renderCurrentlyDisplayedMenu(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) = 0;
+        virtual void renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) = 0;
 
         SDL_Texture* getMenuSelectionIconTexture();
 
         bool getFullscreen();
 
-        int getCurrentlyDisplayedMenu();
+        int getcurrentScreen();
+
+        SDL_Window* getTitleScreenWindow();
+        void setTitleScreenWindow(SDL_Window* window);
+
+        SDL_Renderer* getTitleScreenRenderer();
+        void setTitleScreenRenderer(SDL_Renderer* renderer);
+
+        TTF_Font* getMenuTitleTextFont();
+        void setMenuTitleTextFont(TTF_Font* font);
+
+        TTF_Font* getMenuSubtitleTextFont();
+        void setMenuSubtitleTextFont(TTF_Font* font);
 
     protected:
 
@@ -77,20 +89,18 @@ class MenuRenderer : public WindowRenderer
         TextureRenderer textureRenderer;
 
         SDL_Texture* menuSelectionIconTexture;
-        SDL_Rect mainMenuSelectionRect;
+        SDL_Rect menuSelectionIconRect;
         TextureRenderer::TextureWithRect menuSelectionIconTextureWithRect;
 
         SDL_Texture* mainMenuLogoTexture;
         SDL_Rect mainMenuLogoRect;
-        TextureRenderer::TextureWithRect mainMenuLogoTextureWithRect;
+        TextureRenderer::TextureWithRect menuLogoTextureWithRect;
 
         SDL_Window* menuScreenWindow;
         SDL_Renderer* menuScreenWindowRenderer;
 
         TTF_Font* menuTitleFont;
         TTF_Font* menuSubtitleFont;
-
-        int currentlyDisplayedMenu = MAIN_MENU_INDEX;
 
         int currentlySelectedMainMenuOption = CONTINUE_INDEX;
         int currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
@@ -110,18 +120,17 @@ class MenuRenderer : public WindowRenderer
         int UISelectionMargin = 4;
 
         //fine tune hitbox of menu options
-        int menuTextFirtVerticalUIUpperEdgePosition = menuTextFirstVerticalPosition - UISelectionMargin;
-        int menuTextSecondVerticalUIUpperEdgePosition = menuTextSecondVerticalPosition - UISelectionMargin;
-        int menuTextThirdVerticalUIUpperEdgePosition = menuTextThirdVerticalPosition - UISelectionMargin;
-        int menuTextFourthVerticalUIUpperEdgePosition = menuTextFourthVerticalPosition - UISelectionMargin;
-        int menuTextFifthVerticalUIUpperEdgePosition = menuTextFifthVerticalPosition - UISelectionMargin;
+        int menuTextFirstVerticalUIUpperEdgePosition;
+        int menuTextSecondVerticalUIUpperEdgePosition;
+        int menuTextThirdVerticalUIUpperEdgePosition;
+        int menuTextFourthVerticalUIUpperEdgePosition;
+        int menuTextFifthVerticalUIUpperEdgePosition;
 
-        int menuTextFirtVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-        int menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-        int menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-        int menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-        int menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-
+        int menuTextFirstVerticalUILowerEdgePosition;
+        int menuTextSecondVerticalUILowerEdgePosition;
+        int menuTextThirdVerticalUILowerEdgePosition;
+        int menuTextFourthVerticalUILowerEdgePosition;
+        int menuTextFifthVerticalUILowerEdgePosition;
 
         std::map<int, int> menuOptionsPositionMap = 
         {
@@ -131,13 +140,6 @@ class MenuRenderer : public WindowRenderer
             {3, menuTextFourthVerticalPosition},
             {4, menuTextFifthVerticalPosition}
         };
-
-        /**
-         * renders main menu logo sprite as well as main menu selection icon sprite
-         * 
-         * \returns void
-         */
-        virtual void renderLogoAndMenuOptionSelectionSprites() = 0;
 
         /**
          * switches the currently displayed menu and the selected menu option
@@ -162,6 +164,20 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         void updateResolution();
+
+        /**
+         * renders Red Ball Express logo at top of main/settings menu
+         * 
+         * \returns void
+         */
+        void RenderMainMenuLogo();
+
+        /**
+         * renders white bar menu selection icon on main/settings menu
+         * 
+         * \returns void
+         */
+        void RenderMenuOptionSelectionSprite();
 
         /**
          * manipulates menu based off of keystroke event
@@ -193,18 +209,6 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         virtual void evaluateMouseWheelEvent(const SDL_Event event) = 0;
-
-        virtual SDL_Window* getTitleScreenWindow() = 0;
-        virtual void setTitleScreenWindow(SDL_Window* window) = 0;
-
-        virtual SDL_Renderer* getTitleScreenRenderer() = 0;
-        virtual void setTitleScreenRenderer(SDL_Renderer* renderer) = 0;
-
-        virtual TTF_Font* getMenuTitleTextFont() = 0;
-        virtual void setMenuTitleTextFont(TTF_Font* font) = 0;
-
-        virtual TTF_Font* getMenuSubtitleTextFont() = 0;
-        virtual void setMenuSubtitleTextFont(TTF_Font* font) = 0;
 };
 
 #endif //MENU_RENDERER_H

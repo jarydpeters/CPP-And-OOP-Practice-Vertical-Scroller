@@ -81,8 +81,6 @@ void SettingsManager::loadSavedSettings()
     {
         printf("Unable to open file!");
     }
-
-    setFullscreen(fullscreen);
 }
 
 int SettingsManager::getCurrentWindowedResolutionSetting()

@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
                     mainMenu.setFullscreen(mainMenu.getFullscreen());
                 }
 
-                mainMenu.renderCurrentlyDisplayedMenu(menuTitleTextRenderer, menuSubtextRenderer);
+                mainMenu.renderCurrentScreen(menuTitleTextRenderer, menuSubtextRenderer);
 
                 mainMenu.destroyTextures();
 
@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
                     settingsMenu.setFullscreen(settingsMenu.getFullscreen());
                 }
 
-                settingsMenu.renderCurrentlyDisplayedMenu(settingsMenuTitleTextRenderer, settingsMenuSubtextRenderer);
+                settingsMenu.renderCurrentScreen(settingsMenuTitleTextRenderer, settingsMenuSubtextRenderer);
 
                 settingsMenu.destroyTextures();
 

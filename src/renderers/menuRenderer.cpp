@@ -3,7 +3,7 @@
 MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     : WindowRenderer(win, ren)
 {
-
+    updateUIPositions();
 }
 
 void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
@@ -80,10 +80,10 @@ void MenuRenderer::setCurrentMenu(const int newMenu, const int selectedMenuOptio
         currentlySelectedMainMenuOption = selectedMenuOption;
     }
     else if(newMenu == SETTINGS_MENU_INDEX)
-    {
+    {        
         currentlySelectedSettingsMenuOption = selectedMenuOption;
     }
-    currentlyDisplayedMenu = newMenu;
+    currentScreen = newMenu;
 }
 
 void MenuRenderer::updateUIPositions()
@@ -104,6 +104,18 @@ void MenuRenderer::updateUIPositions()
         {3, menuTextFourthVerticalPosition},
         {4, menuTextFifthVerticalPosition}
     };
+
+    menuTextFirstVerticalUIUpperEdgePosition = menuTextFirstVerticalPosition - UISelectionMargin;
+    menuTextSecondVerticalUIUpperEdgePosition = menuTextSecondVerticalPosition - UISelectionMargin;
+    menuTextThirdVerticalUIUpperEdgePosition = menuTextThirdVerticalPosition - UISelectionMargin;
+    menuTextFourthVerticalUIUpperEdgePosition = menuTextFourthVerticalPosition - UISelectionMargin;
+    menuTextFifthVerticalUIUpperEdgePosition = menuTextFifthVerticalPosition - UISelectionMargin;
+
+    menuTextFirstVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
 }
 
 SDL_Texture* MenuRenderer::getMenuSelectionIconTexture()
@@ -111,9 +123,9 @@ SDL_Texture* MenuRenderer::getMenuSelectionIconTexture()
     return menuSelectionIconTexture;
 }
 
-int MenuRenderer::getCurrentlyDisplayedMenu()
+int MenuRenderer::getcurrentScreen()
 {
-    return currentlyDisplayedMenu;
+    return currentScreen;
 }
 
 void MenuRenderer::destroyTextures()
@@ -159,4 +171,91 @@ void MenuRenderer::updateResolution()
     SDL_SetWindowPosition(menuScreenWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
     updateUIPositions();
+}
+
+void MenuRenderer::RenderMainMenuLogo()
+{
+    menuLogoTextureWithRect = textureRenderer.createAndVerifyTexture(
+        ((currentHorizontalResolution / 2) - MAIN_MENU_LOGO_HORIZONTAL_OFFSET), //place in horizontal center of screen
+        (menuTitleLogoVerticalPosition - MAIN_MENU_LOGO_VERTICAL_OFFSET),
+        MENU_LOGO_IMAGE_PATH,
+        menuScreenWindow,
+        menuScreenWindowRenderer);
+
+    mainMenuLogoTexture = menuLogoTextureWithRect.texture;
+    mainMenuLogoRect = menuLogoTextureWithRect.rectangle;
+
+    //set no interpolation scaling mode
+    SDL_SetTextureScaleMode(mainMenuLogoTexture, SDL_ScaleModeNearest);
+
+    mainMenuLogoRect.w *= FOUR_TIMES_SCALAR;
+    mainMenuLogoRect.h *= FOUR_TIMES_SCALAR;
+
+    SDL_RenderCopy(menuScreenWindowRenderer, mainMenuLogoTexture, NULL, &mainMenuLogoRect);
+}
+
+void MenuRenderer::RenderMenuOptionSelectionSprite()
+{
+    int menuSelectionIconVerticalPosition;
+
+    if(currentScreen == MAIN_MENU_INDEX)
+    {
+        menuSelectionIconVerticalPosition = (menuOptionsPositionMap[currentlySelectedMainMenuOption] - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+    }
+    else if(currentScreen == SETTINGS_MENU_INDEX)
+    {
+        menuSelectionIconVerticalPosition = (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+    }
+
+    menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
+        0, //place on far left side of screen
+        menuSelectionIconVerticalPosition,
+        MENU_SELECTION_ICON_IMAGE_PATH, 
+        menuScreenWindow, 
+        menuScreenWindowRenderer);
+
+    menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
+    menuSelectionIconRect = menuSelectionIconTextureWithRect.rectangle;
+
+    SDL_RenderCopy(menuScreenWindowRenderer, menuSelectionIconTexture, NULL, &menuSelectionIconRect);
+}
+
+SDL_Window* MenuRenderer::getTitleScreenWindow()
+{
+    return WindowRenderer::getWindow();
+}
+
+void MenuRenderer::setTitleScreenWindow(SDL_Window* window)
+{
+    WindowRenderer::setWindow(window);
+}
+
+SDL_Renderer* MenuRenderer::getTitleScreenRenderer()
+{
+    return WindowRenderer::getRenderer();
+}
+
+void MenuRenderer::setTitleScreenRenderer(SDL_Renderer* renderer)
+{
+    WindowRenderer::setRenderer(renderer);
+}
+
+TTF_Font* MenuRenderer::getMenuTitleTextFont()
+{
+    return menuTitleFont;
+}
+
+void MenuRenderer::setMenuTitleTextFont(TTF_Font* font)
+{
+    menuTitleFont = font;
+}
+
+TTF_Font* MenuRenderer::getMenuSubtitleTextFont()
+{
+    return menuSubtitleFont;
+}
+
+void MenuRenderer::setMenuSubtitleTextFont(TTF_Font* font)
+{
+    menuSubtitleFont = font;
 }
