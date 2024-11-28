@@ -1,7 +1,6 @@
 #ifndef MENU_RENDERER_H
 #define MENU_RENDERER_H
 
-#include <map>
 #include <SDL_ttf.h>
 
 #include "assetFilePaths.h"
@@ -105,13 +104,6 @@ class MenuRenderer : public WindowRenderer
         int currentlySelectedMainMenuOption = CONTINUE_INDEX;
         int currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
 
-        int menuTextFirstVerticalPosition;
-        int menuTextSecondVerticalPosition;
-        int menuTextThirdVerticalPosition;
-        int menuTextFourthVerticalPosition;
-        int menuTextFifthVerticalPosition;
-
-        int menuTitleLogoVerticalPosition;
         int menuSelectionIconVerticalPosition;
 
         int currentHorizontalMousePosition;
@@ -131,15 +123,6 @@ class MenuRenderer : public WindowRenderer
         int menuTextThirdVerticalUILowerEdgePosition;
         int menuTextFourthVerticalUILowerEdgePosition;
         int menuTextFifthVerticalUILowerEdgePosition;
-
-        std::map<int, int> menuOptionsPositionMap = 
-        {
-            {0, menuTextFirstVerticalPosition},
-            {1, menuTextSecondVerticalPosition},
-            {2, menuTextThirdVerticalPosition},
-            {3, menuTextFourthVerticalPosition},
-            {4, menuTextFifthVerticalPosition}
-        };
 
         /**
          * switches the currently displayed menu and the selected menu option

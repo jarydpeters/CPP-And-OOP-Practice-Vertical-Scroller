@@ -3,7 +3,6 @@
 
 #endif // WINDOW_RENDERER_H
 
-#include <map>
 #include <string>
 
 #include "globalValues.h"
@@ -29,6 +28,13 @@ class WindowRenderer
         void setRenderer(SDL_Renderer* ren);
 
         std::string usersMonitorResolution;
+
+        struct Resolution
+        {
+            int index;
+            int width;
+            int height;
+        };
 
         std::map<int, const std::string> windowedResolutionSelectionMap =
         {

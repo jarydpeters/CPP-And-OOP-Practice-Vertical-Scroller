@@ -3,7 +3,7 @@
 MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     : WindowRenderer(win, ren)
 {
-    updateUIPositions();
+
 }
 
 void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
@@ -44,6 +44,7 @@ bool MenuRenderer::getFullscreen()
 //overloads setFullscreen from settingsManager.cpp
 void MenuRenderer::setFullscreen(const bool newFullscreen)
 {
+    //TODO: MAKE THIS HAPPEN ON RESOLUTION RESIZE AS WELL.
     //grab current resolution so mouse position can be kept proportionally the same
     int previousHorizontalResolution = currentHorizontalResolution;
     int previousVerticalResolution = currentVerticalResolution;
@@ -52,6 +53,10 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
     SDL_SetWindowFullscreen(menuScreenWindow, (settingsManager.getFullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     
     SDL_GetWindowSize(menuScreenWindow, &currentHorizontalResolution, &currentVerticalResolution);
+
+    std::cout << "setFullscreen" << std::endl;
+    std::cout << "currentVerticalResolution: " << currentVerticalResolution << std::endl;
+    std::cout << "currentHorizontalResolution: " << currentHorizontalResolution << std::endl;
 
     //determine where to place the mouse cursor within the new window so it's in the same spot as it was before proportionally
     int newMouseHorziontalPositionProportionalToPreviousResolution = (currentHorizontalMousePosition * currentHorizontalResolution) / previousHorizontalResolution;
@@ -145,32 +150,34 @@ void MenuRenderer::destroyTextures()
 
 void MenuRenderer::updateResolution()
 {
-    switch(settingsManager.getCurrentWindowedResolutionSetting())
+    if(!getFullscreen())
     {
-        case(0):
+        switch(settingsManager.getCurrentWindowedResolutionSetting())
         {
-            currentHorizontalResolution = 1280;
-            currentVerticalResolution = 720;
-            break;
+            case(0):
+            {
+                currentHorizontalResolution = 1280;
+                currentVerticalResolution = 720;
+                break;
+            }
+            case(1):
+            {
+                currentHorizontalResolution = 1600;
+                currentVerticalResolution = 900;
+                break;
+            }
+            case(2):
+            {
+                currentHorizontalResolution = 1920;
+                currentVerticalResolution = 1080;
+                break;
+            }
         }
-        case(1):
-        {
-            currentHorizontalResolution = 1600;
-            currentVerticalResolution = 900;
-            break;
-        }
-        case(2):
-        {
-            currentHorizontalResolution = 1920;
-            currentVerticalResolution = 1080;
-            break;
-        }
+        SDL_SetWindowSize(menuScreenWindow, currentHorizontalResolution, currentVerticalResolution);
+        SDL_SetWindowPosition(menuScreenWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+
+        updateUIPositions();
     }
-
-    SDL_SetWindowSize(menuScreenWindow, currentHorizontalResolution, currentVerticalResolution);
-    SDL_SetWindowPosition(menuScreenWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-
-    updateUIPositions();
 }
 
 void MenuRenderer::RenderMainMenuLogo()
@@ -196,6 +203,10 @@ void MenuRenderer::RenderMainMenuLogo()
 
 void MenuRenderer::RenderMenuOptionSelectionSprite()
 {
+    std::cout << "RenderMenuOptionSelectionSprite" << std::endl;
+    std::cout << "currentVerticalResolution: " << currentVerticalResolution << std::endl;
+    std::cout << "currentHorizontalResolution: " << currentHorizontalResolution << std::endl;
+
     int menuSelectionIconVerticalPosition;
 
     if(currentScreen == MAIN_MENU_INDEX)

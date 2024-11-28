@@ -43,6 +43,6 @@ $(RENDERERS_OBJDIR):
 
 # Clean rule to remove generated files
 clean:
-	del /Q /S obj\\*.o obj\\renderers\\*.o "VertScroller" || echo "No files to delete."
+	del /Q /S obj\\*.o obj\\renderers\\*.o "VertScroller.exe" || echo "No files to delete."
 
 

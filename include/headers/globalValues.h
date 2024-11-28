@@ -1,6 +1,7 @@
 #ifndef GLOBAL_VALUES_H
 #define GLOBAL_VALUES_H
 
+#include <map>
 #include <SDL.h>
 
 //TODO: MAKE GAME ENGINE FRAMERATE INDEPENDENT
@@ -26,5 +27,15 @@ extern bool quitGame;
 extern int currentHorizontalResolution;
 extern int currentVerticalResolution;
 extern int currentScreen;
+
+extern int menuTitleLogoVerticalPosition;
+
+extern int menuTextFirstVerticalPosition;
+extern int menuTextSecondVerticalPosition;
+extern int menuTextThirdVerticalPosition;
+extern int menuTextFourthVerticalPosition;
+extern int menuTextFifthVerticalPosition;
+
+extern std::map<int, int> menuOptionsPositionMap;
 
 #endif //GLOBAL_VALUES_H

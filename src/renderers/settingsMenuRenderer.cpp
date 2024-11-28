@@ -30,6 +30,7 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
 
     settingsManager.loadSavedSettings();
     setFullscreen(getFullscreen());
+    std::cout << "SETTINGS MENU" << std::endl;
     updateResolution();
 }
 
@@ -67,7 +68,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render fullscreen toggle icon
     menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
-        (currentHorizontalResolution * (2.0 / 3.0)), 
+        ((currentHorizontalResolution / 2) + 200), 
         menuTextFirstVerticalPosition, 
         ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
         menuScreenWindow);
@@ -75,7 +76,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render resolution selection icon
     menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
-        (currentHorizontalResolution * (2.0 / 3.0)), 
+        ((currentHorizontalResolution / 2) + 200), 
         menuTextSecondVerticalPosition, 
         ((currentlySelectedSettingsMenuOption == RESOLUTION_INDEX) ? black : white), 
         menuScreenWindow);
@@ -83,14 +84,14 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render music and sound effects volume selection icons
     menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
-        (currentHorizontalResolution * (2.0 / 3.0)), 
+        ((currentHorizontalResolution / 2) + 200), 
         menuTextThirdVerticalPosition, 
         ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
         menuScreenWindow);
 
     menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
-        (currentHorizontalResolution * (2.0 / 3.0)), 
+        ((currentHorizontalResolution / 2) + 200), 
         menuTextFourthVerticalPosition, 
         ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         menuScreenWindow);
@@ -207,6 +208,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             case FULLSCREEN_INDEX:
             {
                 setFullscreen(!settingsManager.getFullscreen());
+                updateResolution();
                 break;
             }
             case RETURN_TO_MAIN_MENU_INDEX:
