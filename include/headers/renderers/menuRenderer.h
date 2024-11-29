@@ -101,9 +101,6 @@ class MenuRenderer : public WindowRenderer
         TTF_Font* menuTitleFont;
         TTF_Font* menuSubtitleFont;
 
-        int currentlySelectedMainMenuOption = CONTINUE_INDEX;
-        int currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
-
         int menuSelectionIconVerticalPosition;
 
         int currentHorizontalMousePosition;
@@ -128,11 +125,21 @@ class MenuRenderer : public WindowRenderer
          * switches the currently displayed menu and the selected menu option
          * 
          * \param newMenu menu to switch display to
+         * 
+         * \return void
+         */
+        void setCurrentMenu(const int newMenu);
+
+        /**
+         * switches the currently displayed menu and the selected menu option
+         * 
          * \param selectedMenuOption menu option to have selected upon entering the new menu
          * 
          * \return void
          */
-        void setCurrentMenu(const int newMenu, const int selectedMenuOption);
+        void setCurrentMenuOption(const int selectedMenuOption);
+
+        int getCurrentMenuOption();
 
         /**
          * adjusts UI positions for new resolution
@@ -192,6 +199,10 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         virtual void evaluateMouseWheelEvent(const SDL_Event event) = 0;
+
+    private:
+
+        int currentlySelectedMenuOption = CONTINUE_INDEX;
 };
 
 #endif //MENU_RENDERER_H

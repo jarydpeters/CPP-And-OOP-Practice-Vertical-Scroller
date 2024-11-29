@@ -41,27 +41,27 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         SETTINGS_MENU_FULLSCREEN_TEXT, 
         menuTextFirstVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
         menuScreenWindow);
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         SETTINGS_MENU_RESOLUTION_TEXT, 
         menuTextSecondVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == RESOLUTION_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         menuScreenWindow);
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
         menuTextThirdVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         menuScreenWindow);
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
         menuTextFourthVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         menuScreenWindow);
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
         menuTextFifthVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
         menuScreenWindow);
 
     //render fullscreen toggle icon
@@ -69,7 +69,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
         ((currentHorizontalResolution / 2) + 200), 
         menuTextFirstVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == FULLSCREEN_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
         menuScreenWindow);
 
     //render resolution selection icon
@@ -77,7 +77,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
         ((currentHorizontalResolution / 2) + 200), 
         menuTextSecondVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == RESOLUTION_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         menuScreenWindow);
 
     //render music and sound effects volume selection icons
@@ -85,14 +85,14 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
         ((currentHorizontalResolution / 2) + 200), 
         menuTextThirdVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == MUSIC_VOLUME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         menuScreenWindow);
 
     menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
         ((currentHorizontalResolution / 2) + 200), 
         menuTextFourthVerticalPosition, 
-        ((currentlySelectedSettingsMenuOption == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         menuScreenWindow);
 
     SDL_RenderPresent(menuScreenWindowRenderer);
@@ -102,25 +102,25 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     if(event.key.keysym.sym == SDLK_UP)
     {
-        currentlySelectedSettingsMenuOption--;
-        if(currentlySelectedSettingsMenuOption < FULLSCREEN_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() - 1);
+        if(getCurrentMenuOption() < FULLSCREEN_INDEX)
         {
-            currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+            setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
         }
     }   
     else if(event.key.keysym.sym == SDLK_DOWN)
     {
-        currentlySelectedSettingsMenuOption++;
-        if(currentlySelectedSettingsMenuOption > RETURN_TO_MAIN_MENU_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() + 1);
+        if(getCurrentMenuOption() > RETURN_TO_MAIN_MENU_INDEX)
         {
-            currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
+            setCurrentMenuOption(FULLSCREEN_INDEX);
         }
     } 
     else if(event.key.keysym.sym == SDLK_LEFT)
     {
         //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
         //TODO: MOVE MOUSE TO NEW SPOT AFTER RESOLUTION CHANGE (MAKE INTO MENURENDER/WINDOWRENDERER FEATURE?)
-        switch(currentlySelectedSettingsMenuOption)
+        switch(getCurrentMenuOption())
         {
             case RESOLUTION_INDEX:
             {
@@ -162,7 +162,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
     {
         //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
         //TODO: MOVE MOUSE TO NEW SPOT AFTER RESOLUTION CHANGE (MAKE INTO MENURENDER/WINDOWRENDERER FEATURE?)
-        switch(currentlySelectedSettingsMenuOption)
+        switch(getCurrentMenuOption())
         {
             case RESOLUTION_INDEX:
             {
@@ -202,7 +202,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
     }
     else if(event.key.keysym.sym == SDLK_RETURN)
     {
-        switch(currentlySelectedSettingsMenuOption)
+        switch(getCurrentMenuOption())
         {
             case FULLSCREEN_INDEX:
             {
@@ -214,14 +214,16 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             {
                 currentScreen = MAIN_MENU_SCREEN;
                 settingsManager.saveSettings();
-                setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
+                setCurrentMenu(MAIN_MENU_INDEX);
+                setCurrentMenuOption(CONTINUE_INDEX);
                 break;
             }
         }
     } 
     else if(event.key.keysym.sym == SDLK_ESCAPE)
     {
-        setCurrentMenu(MAIN_MENU_INDEX, CONTINUE_INDEX);
+        setCurrentMenu(MAIN_MENU_INDEX);
+        setCurrentMenuOption(CONTINUE_INDEX);
     }   
 }
 
@@ -232,23 +234,23 @@ void SettingsMenuRenderer::evaluateMouseMotionEvent()
 
     if((menuTextFirstVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFirstVerticalUILowerEdgePosition))
     {
-        currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
+        setCurrentMenuOption(FULLSCREEN_INDEX);
     }
     else if((menuTextSecondVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextSecondVerticalUILowerEdgePosition))
     {
-        currentlySelectedSettingsMenuOption = RESOLUTION_INDEX;  
+        setCurrentMenuOption(RESOLUTION_INDEX);  
     }
     else if((menuTextThirdVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextThirdVerticalUILowerEdgePosition))
     {
-        currentlySelectedSettingsMenuOption = MUSIC_VOLUME_INDEX;  
+        setCurrentMenuOption(MUSIC_VOLUME_INDEX);  
     }
     else if((menuTextFourthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFourthVerticalUILowerEdgePosition))
     {
-        currentlySelectedSettingsMenuOption = SOUND_EFFECTS_VOLUME_INDEX; 
+        setCurrentMenuOption(SOUND_EFFECTS_VOLUME_INDEX); 
     }
     else if((menuTextFifthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFifthVerticalUILowerEdgePosition))
     {
-        currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;  
+        setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);  
     }
 }
 
@@ -257,26 +259,26 @@ void SettingsMenuRenderer::evaluateMouseWheelEvent(const SDL_Event event)
     //scroll up
     if(event.wheel.y < 0)
     {
-        currentlySelectedSettingsMenuOption++;
-        if(currentlySelectedSettingsMenuOption > RETURN_TO_MAIN_MENU_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() + 1);
+        if(getCurrentMenuOption() > RETURN_TO_MAIN_MENU_INDEX)
         {
-            currentlySelectedSettingsMenuOption = FULLSCREEN_INDEX;
+            setCurrentMenuOption(FULLSCREEN_INDEX);
         }
     }
     //scroll down
     else if(event.wheel.y > 0)
     {
-        currentlySelectedSettingsMenuOption--;
-        if(currentlySelectedSettingsMenuOption < FULLSCREEN_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() - 1);
+        if(getCurrentMenuOption() < FULLSCREEN_INDEX)
         {
-            currentlySelectedSettingsMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+            setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
         }
     }
 }
 
 void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
 {
-    switch(currentlySelectedSettingsMenuOption)
+    switch(getCurrentMenuOption())
     {
         case FULLSCREEN_INDEX:
         {
@@ -299,8 +301,9 @@ void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
         {
             currentScreen = MAIN_MENU_SCREEN;
             settingsManager.saveSettings(); 
+            setCurrentMenu(MAIN_MENU_INDEX);
             //select exit game as highlighted option as that is where user's mouse will be upon exiting settings menu
-            setCurrentMenu(MAIN_MENU_INDEX, EXIT_GAME_INDEX);
+            setCurrentMenuOption(EXIT_GAME_INDEX);
             break;
         }
     }

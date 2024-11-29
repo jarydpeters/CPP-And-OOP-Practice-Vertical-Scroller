@@ -74,17 +74,19 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
     updateUIPositions();
 }
 
-void MenuRenderer::setCurrentMenu(const int newMenu, const int selectedMenuOption)
+void MenuRenderer::setCurrentMenu(const int newMenu)
 {
-    if(newMenu == MAIN_MENU_INDEX)
-    {
-        currentlySelectedMainMenuOption = selectedMenuOption;
-    }
-    else if(newMenu == SETTINGS_MENU_INDEX)
-    {        
-        currentlySelectedSettingsMenuOption = selectedMenuOption;
-    }
     currentScreen = newMenu;
+}
+
+void MenuRenderer::setCurrentMenuOption(const int selectedMenuOption)
+{
+    currentlySelectedMenuOption = selectedMenuOption;
+}
+
+int MenuRenderer::getCurrentMenuOption()
+{
+    return currentlySelectedMenuOption;
 }
 
 void MenuRenderer::updateUIPositions()
@@ -201,14 +203,7 @@ void MenuRenderer::RenderMenuOptionSelectionSprite()
 {
     int menuSelectionIconVerticalPosition;
 
-    if(currentScreen == MAIN_MENU_INDEX)
-    {
-        menuSelectionIconVerticalPosition = (menuOptionsPositionMap[currentlySelectedMainMenuOption] - MENU_SELECTION_ICON_VERTICAL_OFFSET);
-    }
-    else if(currentScreen == SETTINGS_MENU_INDEX)
-    {
-        menuSelectionIconVerticalPosition = (menuOptionsPositionMap[currentlySelectedSettingsMenuOption] - MENU_SELECTION_ICON_VERTICAL_OFFSET);
-    }
+    menuSelectionIconVerticalPosition = (menuOptionsPositionMap[currentlySelectedMenuOption] - MENU_SELECTION_ICON_VERTICAL_OFFSET);
 
     menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
         0, //place on far left side of screen

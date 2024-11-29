@@ -41,22 +41,22 @@ void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, 
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         MAIN_MENU_CONTINUE_TEXT, 
         menuTextFirstVerticalPosition, 
-        ((currentlySelectedMainMenuOption == CONTINUE_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == CONTINUE_INDEX) ? black : white), 
         menuScreenWindow);
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         MAIN_MENU_NEW_GAME_TEXT, 
         menuTextSecondVerticalPosition, 
-        ((currentlySelectedMainMenuOption == NEW_GAME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == NEW_GAME_INDEX) ? black : white), 
         menuScreenWindow);
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         MAIN_MENU_SETTINGS_TEXT, 
         menuTextThirdVerticalPosition, 
-        ((currentlySelectedMainMenuOption == SETTINGS_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == SETTINGS_INDEX) ? black : white), 
         menuScreenWindow);
     menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
         MAIN_MENU_EXIT_TEXT, 
         menuTextFourthVerticalPosition, 
-        ((currentlySelectedMainMenuOption == EXIT_GAME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == EXIT_GAME_INDEX) ? black : white), 
         menuScreenWindow);
 
     SDL_RenderPresent(menuScreenWindowRenderer);
@@ -66,23 +66,23 @@ void MainMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     if(event.key.keysym.sym == SDLK_UP)
     {
-        currentlySelectedMainMenuOption--;
-        if(currentlySelectedMainMenuOption < CONTINUE_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() - 1);
+        if(getCurrentMenuOption() < CONTINUE_INDEX)
         {
-            currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
+            setCurrentMenuOption(EXIT_GAME_INDEX);
         }
     }   
     else if(event.key.keysym.sym == SDLK_DOWN)
     {
-        currentlySelectedMainMenuOption++;
-        if(currentlySelectedMainMenuOption > EXIT_GAME_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() + 1);
+        if(getCurrentMenuOption() > EXIT_GAME_INDEX)
         {
-            currentlySelectedMainMenuOption = CONTINUE_INDEX;
+            setCurrentMenuOption(CONTINUE_INDEX);
         }
     } 
     else if(event.key.keysym.sym == SDLK_RETURN)
     {
-        switch(currentlySelectedMainMenuOption)
+        switch(getCurrentMenuOption())
         {
             case CONTINUE_INDEX:
             {
@@ -97,7 +97,8 @@ void MainMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
             case SETTINGS_INDEX:
             {
                 currentScreen = SETTINGS_MENU_SCREEN;
-                setCurrentMenu(SETTINGS_MENU_INDEX, RETURN_TO_MAIN_MENU_INDEX);
+                setCurrentMenu(SETTINGS_MENU_INDEX);
+                setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
                 break;
             }
         }
@@ -111,19 +112,19 @@ void MainMenuRenderer::evaluateMouseMotionEvent()
     
     if((menuTextFirstVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFirstVerticalUILowerEdgePosition))
     {
-        currentlySelectedMainMenuOption = CONTINUE_INDEX;
+        setCurrentMenuOption(CONTINUE_INDEX);
     }
     else if((menuTextSecondVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextSecondVerticalUILowerEdgePosition))
     {
-        currentlySelectedMainMenuOption = NEW_GAME_INDEX;
+        setCurrentMenuOption(NEW_GAME_INDEX);
     }
     else if((menuTextThirdVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextThirdVerticalUILowerEdgePosition))
     {
-        currentlySelectedMainMenuOption = SETTINGS_INDEX;
+        setCurrentMenuOption(SETTINGS_INDEX);
     }
     else if((menuTextFourthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFourthVerticalUILowerEdgePosition))
     {
-        currentlySelectedMainMenuOption = EXIT_GAME_INDEX;
+        setCurrentMenuOption(EXIT_GAME_INDEX);
     }
     else if((menuTextFifthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFifthVerticalUILowerEdgePosition))
     {
@@ -137,26 +138,26 @@ void MainMenuRenderer::evaluateMouseWheelEvent(const SDL_Event event)
     //scroll up
     if(event.wheel.y < 0)
     {
-        currentlySelectedMainMenuOption++;
-        if(currentlySelectedMainMenuOption > RETURN_TO_MAIN_MENU_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() + 1);
+        if(getCurrentMenuOption() > RETURN_TO_MAIN_MENU_INDEX)
         {
-            currentlySelectedMainMenuOption = FULLSCREEN_INDEX;
+            setCurrentMenuOption(FULLSCREEN_INDEX);
         }
     }
     //scroll down
     else if(event.wheel.y > 0)
     {
-        currentlySelectedMainMenuOption--;
-        if(currentlySelectedMainMenuOption < FULLSCREEN_INDEX)
+        setCurrentMenuOption(getCurrentMenuOption() - 1);
+        if(getCurrentMenuOption() < FULLSCREEN_INDEX)
         {
-            currentlySelectedMainMenuOption = RETURN_TO_MAIN_MENU_INDEX;
+            setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
         }
     }
 }
 
 void MainMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
 {
-    switch(currentlySelectedMainMenuOption)
+    switch(getCurrentMenuOption())
     {
         case CONTINUE_INDEX:
         {
@@ -169,8 +170,9 @@ void MainMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
         case SETTINGS_INDEX:
         {
             currentScreen = SETTINGS_MENU_SCREEN;
+            setCurrentMenu(SETTINGS_MENU_INDEX);
             //select sound effects volume as highlighted option as that is where user's mouse will be upon entering settings menu
-            setCurrentMenu(SETTINGS_MENU_INDEX, SOUND_EFFECTS_VOLUME_INDEX);
+            setCurrentMenuOption(MUSIC_VOLUME_INDEX);
             break;
         }
         case EXIT_GAME_INDEX:

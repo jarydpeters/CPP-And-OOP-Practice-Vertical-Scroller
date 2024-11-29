@@ -67,11 +67,6 @@ void SettingsManager::loadSavedSettings()
                     {
                         currentSoundEffectVolumeSetting = std::stoi(settingValue);
                     }
-                    else
-                    {
-                        //suppress for now
-                        // std::cout << "Unknown setting: " << settingName << std::endl;
-                    }
                 }
             }
         }
