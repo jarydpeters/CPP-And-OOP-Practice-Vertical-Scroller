@@ -1,5 +1,7 @@
 #include "menuRenderer.h"
 
+int MenuRenderer::currentlySelectedMenuOption = 0;
+
 MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     : WindowRenderer(win, ren)
 {
@@ -82,6 +84,9 @@ void MenuRenderer::setCurrentMenu(const int newMenu)
 void MenuRenderer::setCurrentMenuOption(const int selectedMenuOption)
 {
     currentlySelectedMenuOption = selectedMenuOption;
+    std::cout << "currentlySelectedMenuOption: " << currentlySelectedMenuOption << std::endl;
+
+    std::cout << "Memory address of currentlySelectedMenuOption: " << &currentlySelectedMenuOption << std::endl;
 }
 
 int MenuRenderer::getCurrentMenuOption()

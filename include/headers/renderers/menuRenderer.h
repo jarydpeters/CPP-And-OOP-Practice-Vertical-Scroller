@@ -202,7 +202,7 @@ class MenuRenderer : public WindowRenderer
 
     private:
 
-        int currentlySelectedMenuOption = CONTINUE_INDEX;
+        static int currentlySelectedMenuOption;
 };
 
 #endif //MENU_RENDERER_H
