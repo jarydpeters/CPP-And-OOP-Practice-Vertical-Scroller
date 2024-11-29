@@ -302,8 +302,7 @@ void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
             currentScreen = MAIN_MENU_SCREEN;
             settingsManager.saveSettings(); 
             setCurrentMenu(MAIN_MENU_INDEX);
-            //select exit game as highlighted option as that is where user's mouse will be upon exiting settings menu
-            setCurrentMenuOption(EXIT_GAME_INDEX);
+            setCurrentMenuOption(CONTINUE_INDEX);
             break;
         }
     }

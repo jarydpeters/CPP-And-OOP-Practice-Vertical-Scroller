@@ -84,9 +84,6 @@ void MenuRenderer::setCurrentMenu(const int newMenu)
 void MenuRenderer::setCurrentMenuOption(const int selectedMenuOption)
 {
     currentlySelectedMenuOption = selectedMenuOption;
-    std::cout << "currentlySelectedMenuOption: " << currentlySelectedMenuOption << std::endl;
-
-    std::cout << "Memory address of currentlySelectedMenuOption: " << &currentlySelectedMenuOption << std::endl;
 }
 
 int MenuRenderer::getCurrentMenuOption()
