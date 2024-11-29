@@ -30,7 +30,6 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
 
     settingsManager.loadSavedSettings();
     setFullscreen(getFullscreen());
-    std::cout << "SETTINGS MENU" << std::endl;
     updateResolution();
 }
 

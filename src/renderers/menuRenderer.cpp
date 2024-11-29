@@ -54,10 +54,6 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
     
     SDL_GetWindowSize(menuScreenWindow, &currentHorizontalResolution, &currentVerticalResolution);
 
-    std::cout << "setFullscreen" << std::endl;
-    std::cout << "currentVerticalResolution: " << currentVerticalResolution << std::endl;
-    std::cout << "currentHorizontalResolution: " << currentHorizontalResolution << std::endl;
-
     //determine where to place the mouse cursor within the new window so it's in the same spot as it was before proportionally
     int newMouseHorziontalPositionProportionalToPreviousResolution = (currentHorizontalMousePosition * currentHorizontalResolution) / previousHorizontalResolution;
     int newMouseVerticalPositionProportionalToPreviousResolution = (currentVerticalMousePosition * currentVerticalResolution) / previousVerticalResolution;
@@ -203,10 +199,6 @@ void MenuRenderer::RenderMainMenuLogo()
 
 void MenuRenderer::RenderMenuOptionSelectionSprite()
 {
-    std::cout << "RenderMenuOptionSelectionSprite" << std::endl;
-    std::cout << "currentVerticalResolution: " << currentVerticalResolution << std::endl;
-    std::cout << "currentHorizontalResolution: " << currentHorizontalResolution << std::endl;
-
     int menuSelectionIconVerticalPosition;
 
     if(currentScreen == MAIN_MENU_INDEX)
