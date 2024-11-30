@@ -161,6 +161,7 @@ void MainMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
     {
         case CONTINUE_INDEX:
         {
+            currentScreen = MAIN_GAME_SCREEN;
             break;
         }
         case NEW_GAME_INDEX:
