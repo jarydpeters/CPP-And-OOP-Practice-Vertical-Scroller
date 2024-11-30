@@ -26,7 +26,6 @@ SRCS = src/main.cpp \
        src/renderers/textureRenderer.cpp \
        src/renderers/windowRenderer.cpp \
        src/utilities/colorDefines.cpp \
-       src/utilities/globalValues.cpp \
        src/utilities/sdlUtility.cpp \
        src/utilities/settingsManager.cpp \
 

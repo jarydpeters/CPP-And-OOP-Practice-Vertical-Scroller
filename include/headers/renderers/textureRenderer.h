@@ -4,7 +4,6 @@
 #include <iostream>
 #include <SDL_image.h>
 
-#include "globalValues.h"
 
 class TextureRenderer
 {

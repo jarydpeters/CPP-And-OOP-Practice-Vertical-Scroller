@@ -5,7 +5,6 @@
 
 #include "assetFilePaths.h"
 #include "colorDefines.h"
-#include "globalValues.h"
 #include "sdlUtility.h"
 #include "settingsManager.h"
 #include "textRenderer.h"

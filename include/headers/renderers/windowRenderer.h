@@ -1,10 +1,10 @@
 #ifndef WINDOW_RENDERER_H
 #define WINDOW_RENDERER_H
 
+#include <map>
+#include <SDL.h>
 #include <string>
 #include <vector>
-
-#include "globalValues.h"
 
 constexpr int DEFAULT_HORIZONTAL_RESOLUTION = 1280;
 constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;

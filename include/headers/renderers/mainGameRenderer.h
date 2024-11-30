@@ -5,7 +5,6 @@
 
 #include "assetFilePaths.h"
 #include "colorDefines.h"
-#include "globalValues.h"
 #include "textRenderer.h"
 #include "textureRenderer.h"
 

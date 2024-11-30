@@ -1,4 +1,3 @@
-#include "globalValues.h"
 #include "mainGameRenderer.h"
 #include "mainMenuRenderer.h"
 #include "settingsMenuRenderer.h"

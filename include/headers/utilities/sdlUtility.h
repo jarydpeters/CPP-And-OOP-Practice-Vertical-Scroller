@@ -4,7 +4,6 @@
 #include <iostream>
 #include <SDL_ttf.h>
 
-#include "globalValues.h"
 
 class SdlUtility
 {
