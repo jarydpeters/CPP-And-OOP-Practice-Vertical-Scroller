@@ -16,26 +16,18 @@ constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;
 constexpr int TITLE_TEXT_POINT_SIZE = 48;
 constexpr int SUBTITLE_TEXT_POINT_SIZE = 24;
 
-constexpr int MAIN_MENU_SCREEN = 0;
-constexpr int SETTINGS_MENU_SCREEN = 1;
-constexpr int MAIN_GAME_SCREEN = 2;
-constexpr int CUTSCENE_SCREEN = 3;
-constexpr int UPGRADE_MENU_SCREEN = 4;
+enum ScreenType 
+{
+    MAIN_MENU_SCREEN,
+    SETTINGS_MENU_SCREEN,
+    MAIN_GAME_SCREEN,
+    CUTSCENE_SCREEN,
+    UPGRADE_MENU_SCREEN,
+    NUMBER_OF_SCREEN_TYPES
+};
 
 extern bool quitGame;
 
-extern int currentHorizontalResolution;
-extern int currentVerticalResolution;
 extern int currentScreen;
-
-extern int menuTitleLogoVerticalPosition;
-
-extern int menuTextFirstVerticalPosition;
-extern int menuTextSecondVerticalPosition;
-extern int menuTextThirdVerticalPosition;
-extern int menuTextFourthVerticalPosition;
-extern int menuTextFifthVerticalPosition;
-
-extern std::map<int, int> menuOptionsPositionMap;
 
 #endif //GLOBAL_VALUES_H
