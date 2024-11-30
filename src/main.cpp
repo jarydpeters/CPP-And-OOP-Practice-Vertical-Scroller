@@ -4,6 +4,7 @@
 #include "settingsMenuRenderer.h"
 #include "sdlUtility.h"
 #include "textRenderer.h"
+#include "windowRenderer.h"
 
 int main(int argc, char* argv[])
 {    
@@ -68,13 +69,13 @@ int main(int argc, char* argv[])
 
     bool firstLoop = true;
 
-    while(!quitGame)
+    while(!WindowRenderer::quitGame)
     {
         Uint32 timeAtStartOfFrame = SDL_GetTicks();
 
-        switch(currentScreen)
+        switch(WindowRenderer::currentScreen)
         {
-            case(MAIN_MENU_SCREEN):
+            case(WindowRenderer::MAIN_MENU_SCREEN):
             {
                 SDL_SetRenderDrawColor(mainMenuRenderer, black.r, black.g, black.b, black.a);
                 SDL_RenderClear(mainMenuRenderer);
@@ -95,7 +96,7 @@ int main(int argc, char* argv[])
 
                 break;
             }
-            case(SETTINGS_MENU_SCREEN):
+            case(WindowRenderer::SETTINGS_MENU_SCREEN):
             {
                 SDL_SetRenderDrawColor(settingsMenuRenderer, black.r, black.g, black.b, black.a);
                 SDL_RenderClear(settingsMenuRenderer);
@@ -116,16 +117,16 @@ int main(int argc, char* argv[])
 
                 break;
             }
-            case MAIN_GAME_SCREEN:
+            case(WindowRenderer::MAIN_GAME_SCREEN):
             {
-                quitGame = true;
+                WindowRenderer::quitGame = true;
                 break;
             }
-            case CUTSCENE_SCREEN:
+            case(WindowRenderer::CUTSCENE_SCREEN):
             {
                 break;
             }
-            case UPGRADE_MENU_SCREEN:
+            case(WindowRenderer::UPGRADE_MENU_SCREEN):
             {
                 break;
             }

@@ -1,16 +1,33 @@
 #ifndef WINDOW_RENDERER_H
 #define WINDOW_RENDERER_H
 
-#endif // WINDOW_RENDERER_H
-
 #include <string>
 #include <vector>
 
 #include "globalValues.h"
 
+constexpr int DEFAULT_HORIZONTAL_RESOLUTION = 1280;
+constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;
+
+constexpr int TITLE_TEXT_POINT_SIZE = 48;
+constexpr int SUBTITLE_TEXT_POINT_SIZE = 24;
+
 class WindowRenderer
 {
     public:
+
+        enum ScreenType 
+        {
+            MAIN_MENU_SCREEN,
+            SETTINGS_MENU_SCREEN,
+            MAIN_GAME_SCREEN,
+            CUTSCENE_SCREEN,
+            UPGRADE_MENU_SCREEN,
+            NUMBER_OF_SCREEN_TYPES
+        };
+
+        static bool quitGame;
+        static int currentScreen;
 
         /**
          * 
@@ -70,3 +87,5 @@ class WindowRenderer
     private:
 
 };
+
+#endif // WINDOW_RENDERER_H

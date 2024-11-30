@@ -1,5 +1,8 @@
 #include "windowRenderer.h"
 
+bool WindowRenderer::quitGame = false;
+int WindowRenderer::currentScreen = MAIN_MENU_SCREEN;
+
 WindowRenderer::WindowRenderer(SDL_Window* win, SDL_Renderer* ren)
 {
     window = win;

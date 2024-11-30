@@ -41,8 +41,8 @@ SDL_Window* SdlUtility::createAndVerifySDLWindow(const char* windowName, const i
         windowName, 
         SDL_WINDOWPOS_CENTERED, 
         SDL_WINDOWPOS_CENTERED, 
-        DEFAULT_HORIZONTAL_RESOLUTION, 
-        DEFAULT_VERTICAL_RESOLUTION, 
+        horizontalSize, 
+        verticalSize, 
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
     if(returnWindow == nullptr) 
