@@ -1,75 +1,95 @@
-#include "mainGameRenderer.h"
+#include "gameplayRenderer.h"
 #include "mainMenuRenderer.h"
 #include "settingsMenuRenderer.h"
 #include "sdlUtility.h"
 #include "textRenderer.h"
 #include "windowRenderer.h"
 
+//FPS calculation variable
+Uint32 frameCount = 0;
+Uint32 lastFPSUpdateTime = SDL_GetTicks();
+
+SdlUtility sdlUtility;
+
+//TODO: CAN WINDOWS AND RENDERERS BE MADE STATIC TO WINDOWRENDERER?
+
+// Create the window for the title screen
+SDL_Window* menuScreenWindow = sdlUtility.createAndVerifySDLWindow(
+    "menuScreenWindow", 
+    DEFAULT_HORIZONTAL_RESOLUTION, 
+    DEFAULT_VERTICAL_RESOLUTION, 
+    SDL_WINDOW_OPENGL);
+
+SDL_Renderer* menuScreenWindowRenderer = sdlUtility.createAndVerifySDLRenderer(menuScreenWindow, -1, SDL_RENDERER_ACCELERATED);
+
+//set up main menu 
+MainMenuRenderer mainMenu = MainMenuRenderer(sdlUtility,
+    menuScreenWindow, 
+    menuScreenWindowRenderer,
+    FONT_PATH,
+    FONT_PATH,
+    TITLE_TEXT_POINT_SIZE,
+    SUBTITLE_TEXT_POINT_SIZE);
+
+SDL_Renderer* mainMenuRenderer = mainMenu.getTitleScreenRenderer();
+
+//set up settings menu
+SettingsMenuRenderer settingsMenu = SettingsMenuRenderer(sdlUtility,
+    menuScreenWindow, 
+    menuScreenWindowRenderer,
+    FONT_PATH,
+    FONT_PATH,
+    TITLE_TEXT_POINT_SIZE,
+    SUBTITLE_TEXT_POINT_SIZE);
+
+SDL_Renderer* settingsMenuRenderer = settingsMenu.getTitleScreenRenderer();
+
+TextRenderer menuTitleTextRenderer(mainMenu.getMenuTitleTextFont());
+TextRenderer menuSubtextRenderer(mainMenu.getMenuSubtitleTextFont());
+
+TextRenderer settingsMenuTitleTextRenderer(settingsMenu.getMenuTitleTextFont());
+TextRenderer settingsMenuSubtextRenderer(settingsMenu.getMenuSubtitleTextFont());
+
+void calculateFPS()
+{
+    Uint32 currentTime = SDL_GetTicks();
+    if(currentTime - lastFPSUpdateTime >= 1000)  // One second has passed since last FPS calculation
+    {
+        WindowRenderer::setCurrentFPS(frameCount);
+
+        frameCount = 0;
+        lastFPSUpdateTime = currentTime;
+    }
+}
+
 int main(int argc, char* argv[])
 {    
-    SdlUtility sdlUtility;
-
     if(!sdlUtility.successfulSDLInit())
     {
         std::cout << "SDL Init Unsuccessful!" << std::endl;
         return -1;
     }
 
-    // Create the window for the title screen
-    SDL_Window* menuScreenWindow = sdlUtility.createAndVerifySDLWindow(
-        "menuScreenWindow", 
-        DEFAULT_HORIZONTAL_RESOLUTION, 
-        DEFAULT_VERTICAL_RESOLUTION, 
-        SDL_WINDOW_OPENGL);
-
-    if (!menuScreenWindow) 
+    if(!menuScreenWindow) 
     {
         std::cout << "menuScreenWindow Init Unsuccessful!" << std::endl;
         return -1;
     }
-
-    // Create the renderer for the title screens window
-    SDL_Renderer* menuScreenWindowRenderer = sdlUtility.createAndVerifySDLRenderer(menuScreenWindow, -1, SDL_RENDERER_ACCELERATED);
     
-    if (!menuScreenWindowRenderer) 
+    if(!menuScreenWindowRenderer) 
     {
         std::cout << "menuScreenWindowRenderer Init Unsuccessful!" << std::endl;
         return -1;
     }
 
-    //set up main menu 
-    MainMenuRenderer mainMenu = MainMenuRenderer(sdlUtility,
-        menuScreenWindow, 
-        menuScreenWindowRenderer,
-        FONT_PATH,
-        FONT_PATH,
-        TITLE_TEXT_POINT_SIZE,
-        SUBTITLE_TEXT_POINT_SIZE);
-
-    TextRenderer menuTitleTextRenderer(mainMenu.getMenuTitleTextFont());
-    TextRenderer menuSubtextRenderer(mainMenu.getMenuSubtitleTextFont());
-
-    SDL_Renderer* mainMenuRenderer = mainMenu.getTitleScreenRenderer();
-
-    //set up settings menu
-    SettingsMenuRenderer settingsMenu = SettingsMenuRenderer(sdlUtility,
-        menuScreenWindow, 
-        menuScreenWindowRenderer,
-        FONT_PATH,
-        FONT_PATH,
-        TITLE_TEXT_POINT_SIZE,
-        SUBTITLE_TEXT_POINT_SIZE);
-
-    TextRenderer settingsMenuTitleTextRenderer(settingsMenu.getMenuTitleTextFont());
-    TextRenderer settingsMenuSubtextRenderer(settingsMenu.getMenuSubtitleTextFont());
-
-    SDL_Renderer* settingsMenuRenderer = settingsMenu.getTitleScreenRenderer();
     SDL_Event event;
 
     bool firstLoop = true;
 
     while(!WindowRenderer::quitGame)
     {
+        frameCount++;
+
         Uint32 timeAtStartOfFrame = SDL_GetTicks();
 
         switch(WindowRenderer::currentScreen)
@@ -119,6 +139,7 @@ int main(int argc, char* argv[])
             case(WindowRenderer::MAIN_GAME_SCREEN):
             {
                 WindowRenderer::quitGame = true;
+
                 break;
             }
             case(WindowRenderer::CUTSCENE_SCREEN):
@@ -133,6 +154,8 @@ int main(int argc, char* argv[])
         firstLoop = false;
 
         Uint32 timeElapsedOverLoop = SDL_GetTicks() - timeAtStartOfFrame;
+
+        calculateFPS();
 
         //TODO: SET UP WINDOW RENDERER TO RENDER FPS FOR DEBUG/AS OPTION
         if(timeElapsedOverLoop < FRAME_DELAY)

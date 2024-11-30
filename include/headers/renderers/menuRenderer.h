@@ -1,8 +1,6 @@
 #ifndef MENU_RENDERER_H
 #define MENU_RENDERER_H
 
-#include <SDL_ttf.h>
-
 #include "assetFilePaths.h"
 #include "colorDefines.h"
 #include "sdlUtility.h"
@@ -75,12 +73,6 @@ class MenuRenderer : public WindowRenderer
         SDL_Renderer* getTitleScreenRenderer();
         void setTitleScreenRenderer(SDL_Renderer* renderer);
 
-        TTF_Font* getMenuTitleTextFont();
-        void setMenuTitleTextFont(TTF_Font* font);
-
-        TTF_Font* getMenuSubtitleTextFont();
-        void setMenuSubtitleTextFont(TTF_Font* font);
-
     protected:
 
         SettingsManager settingsManager;
@@ -93,12 +85,6 @@ class MenuRenderer : public WindowRenderer
         SDL_Texture* mainMenuLogoTexture;
         SDL_Rect mainMenuLogoRect;
         TextureRenderer::TextureWithRect menuLogoTextureWithRect;
-
-        SDL_Window* menuScreenWindow;
-        SDL_Renderer* menuScreenWindowRenderer;
-
-        TTF_Font* menuTitleFont;
-        TTF_Font* menuSubtitleFont;
 
         int menuSelectionIconVerticalPosition;
 
@@ -159,14 +145,14 @@ class MenuRenderer : public WindowRenderer
          * 
          * \returns void
          */
-        void RenderMainMenuLogo();
+        void renderMainMenuLogo();
 
         /**
          * renders white bar menu selection icon on main/settings menu
          * 
          * \returns void
          */
-        void RenderMenuOptionSelectionSprite();
+        void renderMenuOptionSelectionSprite();
 
         /**
          * manipulates menu based off of keystroke event

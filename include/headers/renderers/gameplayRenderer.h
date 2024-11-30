@@ -1,5 +1,3 @@
-//TODO MAKE MAINGAMERENDERER INHERIT FROM A NEW WINDOWRENDERER
-
 #ifndef MAIN_GAME_RENDERER_H
 #define MAIN_GAME_RENDERER_H
 
@@ -7,21 +5,21 @@
 #include "colorDefines.h"
 #include "textRenderer.h"
 #include "textureRenderer.h"
+#include "windowRenderer.h"
 
-class MainGameRenderer
+class GameplayRenderer : public WindowRenderer
 {
     public:
 
         /**
-         * default constructor
+         * constructor
          */
-        MainGameRenderer();
+        GameplayRenderer(SDL_Window* win, SDL_Renderer* ren);
 
         /**
          * 
          */
         void renderMainGame();
-
 
         SDL_Window* getMainGameWindow();
         void setMainGameWindow(SDL_Window* window);

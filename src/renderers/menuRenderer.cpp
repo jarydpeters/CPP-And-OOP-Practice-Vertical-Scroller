@@ -52,15 +52,15 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
     int previousVerticalResolution = resolution.currentVerticalResolution;
 
     settingsManager.setFullscreen(newFullscreen);
-    SDL_SetWindowFullscreen(menuScreenWindow, (settingsManager.getFullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
+    SDL_SetWindowFullscreen(getWindow(), (settingsManager.getFullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
     
-    SDL_GetWindowSize(menuScreenWindow, &resolution.currentHorizontalResolution, &resolution.currentVerticalResolution);
+    SDL_GetWindowSize(getWindow(), &resolution.currentHorizontalResolution, &resolution.currentVerticalResolution);
 
     //determine where to place the mouse cursor within the new window so it's in the same spot as it was before proportionally
     int newMouseHorziontalPositionProportionalToPreviousResolution = (currentHorizontalMousePosition * resolution.currentHorizontalResolution) / previousHorizontalResolution;
     int newMouseVerticalPositionProportionalToPreviousResolution = (currentVerticalMousePosition * resolution.currentVerticalResolution) / previousVerticalResolution;
 
-    SDL_WarpMouseInWindow(menuScreenWindow, newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
+    SDL_WarpMouseInWindow(getWindow(), newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
 
     if(settingsManager.getFullscreen())
     {
@@ -171,21 +171,21 @@ void MenuRenderer::updateResolution()
                 break;
             }
         }
-        SDL_SetWindowSize(menuScreenWindow, resolution.currentHorizontalResolution, resolution.currentVerticalResolution);
-        SDL_SetWindowPosition(menuScreenWindow, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+        SDL_SetWindowSize(getWindow(), resolution.currentHorizontalResolution, resolution.currentVerticalResolution);
+        SDL_SetWindowPosition(getWindow(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
         updateUIPositions();
     }
 }
 
-void MenuRenderer::RenderMainMenuLogo()
+void MenuRenderer::renderMainMenuLogo()
 {
     menuLogoTextureWithRect = textureRenderer.createAndVerifyTexture(
         ((resolution.currentHorizontalResolution / 2) - MAIN_MENU_LOGO_HORIZONTAL_OFFSET), //place in horizontal center of screen
         (menuTitleLogoVerticalPosition - MAIN_MENU_LOGO_VERTICAL_OFFSET),
         MENU_LOGO_IMAGE_PATH,
-        menuScreenWindow,
-        menuScreenWindowRenderer);
+        getWindow(),
+        getRenderer());
 
     mainMenuLogoTexture = menuLogoTextureWithRect.texture;
     mainMenuLogoRect = menuLogoTextureWithRect.rectangle;
@@ -196,10 +196,10 @@ void MenuRenderer::RenderMainMenuLogo()
     mainMenuLogoRect.w *= FOUR_TIMES_SCALAR;
     mainMenuLogoRect.h *= FOUR_TIMES_SCALAR;
 
-    SDL_RenderCopy(menuScreenWindowRenderer, mainMenuLogoTexture, NULL, &mainMenuLogoRect);
+    SDL_RenderCopy(getRenderer(), mainMenuLogoTexture, NULL, &mainMenuLogoRect);
 }
 
-void MenuRenderer::RenderMenuOptionSelectionSprite()
+void MenuRenderer::renderMenuOptionSelectionSprite()
 {
     int menuSelectionIconVerticalPosition;
 
@@ -209,13 +209,13 @@ void MenuRenderer::RenderMenuOptionSelectionSprite()
         0, //place on far left side of screen
         menuSelectionIconVerticalPosition,
         MENU_SELECTION_ICON_IMAGE_PATH, 
-        menuScreenWindow, 
-        menuScreenWindowRenderer);
+        getWindow(), 
+        getRenderer());
 
     menuSelectionIconTexture = menuSelectionIconTextureWithRect.texture;
     menuSelectionIconRect = menuSelectionIconTextureWithRect.rectangle;
 
-    SDL_RenderCopy(menuScreenWindowRenderer, menuSelectionIconTexture, NULL, &menuSelectionIconRect);
+    SDL_RenderCopy(getRenderer(), menuSelectionIconTexture, NULL, &menuSelectionIconRect);
 }
 
 SDL_Window* MenuRenderer::getTitleScreenWindow()
@@ -236,24 +236,4 @@ SDL_Renderer* MenuRenderer::getTitleScreenRenderer()
 void MenuRenderer::setTitleScreenRenderer(SDL_Renderer* renderer)
 {
     WindowRenderer::setRenderer(renderer);
-}
-
-TTF_Font* MenuRenderer::getMenuTitleTextFont()
-{
-    return menuTitleFont;
-}
-
-void MenuRenderer::setMenuTitleTextFont(TTF_Font* font)
-{
-    menuTitleFont = font;
-}
-
-TTF_Font* MenuRenderer::getMenuSubtitleTextFont()
-{
-    return menuSubtitleFont;
-}
-
-void MenuRenderer::setMenuSubtitleTextFont(TTF_Font* font)
-{
-    menuSubtitleFont = font;
 }

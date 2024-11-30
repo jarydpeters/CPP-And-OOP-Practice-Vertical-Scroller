@@ -2,7 +2,7 @@
 
 SdlUtility::SdlUtility()
 {
-
+    TTF_Init();
 }
 
 

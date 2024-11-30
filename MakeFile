@@ -18,7 +18,7 @@ LDFLAGS = -Llib \
 
 # Specify all your source files here
 SRCS = src/main.cpp \
-       src/renderers/mainGameRenderer.cpp \
+       src/renderers/gameplayRenderer.cpp \
        src/renderers/mainMenuRenderer.cpp \
        src/renderers/menuRenderer.cpp \
        src/renderers/settingsMenuRenderer.cpp \

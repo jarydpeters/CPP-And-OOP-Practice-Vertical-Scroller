@@ -9,11 +9,7 @@ MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
             int subtitleTextPointSize)
     : MenuRenderer(win, ren)
 {
-    //set member variables to inherited values from windowRenderer
-    menuScreenWindow = getWindow();
-    menuScreenWindowRenderer = getRenderer();
-
-    SDL_SetWindowResizable(menuScreenWindow, SDL_bool::SDL_FALSE);
+    SDL_SetWindowResizable(getWindow(), SDL_bool::SDL_FALSE);
 
     TTF_Font* titleFont = sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
         TITLE_TEXT_POINT_SIZE, 
@@ -35,31 +31,32 @@ MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
 
 void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
-    RenderMainMenuLogo();
-    RenderMenuOptionSelectionSprite();
+    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    renderMainMenuLogo();
+    renderMenuOptionSelectionSprite();
 
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_CONTINUE_TEXT, 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == CONTINUE_INDEX) ? black : white), 
-        menuScreenWindow);
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+        getWindow());
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_NEW_GAME_TEXT, 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == NEW_GAME_INDEX) ? black : white), 
-        menuScreenWindow);
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+        getWindow());
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_SETTINGS_TEXT, 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == SETTINGS_INDEX) ? black : white), 
-        menuScreenWindow);
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+        getWindow());
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_EXIT_TEXT, 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == EXIT_GAME_INDEX) ? black : white), 
-        menuScreenWindow);
+        getWindow());
 
-    SDL_RenderPresent(menuScreenWindowRenderer);
+    SDL_RenderPresent(getRenderer());
 }
 
 void MainMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)

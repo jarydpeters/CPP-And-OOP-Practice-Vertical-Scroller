@@ -8,12 +8,8 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
             int titleTextPointSize,
             int subtitleTextPointSize)
     : MenuRenderer(win, ren)
-{
-    //set member variables to inherited values from windowRenderer
-    menuScreenWindow = getWindow();
-    menuScreenWindowRenderer = getRenderer();
-    
-    SDL_SetWindowResizable(menuScreenWindow, SDL_bool::SDL_FALSE);
+{    
+    SDL_SetWindowResizable(getWindow(), SDL_bool::SDL_FALSE);
 
     TTF_Font* titleFont = sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
         TITLE_TEXT_POINT_SIZE, 
@@ -35,67 +31,68 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
 
 void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
-    RenderMainMenuLogo();
-    RenderMenuOptionSelectionSprite();
+    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    renderMainMenuLogo();
+    renderMenuOptionSelectionSprite();
 
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_FULLSCREEN_TEXT, 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
-        menuScreenWindow);
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+        getWindow());
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_RESOLUTION_TEXT, 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
-        menuScreenWindow);
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+        getWindow());
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
-        menuScreenWindow);
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+        getWindow());
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
-        menuScreenWindow);
-    menuSubtextRenderer.renderHorizontallyCenteredText(menuScreenWindowRenderer, 
+        getWindow());
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
         menuTextFifthVerticalPosition, 
         ((getCurrentMenuOption() == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
-        menuScreenWindow);
+        getWindow());
 
     //render fullscreen toggle icon
-    menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
+    menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
         ((resolution.currentHorizontalResolution / 2) + 200), 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
-        menuScreenWindow);
+        getWindow());
 
     //render resolution selection icon
-    menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
+    menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
         ((resolution.currentHorizontalResolution / 2) + 200), 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
-        menuScreenWindow);
+        getWindow());
 
     //render music and sound effects volume selection icons
-    menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
+    menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
         ((resolution.currentHorizontalResolution / 2) + 200), 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
-        menuScreenWindow);
+        getWindow());
 
-    menuSubtextRenderer.renderText(menuScreenWindowRenderer, 
+    menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
         ((resolution.currentHorizontalResolution / 2) + 200), 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
-        menuScreenWindow);
+        getWindow());
 
-    SDL_RenderPresent(menuScreenWindowRenderer);
+    SDL_RenderPresent(getRenderer());
 }
 
 void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
@@ -229,7 +226,6 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 
 void SettingsMenuRenderer::evaluateMouseMotionEvent()
 {
-    //TODO: CHANGE MOUSE CLICK HITBOX FOR BETTER UX
     SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
 
     if((menuTextFirstVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFirstVerticalUILowerEdgePosition))

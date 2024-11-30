@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "colorDefines.h"
+
 constexpr int DEFAULT_HORIZONTAL_RESOLUTION = 1280;
 constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;
 
@@ -34,10 +36,21 @@ class WindowRenderer
          */
         WindowRenderer(SDL_Window* win, SDL_Renderer* ren);
 
-    protected:
+        static bool getDisplayFPS();
+        static void setDisplayFPS(const bool newDisplayFPS);
 
-        SDL_Window* window;
-        SDL_Renderer* renderer;
+        static int getCurrentFPS();
+        static void setCurrentFPS(const int newCurrentFPS);
+
+        static void renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFont);
+
+        TTF_Font* getMenuTitleTextFont();
+        void setMenuTitleTextFont(TTF_Font* font);
+
+        TTF_Font* getMenuSubtitleTextFont();
+        void setMenuSubtitleTextFont(TTF_Font* font);
+
+    protected:
 
         SDL_Window* getWindow();
         void setWindow(SDL_Window* win);
@@ -85,6 +98,16 @@ class WindowRenderer
         };
 
     private:
+
+        //TODO: MAKE SETTING
+        static bool displayFPS;
+        static int currentFPS;
+
+        TTF_Font* menuTitleFont;
+        TTF_Font* menuSubtitleFont;
+        
+        SDL_Window* window;
+        SDL_Renderer* renderer;
 
 };
 
