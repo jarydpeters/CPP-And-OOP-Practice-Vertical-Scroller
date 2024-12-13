@@ -48,19 +48,27 @@ void MenuRenderer::setFullscreen(const bool newFullscreen)
 {
     //TODO: MAKE THIS HAPPEN ON RESOLUTION RESIZE AS WELL.
     //grab current resolution so mouse position can be kept proportionally the same
-    int previousHorizontalResolution = resolution.currentHorizontalResolution;
-    int previousVerticalResolution = resolution.currentVerticalResolution;
+    int previousHorizontalResolution;
+    int previousVerticalResolution;
+
+    SDL_GetWindowSize(getWindow(), &previousHorizontalResolution, &previousVerticalResolution);
 
     settingsManager.setFullscreen(newFullscreen);
-    SDL_SetWindowFullscreen(getWindow(), (settingsManager.getFullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));
-    
-    SDL_GetWindowSize(getWindow(), &resolution.currentHorizontalResolution, &resolution.currentVerticalResolution);
+    SDL_SetWindowFullscreen(getWindow(), (settingsManager.getFullscreen() ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0));  
+
+    int currentHorizontalResolution;
+    int currentVerticalResolution;
+
+    SDL_GetWindowSize(getWindow(), &currentHorizontalResolution, &currentVerticalResolution);
+
+    setCurrentHorizontalResolution(currentHorizontalResolution);
+    setCurrentVerticalResolution(currentVerticalResolution);
 
     //determine where to place the mouse cursor within the new window so it's in the same spot as it was before proportionally
-    int newMouseHorziontalPositionProportionalToPreviousResolution = (currentHorizontalMousePosition * resolution.currentHorizontalResolution) / previousHorizontalResolution;
-    int newMouseVerticalPositionProportionalToPreviousResolution = (currentVerticalMousePosition * resolution.currentVerticalResolution) / previousVerticalResolution;
+    int newMouseHorizontalPositionProportionalToPreviousResolution = (currentHorizontalMousePosition * getCurrentHorizontalResolution()) / previousHorizontalResolution;
+    int newMouseVerticalPositionProportionalToPreviousResolution = (currentVerticalMousePosition * getCurrentVerticalResolution()) / previousVerticalResolution;
 
-    SDL_WarpMouseInWindow(getWindow(), newMouseHorziontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
+    SDL_WarpMouseInWindow(getWindow(), newMouseHorizontalPositionProportionalToPreviousResolution, newMouseVerticalPositionProportionalToPreviousResolution);
 
     if(settingsManager.getFullscreen())
     {
@@ -93,20 +101,13 @@ int MenuRenderer::getCurrentMenuOption()
 
 void MenuRenderer::updateUIPositions()
 {
-    menuTitleLogoVerticalPosition = resolution.currentVerticalResolution / 3.0;
+    menuTitleLogoVerticalPosition = getCurrentVerticalResolution() / 3.0;
 
     menuTextFirstVerticalPosition = menuTitleLogoVerticalPosition + (150);
     menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (50);
     menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (50);
     menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (50);
     menuTextFifthVerticalPosition = menuTextFourthVerticalPosition + (50);
-
-        // Update the vector with calculated positions
-    menuOptionsPositionVector[0] = menuTextFirstVerticalPosition;
-    menuOptionsPositionVector[1] = menuTextSecondVerticalPosition;
-    menuOptionsPositionVector[2] = menuTextThirdVerticalPosition;
-    menuOptionsPositionVector[3] = menuTextFourthVerticalPosition;
-    menuOptionsPositionVector[4] = menuTextFifthVerticalPosition;
 
     menuTextFirstVerticalUIUpperEdgePosition = menuTextFirstVerticalPosition - UISelectionMargin;
     menuTextSecondVerticalUIUpperEdgePosition = menuTextSecondVerticalPosition - UISelectionMargin;
@@ -154,24 +155,24 @@ void MenuRenderer::updateResolution()
         {
             case(0):
             {
-                resolution.currentHorizontalResolution = 1280;
-                resolution.currentVerticalResolution = 720;
+                setCurrentHorizontalResolution(1280);
+                setCurrentVerticalResolution(720);
                 break;
             }
             case(1):
             {
-                resolution.currentHorizontalResolution = 1600;
-                resolution.currentVerticalResolution = 900;
+                setCurrentHorizontalResolution(1600);
+                setCurrentVerticalResolution(900);
                 break;
             }
             case(2):
             {
-                resolution.currentHorizontalResolution = 1920;
-                resolution.currentVerticalResolution = 1080;
+                setCurrentHorizontalResolution(1920);
+                setCurrentVerticalResolution(1080);
                 break;
             }
         }
-        SDL_SetWindowSize(getWindow(), resolution.currentHorizontalResolution, resolution.currentVerticalResolution);
+        SDL_SetWindowSize(getWindow(), getCurrentHorizontalResolution(), getCurrentVerticalResolution());
         SDL_SetWindowPosition(getWindow(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 
         updateUIPositions();
@@ -181,7 +182,7 @@ void MenuRenderer::updateResolution()
 void MenuRenderer::renderMainMenuLogo()
 {
     menuLogoTextureWithRect = textureRenderer.createAndVerifyTexture(
-        ((resolution.currentHorizontalResolution / 2) - MAIN_MENU_LOGO_HORIZONTAL_OFFSET), //place in horizontal center of screen
+        ((getCurrentHorizontalResolution() / 2) - MAIN_MENU_LOGO_HORIZONTAL_OFFSET), //place in horizontal center of screen
         (menuTitleLogoVerticalPosition - MAIN_MENU_LOGO_VERTICAL_OFFSET),
         MENU_LOGO_IMAGE_PATH,
         getWindow(),
@@ -203,7 +204,34 @@ void MenuRenderer::renderMenuOptionSelectionSprite()
 {
     int menuSelectionIconVerticalPosition;
 
-    menuSelectionIconVerticalPosition = (menuOptionsPositionVector[currentlySelectedMenuOption] - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+    switch(currentlySelectedMenuOption)
+    {
+        case(0):
+        {
+            menuSelectionIconVerticalPosition = (menuTextFirstVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+            break;
+        }
+        case(1):
+        {
+            menuSelectionIconVerticalPosition = (menuTextSecondVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+            break;
+        }
+        case(2):
+        {
+            menuSelectionIconVerticalPosition = (menuTextThirdVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+            break;
+        }
+        case(3):
+        {
+            menuSelectionIconVerticalPosition = (menuTextFourthVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+            break;
+        }
+        case(4):
+        {
+            menuSelectionIconVerticalPosition = (menuTextFifthVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
+            break;
+        }
+    }
 
     menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
         0, //place on far left side of screen

@@ -64,7 +64,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render fullscreen toggle icon
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
-        ((resolution.currentHorizontalResolution / 2) + 200), 
+        ((getCurrentHorizontalResolution() / 2) + 200), 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
         getWindow());
@@ -72,7 +72,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render resolution selection icon
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
-        ((resolution.currentHorizontalResolution / 2) + 200), 
+        ((getCurrentHorizontalResolution() / 2) + 200), 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         getWindow());
@@ -80,14 +80,14 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render music and sound effects volume selection icons
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
-        ((resolution.currentHorizontalResolution / 2) + 200), 
+        ((getCurrentHorizontalResolution() / 2) + 200), 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         getWindow());
 
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
-        ((resolution.currentHorizontalResolution / 2) + 200), 
+        ((getCurrentHorizontalResolution() / 2) + 200), 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         getWindow());

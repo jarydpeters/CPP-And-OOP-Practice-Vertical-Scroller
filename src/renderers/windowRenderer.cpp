@@ -8,6 +8,15 @@ int WindowRenderer::currentScreen = MAIN_MENU_SCREEN;
 
 bool WindowRenderer::displayFPS = true;
 int WindowRenderer::currentFPS = 0;
+WindowRenderer::Resolution WindowRenderer::resolution = WindowRenderer::Resolution(DEFAULT_HORIZONTAL_RESOLUTION, DEFAULT_VERTICAL_RESOLUTION);
+
+int WindowRenderer::menuTitleLogoVerticalPosition = (DEFAULT_VERTICAL_RESOLUTION / 3.0);
+
+int WindowRenderer::menuTextFirstVerticalPosition = menuTitleLogoVerticalPosition + (150);
+int WindowRenderer::menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (50);
+int WindowRenderer::menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (50);
+int WindowRenderer::menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (50);
+int WindowRenderer::menuTextFifthVerticalPosition = menuTextFourthVerticalPosition + (50);
 
 WindowRenderer::WindowRenderer(SDL_Window* win, SDL_Renderer* ren)
 {
@@ -53,6 +62,26 @@ int WindowRenderer::getCurrentFPS()
 void WindowRenderer::setCurrentFPS(const int newCurrentFPS)
 {
     currentFPS = newCurrentFPS;
+}
+
+int WindowRenderer::getCurrentHorizontalResolution()
+{
+    return resolution.currentHorizontalResolution;
+}
+
+void WindowRenderer::setCurrentHorizontalResolution(const int horizontalResolution)
+{
+    resolution.currentHorizontalResolution = horizontalResolution;
+}
+
+int WindowRenderer::getCurrentVerticalResolution()
+{
+    return resolution.currentVerticalResolution;
+}
+
+void WindowRenderer::setCurrentVerticalResolution(const int verticalResolution)
+{
+    resolution.currentVerticalResolution = verticalResolution;
 }
 
 void WindowRenderer::renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFont)

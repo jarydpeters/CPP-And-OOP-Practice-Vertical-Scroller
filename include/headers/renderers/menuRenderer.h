@@ -3,10 +3,7 @@
 
 #include "assetFilePaths.h"
 #include "colorDefines.h"
-#include "sdlUtility.h"
-#include "settingsManager.h"
 #include "textRenderer.h"
-#include "textureRenderer.h"
 #include "windowRenderer.h"
 
 constexpr int FOUR_TIMES_SCALAR = 4;
@@ -74,9 +71,6 @@ class MenuRenderer : public WindowRenderer
         void setTitleScreenRenderer(SDL_Renderer* renderer);
 
     protected:
-
-        SettingsManager settingsManager;
-        TextureRenderer textureRenderer;
 
         SDL_Texture* menuSelectionIconTexture;
         SDL_Rect menuSelectionIconRect;

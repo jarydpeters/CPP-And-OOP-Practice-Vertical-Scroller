@@ -1,5 +1,5 @@
-#ifndef MAIN_GAME_RENDERER_H
-#define MAIN_GAME_RENDERER_H
+#ifndef GAMEPLAY_RENDERER_H
+#define GAMEPLAY_RENDERER_H
 
 #include "assetFilePaths.h"
 #include "colorDefines.h"
@@ -14,7 +14,13 @@ class GameplayRenderer : public WindowRenderer
         /**
          * constructor
          */
-        GameplayRenderer(SDL_Window* win, SDL_Renderer* ren);
+        GameplayRenderer(SdlUtility sdlUtility,
+            SDL_Window* win, 
+            SDL_Renderer* ren,
+            std::string titleFontPath,
+            std::string subtitleFontPath,
+            int titleTextPointSize,
+            int subtitleTextPointSize);
 
         /**
          * 
@@ -44,4 +50,4 @@ class GameplayRenderer : public WindowRenderer
         int planesCurrentVerticalPosition;
 };
 
-#endif //MAIN_GAME_RENDERER_H
+#endif //GAMEPLAY_RENDERER_H

@@ -7,6 +7,9 @@
 #include <vector>
 
 #include "colorDefines.h"
+#include "sdlUtility.h"
+#include "settingsManager.h"
+#include "textureRenderer.h"
 
 constexpr int DEFAULT_HORIZONTAL_RESOLUTION = 1280;
 constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;
@@ -52,13 +55,39 @@ class WindowRenderer
 
     protected:
 
+        SettingsManager settingsManager;
+        TextureRenderer textureRenderer;
+
         SDL_Window* getWindow();
         void setWindow(SDL_Window* win);
 
         SDL_Renderer* getRenderer();
         void setRenderer(SDL_Renderer* ren);
 
+        int getCurrentHorizontalResolution();
+        void setCurrentHorizontalResolution(const int horizontalResolution);
+
+        int getCurrentVerticalResolution();
+        void setCurrentVerticalResolution(const int verticalResolution);
+
         std::string usersMonitorResolution;
+
+        std::map<int, const std::string> windowedResolutionSelectionMap =
+        {
+            {0, "< 1280 x  720 >"},
+            {1, "< 1600 x  900 >"},
+            {2, "< 1920 x 1080 >"},
+        };
+
+        static int menuTitleLogoVerticalPosition;
+
+        static int menuTextFirstVerticalPosition;
+        static int menuTextSecondVerticalPosition;
+        static int menuTextThirdVerticalPosition;
+        static int menuTextFourthVerticalPosition;
+        static int menuTextFifthVerticalPosition;
+
+    private:
 
         struct Resolution
         {
@@ -71,44 +100,16 @@ class WindowRenderer
             {}
         };
 
-        Resolution resolution;
-
-        std::map<int, const std::string> windowedResolutionSelectionMap =
-        {
-            {0, "< 1280 x  720 >"},
-            {1, "< 1600 x  900 >"},
-            {2, "< 1920 x 1080 >"},
-        };
-
-        int menuTitleLogoVerticalPosition;
-
-        int menuTextFirstVerticalPosition;
-        int menuTextSecondVerticalPosition;
-        int menuTextThirdVerticalPosition;
-        int menuTextFourthVerticalPosition;
-        int menuTextFifthVerticalPosition;
-
-        std::vector<int> menuOptionsPositionVector = 
-        {
-            menuTextFirstVerticalPosition,
-            menuTextSecondVerticalPosition,
-            menuTextThirdVerticalPosition,
-            menuTextFourthVerticalPosition,
-            menuTextFifthVerticalPosition
-        };
-
-    private:
-
-        //TODO: MAKE SETTING
+        //TODO: MAKE SETTING TO CONTROL VISIBILITY
         static bool displayFPS;
         static int currentFPS;
+        static Resolution resolution;
 
         TTF_Font* menuTitleFont;
         TTF_Font* menuSubtitleFont;
         
         SDL_Window* window;
         SDL_Renderer* renderer;
-
 };
 
 #endif // WINDOW_RENDERER_H

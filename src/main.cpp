@@ -13,42 +13,57 @@ SdlUtility sdlUtility;
 
 //TODO: CAN WINDOWS AND RENDERERS BE MADE STATIC TO WINDOWRENDERER?
 
+//TODO: DO WINDOWS NEED TO BE UNIQUE PER SCREEN OR JUST ONE OVERALL?
 // Create the window for the title screen
-SDL_Window* menuScreenWindow = sdlUtility.createAndVerifySDLWindow(
-    "menuScreenWindow", 
+SDL_Window* mainWindow = sdlUtility.createAndVerifySDLWindow(
+    "mainWindow", 
     DEFAULT_HORIZONTAL_RESOLUTION, 
     DEFAULT_VERTICAL_RESOLUTION, 
     SDL_WINDOW_OPENGL);
 
-SDL_Renderer* menuScreenWindowRenderer = sdlUtility.createAndVerifySDLRenderer(menuScreenWindow, -1, SDL_RENDERER_ACCELERATED);
+SDL_Renderer* mainWindowRenderer = sdlUtility.createAndVerifySDLRenderer(mainWindow, -1, SDL_RENDERER_ACCELERATED);
 
 //set up main menu 
-MainMenuRenderer mainMenu = MainMenuRenderer(sdlUtility,
-    menuScreenWindow, 
-    menuScreenWindowRenderer,
+MainMenuRenderer mainMenuScreen = MainMenuRenderer(sdlUtility,
+    mainWindow, 
+    mainWindowRenderer,
     FONT_PATH,
     FONT_PATH,
     TITLE_TEXT_POINT_SIZE,
     SUBTITLE_TEXT_POINT_SIZE);
 
-SDL_Renderer* mainMenuRenderer = mainMenu.getTitleScreenRenderer();
+SDL_Renderer* mainMenuScreenRenderer = mainMenuScreen.getTitleScreenRenderer();
+
+TextRenderer menuTitleScreenTextRenderer(mainMenuScreen.getMenuTitleTextFont());
+TextRenderer menuScreenSubtextRenderer(mainMenuScreen.getMenuSubtitleTextFont());
 
 //set up settings menu
-SettingsMenuRenderer settingsMenu = SettingsMenuRenderer(sdlUtility,
-    menuScreenWindow, 
-    menuScreenWindowRenderer,
+SettingsMenuRenderer settingsMenuScreen = SettingsMenuRenderer(sdlUtility,
+    mainWindow, 
+    mainWindowRenderer,
     FONT_PATH,
     FONT_PATH,
     TITLE_TEXT_POINT_SIZE,
     SUBTITLE_TEXT_POINT_SIZE);
 
-SDL_Renderer* settingsMenuRenderer = settingsMenu.getTitleScreenRenderer();
+SDL_Renderer* settingsMenuScreenRenderer = settingsMenuScreen.getTitleScreenRenderer();
 
-TextRenderer menuTitleTextRenderer(mainMenu.getMenuTitleTextFont());
-TextRenderer menuSubtextRenderer(mainMenu.getMenuSubtitleTextFont());
+TextRenderer settingsMenuScreenTitleTextRenderer(settingsMenuScreen.getMenuTitleTextFont());
+TextRenderer settingsMenuScreenSubtextRenderer(settingsMenuScreen.getMenuSubtitleTextFont());
 
-TextRenderer settingsMenuTitleTextRenderer(settingsMenu.getMenuTitleTextFont());
-TextRenderer settingsMenuSubtextRenderer(settingsMenu.getMenuSubtitleTextFont());
+//set up main game
+GameplayRenderer gameplayScreen = GameplayRenderer(sdlUtility,
+    mainWindow, 
+    mainWindowRenderer,
+    FONT_PATH,
+    FONT_PATH,
+    TITLE_TEXT_POINT_SIZE,
+    SUBTITLE_TEXT_POINT_SIZE);
+
+SDL_Renderer* gameplayScreenRenderer = gameplayScreen.getMainGameWindowRenderer();
+
+TextRenderer gameplayScreenTitleTextRenderer(gameplayScreen.getMenuTitleTextFont());
+TextRenderer gameplayScreenSubtextRenderer(gameplayScreen.getMenuSubtitleTextFont());
 
 void calculateFPS()
 {
@@ -70,15 +85,15 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    if(!menuScreenWindow) 
+    if(!mainWindow) 
     {
-        std::cout << "menuScreenWindow Init Unsuccessful!" << std::endl;
+        std::cout << "mainWindow Init Unsuccessful!" << std::endl;
         return -1;
     }
     
-    if(!menuScreenWindowRenderer) 
+    if(!mainWindowRenderer) 
     {
-        std::cout << "menuScreenWindowRenderer Init Unsuccessful!" << std::endl;
+        std::cout << "mainWindowRenderer Init Unsuccessful!" << std::endl;
         return -1;
     }
 
@@ -96,49 +111,59 @@ int main(int argc, char* argv[])
         {
             case(WindowRenderer::MAIN_MENU_SCREEN):
             {
-                SDL_SetRenderDrawColor(mainMenuRenderer, black.r, black.g, black.b, black.a);
-                SDL_RenderClear(mainMenuRenderer);
+                SDL_SetRenderDrawColor(mainMenuScreenRenderer, black.r, black.g, black.b, black.a);
+                SDL_RenderClear(mainMenuScreenRenderer);
 
                 while (SDL_PollEvent(&event))
                 {
-                    mainMenu.executeMenuActionBasedOnEvent(event);
+                    mainMenuScreen.executeMenuActionBasedOnEvent(event);
                 }
                 
                 if(firstLoop)
                 {
-                    mainMenu.setFullscreen(mainMenu.getFullscreen());
+                    mainMenuScreen.setFullscreen(mainMenuScreen.getFullscreen());
                 }
 
-                mainMenu.renderCurrentScreen(menuTitleTextRenderer, menuSubtextRenderer);
+                mainMenuScreen.renderCurrentScreen(menuTitleScreenTextRenderer, menuScreenSubtextRenderer);
 
-                mainMenu.destroyTextures();
+                mainMenuScreen.destroyTextures();
 
                 break;
             }
             case(WindowRenderer::SETTINGS_MENU_SCREEN):
             {
-                SDL_SetRenderDrawColor(settingsMenuRenderer, black.r, black.g, black.b, black.a);
-                SDL_RenderClear(settingsMenuRenderer);
+                SDL_SetRenderDrawColor(settingsMenuScreenRenderer, black.r, black.g, black.b, black.a);
+                SDL_RenderClear(settingsMenuScreenRenderer);
 
                 while (SDL_PollEvent(&event))
                 {
-                    settingsMenu.executeMenuActionBasedOnEvent(event);
+                    settingsMenuScreen.executeMenuActionBasedOnEvent(event);
                 }
                 
                 if(firstLoop)
                 {
-                    settingsMenu.setFullscreen(settingsMenu.getFullscreen());
+                    settingsMenuScreen.setFullscreen(settingsMenuScreen.getFullscreen());
                 }
 
-                settingsMenu.renderCurrentScreen(settingsMenuTitleTextRenderer, settingsMenuSubtextRenderer);
+                settingsMenuScreen.renderCurrentScreen(settingsMenuScreenTitleTextRenderer, settingsMenuScreenSubtextRenderer);
 
-                settingsMenu.destroyTextures();
+                settingsMenuScreen.destroyTextures();
 
                 break;
             }
             case(WindowRenderer::MAIN_GAME_SCREEN):
             {
-                WindowRenderer::quitGame = true;
+                SDL_SetRenderDrawColor(gameplayScreenRenderer, black.r, black.g, black.b, black.a);
+                SDL_RenderClear(gameplayScreenRenderer);
+
+                while (SDL_PollEvent(&event))
+                {
+                    mainMenuScreen.executeMenuActionBasedOnEvent(event);
+                }
+
+                mainMenuScreen.renderCurrentScreen(gameplayScreenTitleTextRenderer, gameplayScreenSubtextRenderer);
+
+                mainMenuScreen.destroyTextures();
 
                 break;
             }
@@ -164,10 +189,10 @@ int main(int argc, char* argv[])
         }
     }
 
-    sdlUtility.cleanup(mainMenu.getMenuSubtitleTextFont(), 
-        mainMenu.getTitleScreenWindow(), 
-        mainMenu.getTitleScreenRenderer(), 
-        mainMenu.getMenuSelectionIconTexture());
+    sdlUtility.cleanup(mainMenuScreen.getMenuSubtitleTextFont(), 
+        mainMenuScreen.getTitleScreenWindow(), 
+        mainMenuScreen.getTitleScreenRenderer(), 
+        mainMenuScreen.getMenuSelectionIconTexture());
 
     return 0;
 }
