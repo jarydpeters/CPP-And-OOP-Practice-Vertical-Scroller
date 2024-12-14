@@ -86,6 +86,15 @@ int SettingsManager::getCurrentWindowedResolutionSetting()
 void SettingsManager::setCurrentWindowedResolutionSetting(const int newWindowedResolution)
 {
     currentWindowedResolutionSetting = newWindowedResolution;
+
+    if(getCurrentWindowedResolutionSetting() < 0)
+    {
+        setCurrentWindowedResolutionSetting(2);
+    }
+    else if(getCurrentWindowedResolutionSetting() > 2)
+    {
+        setCurrentWindowedResolutionSetting(0);
+    }
 }
 
 int SettingsManager::getCurrentMusicVolumeSetting()

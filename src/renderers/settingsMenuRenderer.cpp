@@ -64,7 +64,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render fullscreen toggle icon
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
-        ((getCurrentHorizontalResolution() / 2) + 200), 
+        (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
         getWindow());
@@ -72,7 +72,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render resolution selection icon
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
-        ((getCurrentHorizontalResolution() / 2) + 200), 
+        (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         getWindow());
@@ -80,14 +80,14 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     //render music and sound effects volume selection icons
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
-        ((getCurrentHorizontalResolution() / 2) + 200), 
+        (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         getWindow());
 
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
-        ((getCurrentHorizontalResolution() / 2) + 200), 
+        (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         getWindow());
@@ -124,11 +124,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                 int currentWindowedResolutionSetting = settingsManager.getCurrentWindowedResolutionSetting();
                 
                 settingsManager.setCurrentWindowedResolutionSetting(currentWindowedResolutionSetting - 1);
-                
-                if(settingsManager.getCurrentWindowedResolutionSetting() < 0)
-                {
-                    settingsManager.setCurrentWindowedResolutionSetting(2);
-                }
+
                 //TODO: MAKE CHANGES APPLY ON "APPLY" RATHER THAN INSTANTLY
                 updateResolution();
                 break;
@@ -167,10 +163,6 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
                 
                 settingsManager.setCurrentWindowedResolutionSetting(currentWindowedResolutionSetting + 1);
                 
-                if(settingsManager.getCurrentWindowedResolutionSetting() > 2)
-                {
-                    settingsManager.setCurrentWindowedResolutionSetting(0);
-                }
                 //TODO: MAKE CHANGES APPLY ON "APPLY" RATHER THAN INSTANTLY
                 updateResolution();
                 break;
@@ -274,6 +266,8 @@ void SettingsMenuRenderer::evaluateMouseWheelEvent(const SDL_Event event)
 
 void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
 {
+    SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
+
     switch(getCurrentMenuOption())
     {
         case FULLSCREEN_INDEX:
@@ -283,6 +277,15 @@ void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
         }
         case RESOLUTION_INDEX:
         {
+            if(currentHorizontalMousePosition < (getResolutionSettingLeftSideHorizontalPlacement() + (WIDTH_OF_RESOLUTION_OPTION_TEXT / 2)))
+            {
+                settingsManager.setCurrentWindowedResolutionSetting(settingsManager.getCurrentWindowedResolutionSetting() - 1);
+            }
+            else if(currentHorizontalMousePosition > (getResolutionSettingLeftSideHorizontalPlacement() + (WIDTH_OF_RESOLUTION_OPTION_TEXT / 2)))
+            {
+                settingsManager.setCurrentWindowedResolutionSetting(settingsManager.getCurrentWindowedResolutionSetting() + 1);
+            }
+            updateResolution();
             break;
         }
         case MUSIC_VOLUME_INDEX:
@@ -302,4 +305,9 @@ void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
             break;
         }
     }
+}
+
+int SettingsMenuRenderer::getResolutionSettingLeftSideHorizontalPlacement()
+{
+    return((getCurrentHorizontalResolution() / 2) + 200);
 }

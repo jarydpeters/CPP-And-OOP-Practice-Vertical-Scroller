@@ -40,6 +40,8 @@ class SettingsMenuRenderer : public MenuRenderer
         #define SETTING_NOT_SELECTED_TEXT "[ ]"
         #define SETTING_SELECTED_TEXT "[X]"
 
+        #define WIDTH_OF_RESOLUTION_OPTION_TEXT 110
+
         std::map<int, const std::string> variableSettingSelectionMap = 
         {
             {0,  ".........."},
@@ -85,6 +87,11 @@ class SettingsMenuRenderer : public MenuRenderer
          * \returns void
          */
         void evaluateMouseWheelEvent(const SDL_Event event) override;
+
+        /**
+         * gets resolution setting's "<" location for clickable UI
+         */
+        int getResolutionSettingLeftSideHorizontalPlacement();
 };
 
 #endif // SETTINGS_MENU_RENDERER_H
