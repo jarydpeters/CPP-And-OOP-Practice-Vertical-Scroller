@@ -4,8 +4,9 @@
 #include <string>
 
 //sprites
-#define MENU_SELECTION_ICON_IMAGE_PATH "assets/sprites/menuSelectionIcon.png"
+#define REDBALL_GAMEPLAY_SPRITE_PATH "assets/sprites/redball.png"
 #define MENU_LOGO_IMAGE_PATH "assets/sprites/menuLogo.png"
+#define MENU_SELECTION_ICON_IMAGE_PATH "assets/sprites/menuSelectionIcon.png"
 
 // fonts
 #define FONT_PATH "assets/fonts/Pixellettersfull-BnJ5.ttf"

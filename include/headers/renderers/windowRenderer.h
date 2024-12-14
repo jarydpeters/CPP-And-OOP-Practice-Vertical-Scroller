@@ -17,6 +17,8 @@ constexpr int DEFAULT_VERTICAL_RESOLUTION = 720;
 constexpr int TITLE_TEXT_POINT_SIZE = 48;
 constexpr int SUBTITLE_TEXT_POINT_SIZE = 24;
 
+constexpr int FOUR_TIMES_SCALAR = 4;
+
 class WindowRenderer
 {
     public:

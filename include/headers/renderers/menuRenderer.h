@@ -6,8 +6,6 @@
 #include "textRenderer.h"
 #include "windowRenderer.h"
 
-constexpr int FOUR_TIMES_SCALAR = 4;
-
 constexpr int MAIN_MENU_LOGO_HORIZONTAL_SIZE = 130;
 constexpr int MAIN_MENU_LOGO_VERTICAL_SIZE = 46;
 constexpr int MAIN_MENU_LOGO_VERTICAL_OFFSET = 100;

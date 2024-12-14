@@ -27,6 +27,13 @@ class GameplayRenderer : public WindowRenderer
          */
         void renderMainGame();
 
+        /**
+         * advances redballs position for next frame depending on user input
+         */
+        void executeGameplayActionBasedOnEvent(const SDL_Event event);
+
+        void destroyTextures();
+
         SDL_Window* getMainGameWindow();
         void setMainGameWindow(SDL_Window* window);
 
@@ -39,15 +46,36 @@ class GameplayRenderer : public WindowRenderer
         int getPlanesVerticalPosition();
         void setPlanesVerticalPosition(const int newVerticalPosition);
 
+        int getRedballHorizontalPosition();
+        void setRedballHorizontalPosition(const int horizontal);
+
+        int getRedballVerticalPosition();
+        void setRedballVerticalPosition(const int verticalPosition);
+
     private:
 
         TextureRenderer textureRenderer;
 
+        TextureRenderer::TextureWithRect redballTextureWithRect;
+
+        SDL_Texture* redballTexture = redballTextureWithRect.texture;
+        SDL_Rect redballRect = redballTextureWithRect.rectangle;
+
         SDL_Window* mainGameWindow;
         SDL_Renderer* mainGameRenderer;
 
-        int planesCurrentHorizontalPosition;
-        int planesCurrentVerticalPosition;
+        int redballCurrentHorizontalPosition;
+        int redballCurrentVerticalPosition;
+
+        int currentHorizontalResolution;
+        int currentVerticalResolution;
+
+    
+        /**
+         * renders main player sprite during gameplay
+         */
+        void renderRedball();
+
 };
 
 #endif //GAMEPLAY_RENDERER_H

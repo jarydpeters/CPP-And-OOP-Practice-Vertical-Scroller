@@ -105,6 +105,10 @@ int main(int argc, char* argv[])
     {
         frameCount++;
 
+        SDL_RenderClear(mainMenuScreenRenderer);
+        SDL_RenderClear(settingsMenuScreenRenderer);
+        SDL_RenderClear(gameplayScreenRenderer);
+
         Uint32 timeAtStartOfFrame = SDL_GetTicks();
 
         switch(WindowRenderer::currentScreen)
@@ -112,7 +116,6 @@ int main(int argc, char* argv[])
             case(WindowRenderer::MAIN_MENU_SCREEN):
             {
                 SDL_SetRenderDrawColor(mainMenuScreenRenderer, black.r, black.g, black.b, black.a);
-                SDL_RenderClear(mainMenuScreenRenderer);
 
                 while (SDL_PollEvent(&event))
                 {
@@ -133,7 +136,6 @@ int main(int argc, char* argv[])
             case(WindowRenderer::SETTINGS_MENU_SCREEN):
             {
                 SDL_SetRenderDrawColor(settingsMenuScreenRenderer, black.r, black.g, black.b, black.a);
-                SDL_RenderClear(settingsMenuScreenRenderer);
 
                 while (SDL_PollEvent(&event))
                 {
@@ -152,18 +154,18 @@ int main(int argc, char* argv[])
                 break;
             }
             case(WindowRenderer::MAIN_GAME_SCREEN):
-            {
+            {                
                 SDL_SetRenderDrawColor(gameplayScreenRenderer, black.r, black.g, black.b, black.a);
-                SDL_RenderClear(gameplayScreenRenderer);
+                
 
                 while (SDL_PollEvent(&event))
                 {
-                    mainMenuScreen.executeMenuActionBasedOnEvent(event);
+                    gameplayScreen.executeGameplayActionBasedOnEvent(event);
                 }
 
-                mainMenuScreen.renderCurrentScreen(gameplayScreenTitleTextRenderer, gameplayScreenSubtextRenderer);
+                gameplayScreen.renderMainGame();
 
-                mainMenuScreen.destroyTextures();
+                gameplayScreen.destroyTextures();
 
                 break;
             }
