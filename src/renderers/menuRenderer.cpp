@@ -2,6 +2,19 @@
 
 int MenuRenderer::currentlySelectedMenuOption = 0;
 
+int MenuRenderer::menuTextFirstVerticalUIUpperEdgePosition = 0;
+int MenuRenderer::menuTextSecondVerticalUIUpperEdgePosition = 0;
+int MenuRenderer::menuTextThirdVerticalUIUpperEdgePosition = 0;
+int MenuRenderer::menuTextFourthVerticalUIUpperEdgePosition = 0;
+int MenuRenderer::menuTextFifthVerticalUIUpperEdgePosition = 0;
+
+int MenuRenderer::menuTextFirstVerticalUILowerEdgePosition = 0;
+int MenuRenderer::menuTextSecondVerticalUILowerEdgePosition = 0;
+int MenuRenderer::menuTextThirdVerticalUILowerEdgePosition = 0;
+int MenuRenderer::menuTextFourthVerticalUILowerEdgePosition = 0;
+int MenuRenderer::menuTextFifthVerticalUILowerEdgePosition = 0;
+
+
 MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     : WindowRenderer(win, ren)
 {
@@ -121,6 +134,7 @@ void MenuRenderer::updateUIPositions()
     menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
     menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
 }
+
 
 SDL_Texture* MenuRenderer::getMenuSelectionIconTexture()
 {

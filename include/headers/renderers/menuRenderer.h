@@ -86,17 +86,17 @@ class MenuRenderer : public WindowRenderer
         int UISelectionMargin = 4;
 
         //fine tune hitbox of menu options
-        int menuTextFirstVerticalUIUpperEdgePosition;
-        int menuTextSecondVerticalUIUpperEdgePosition;
-        int menuTextThirdVerticalUIUpperEdgePosition;
-        int menuTextFourthVerticalUIUpperEdgePosition;
-        int menuTextFifthVerticalUIUpperEdgePosition;
+        static int menuTextFirstVerticalUIUpperEdgePosition;
+        static int menuTextSecondVerticalUIUpperEdgePosition;
+        static int menuTextThirdVerticalUIUpperEdgePosition;
+        static int menuTextFourthVerticalUIUpperEdgePosition;
+        static int menuTextFifthVerticalUIUpperEdgePosition;
 
-        int menuTextFirstVerticalUILowerEdgePosition;
-        int menuTextSecondVerticalUILowerEdgePosition;
-        int menuTextThirdVerticalUILowerEdgePosition;
-        int menuTextFourthVerticalUILowerEdgePosition;
-        int menuTextFifthVerticalUILowerEdgePosition;
+        static int menuTextFirstVerticalUILowerEdgePosition;
+        static int menuTextSecondVerticalUILowerEdgePosition;
+        static int menuTextThirdVerticalUILowerEdgePosition;
+        static int menuTextFourthVerticalUILowerEdgePosition;
+        static int menuTextFifthVerticalUILowerEdgePosition;
 
         /**
          * switches the currently displayed menu and the selected menu option
