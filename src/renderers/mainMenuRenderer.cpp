@@ -38,25 +38,25 @@ void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, 
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_CONTINUE_TEXT, 
         menuTextFirstVerticalPosition, 
-        ((getCurrentMenuOption() == CONTINUE_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == CONTINUE_INDEX) ? backlitBlack : white), 
         getWindow());
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_NEW_GAME_TEXT, 
         menuTextSecondVerticalPosition, 
-        ((getCurrentMenuOption() == NEW_GAME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == NEW_GAME_INDEX) ? backlitBlack : white), 
         getWindow());
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_SETTINGS_TEXT, 
         menuTextThirdVerticalPosition, 
-        ((getCurrentMenuOption() == SETTINGS_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == SETTINGS_INDEX) ? backlitBlack : white), 
         getWindow());
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         MAIN_MENU_EXIT_TEXT, 
         menuTextFourthVerticalPosition, 
-        ((getCurrentMenuOption() == EXIT_GAME_INDEX) ? black : white), 
+        ((getCurrentMenuOption() == EXIT_GAME_INDEX) ? backlitBlack : white), 
         getWindow());
 
-    SDL_RenderPresent(getRenderer());
+    SDL_GL_SwapWindow(getWindow());
 }
 
 void MainMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)

@@ -40,7 +40,7 @@ class SdlUtility
          * \param flags SDL flags to create window with
          * \returns SDL_Window that has been created with given parameters
          */
-        SDL_Window* createAndVerifySDLWindow(const char* windowName, const int horizontalSize, const int verticalSize, const Uint32 flags);
+        SDL_Window* createAndVerifySDLWindowWithOpenGL(const char* windowName, const int horizontalSize, const int verticalSize, const Uint32 flags);
 
         /**
          * creates an SDL_Renderer based off of given parameters

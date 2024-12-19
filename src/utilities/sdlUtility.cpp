@@ -1,3 +1,4 @@
+#include "openGLUtility.h"
 #include "sdlUtility.h"
 
 SdlUtility::SdlUtility()
@@ -9,6 +10,7 @@ SdlUtility::SdlUtility()
 void SdlUtility::cleanup(TTF_Font* font, SDL_Window* window, SDL_Renderer* renderer, SDL_Texture* texture)
 {
     TTF_CloseFont(font);
+    cleanupOpenGL();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(texture);
@@ -20,12 +22,12 @@ bool SdlUtility::successfulSDLInit()
 {
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0) 
     {
-        std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
         return false;
     }
     else if(TTF_Init() < 0) 
     {
-        std::cerr << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
+        std::cout << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
         SDL_Quit();
         return false;
     }
@@ -35,7 +37,7 @@ bool SdlUtility::successfulSDLInit()
     }
 }
 
-SDL_Window* SdlUtility::createAndVerifySDLWindow(const char* windowName, const int horizontalSize, const int verticalSize, const Uint32 flags)
+SDL_Window* SdlUtility::createAndVerifySDLWindowWithOpenGL(const char* windowName, const int horizontalSize, const int verticalSize, const Uint32 flags)
 {
     SDL_Window* returnWindow = SDL_CreateWindow(
         windowName, 
@@ -47,9 +49,12 @@ SDL_Window* SdlUtility::createAndVerifySDLWindow(const char* windowName, const i
 
     if(returnWindow == nullptr) 
     {
-        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
     }
+
+    initOpenGL(returnWindow);
+
     return returnWindow;
 }
 
@@ -58,7 +63,7 @@ SDL_Renderer* SdlUtility::createAndVerifySDLRenderer(SDL_Window* rendererWindow,
     SDL_Renderer* returnRenderer = SDL_CreateRenderer(rendererWindow, renderingDriverIndex, flags);
     if(returnRenderer == nullptr) 
     {
-        std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+        std::cout << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
         SDL_DestroyWindow(rendererWindow);
         SDL_Quit();
     }
@@ -70,7 +75,7 @@ TTF_Font* SdlUtility::createAndVerifyTTFFont(const char* fontFile, const int fon
     TTF_Font* returnFont = TTF_OpenFont(fontFile, fontPointSize);
     if(returnFont == nullptr) 
     {
-        std::cerr << "Font could not be opened! TTF_Error: " << TTF_GetError() << std::endl;
+        std::cout << "Font could not be opened! TTF_Error: " << TTF_GetError() << std::endl;
         SDL_DestroyRenderer(windowRenderer);
         SDL_DestroyWindow(windowToRenderFontOn);
         SDL_Quit();

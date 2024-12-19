@@ -1,9 +1,12 @@
 CXX = g++
+
 CXXFLAGS = -std=c++17 \
            -Wall \
            -g \
            -Iinclude \
+           -Iinclude/GL \
            -Iinclude/sdl \
+           -Iinclude/stb \
            -Iinclude/headers \
            -Iinclude/headers/renderers \
            -Iinclude/headers/utilities \
@@ -14,7 +17,10 @@ LDFLAGS = -Llib \
           -lSDL2main \
           -lSDL2 \
           -lSDL2_image \
-          -lSDL2_ttf
+          -lSDL2_ttf \
+          -Llib \
+          -lglew32 \
+          -lOpenGL32
 
 # Specify all your source files here
 SRCS = src/main.cpp \
@@ -26,7 +32,9 @@ SRCS = src/main.cpp \
        src/renderers/textureRenderer.cpp \
        src/renderers/windowRenderer.cpp \
        src/utilities/colorDefines.cpp \
+       src/utilities/openGLUtility.cpp \
        src/utilities/sdlUtility.cpp \
+       src/utilities/shaderUtility.cpp \
        src/utilities/settingsManager.cpp \
 
 # Automatically convert .cpp files to .o files in the obj directory
