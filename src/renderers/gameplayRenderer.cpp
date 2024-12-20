@@ -35,7 +35,7 @@ void GameplayRenderer::renderMainGame()
 {
     SDL_GetWindowSize(getWindow(), &currentHorizontalResolution, &currentVerticalResolution);
 
-    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    WindowRenderer::renderFPS(getMenuSubtitleTextFont());
 
     renderRedball();
 
@@ -123,16 +123,6 @@ SDL_Window* GameplayRenderer::getMainGameWindow()
 void GameplayRenderer::setMainGameWindow(SDL_Window* window)
 {
     mainGameWindow = window;
-}
-
-SDL_Renderer* GameplayRenderer::getMainGameWindowRenderer()
-{
-    return mainGameRenderer;
-}
-
-void GameplayRenderer::setMainGameRenderer(SDL_Renderer* renderer)
-{
-    mainGameRenderer = renderer;
 }
 
 int GameplayRenderer::getRedballHorizontalPosition()

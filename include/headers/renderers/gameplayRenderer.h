@@ -40,9 +40,6 @@ class GameplayRenderer : public WindowRenderer
         SDL_Window* getMainGameWindow();
         void setMainGameWindow(SDL_Window* window);
 
-        SDL_Renderer* getMainGameWindowRenderer();
-        void setMainGameRenderer(SDL_Renderer* renderer);
-
         int getPlanesHorizontalPosition();
         void setPlanesHorizontalPosition(const int newHorizontalPosition);
 

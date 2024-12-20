@@ -4,7 +4,6 @@
 #include "assetFilePaths.h"
 #include "colorDefines.h"
 #include "textRenderer.h"
-#include "windowRenderer.h"
 
 constexpr int MAIN_MENU_LOGO_HORIZONTAL_SIZE = 130;
 constexpr int MAIN_MENU_LOGO_VERTICAL_SIZE = 46;
@@ -137,11 +136,6 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         void renderMainMenuLogo();
-
-        /**
-         * 
-         */
-        void renderQuadWithTexture(GLuint textureID, const SDL_Rect& rect);
 
         /**
          * renders white bar menu selection icon on main/settings menu

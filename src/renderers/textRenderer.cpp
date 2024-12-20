@@ -8,91 +8,88 @@ TextRenderer::TextRenderer(TTF_Font* font) : font(font)
 
 }
 
-void TextRenderer::renderText(SDL_Renderer* renderer, const std::string& text, const int textHorizontalPosition, const int textVerticalPosition, const SDL_Color color, SDL_Window* window) 
+void TextRenderer::renderTextWithOpenGL(const std::string& text, const int textHorizontalPosition, const int textVerticalPosition, const SDL_Color color, SDL_Window* window)
 {
-    int textWidth;
-    int textHeight;
-
+    // Get window dimensions
     ReadWindowDimensions(window);
-
+    
+    // Get text width and height
+    int textWidth, textHeight;
     TTF_SizeText(font, text.c_str(), &textWidth, &textHeight);
-
+    
+    // Create the SDL surface from the text
     SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
+    if (textSurface == nullptr)
+    {
+        std::cout << "Error creating text surface: " << TTF_GetError() << std::endl;
+        return;
+    }
+
+    // Generate OpenGL texture from surface
+    GLuint textTexture = createOpenGLTextureFromSurface(textSurface);
+
+    // Define the rectangle for OpenGL rendering
     SDL_Rect textRect = createTextRectangle(textHorizontalPosition, textVerticalPosition, textWidth, textHeight);
 
-    SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
+    // Render the texture with OpenGL
+    renderQuadWithTexture(textTexture, textRect);
 
-    cleanupSurfaceAndTexture(textSurface, textTexture);
+    // Cleanup
+    cleanupSurfaceAndOpenGLTexture(textSurface, textTexture);
 }
 
-void TextRenderer::renderHorizontallyCenteredText(SDL_Renderer *renderer, const std::string &text, const int textVerticalPosition, const SDL_Color color, SDL_Window *window)
+// Helper function to generate an OpenGL texture from SDL surface
+GLuint TextRenderer::createOpenGLTextureFromSurface(SDL_Surface* surface)
 {
-    int textWidth;
-    int textHeight;
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
 
+    // Set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Load the surface data into OpenGL
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surface->w, surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+
+    return textureID;
+}
+
+void TextRenderer::renderText(const std::string& text, const int textHorizontalPosition, const int textVerticalPosition, const SDL_Color color, SDL_Window* window) 
+{
+    renderTextWithOpenGL(text, textHorizontalPosition, textVerticalPosition, color, window);
+}
+
+void TextRenderer::renderHorizontallyCenteredText(const std::string& text, const int textVerticalPosition, const SDL_Color color, SDL_Window* window)
+{
     ReadWindowDimensions(window);
-    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
+    int textWidth, textHeight;
     TTF_SizeText(font, text.c_str(), &textWidth, &textHeight);
-
     int textHorizontalPosition = (windowWidth - textWidth) / 2;
-    SDL_Rect textRect = createTextRectangle(textHorizontalPosition, textVerticalPosition, textWidth, textHeight);
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-
-    SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
-
-    cleanupSurfaceAndTexture(textSurface, textTexture);
+    renderTextWithOpenGL(text, textHorizontalPosition, textVerticalPosition, color, window);
 }
 
-void TextRenderer::renderVerticallyCenteredText(SDL_Renderer* renderer, const std::string& text, const int textHorizontalPosition, const SDL_Color color, SDL_Window* window) 
+void TextRenderer::renderVerticallyCenteredText(const std::string& text, const int textHorizontalPosition, const SDL_Color color, SDL_Window* window) 
 {
-    int textWidth;
-    int textHeight;
-
     ReadWindowDimensions(window);
-    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
+    int textWidth, textHeight;
     TTF_SizeText(font, text.c_str(), &textWidth, &textHeight);
-
     int textVerticalPosition = (windowHeight - textHeight) / 2;
-    SDL_Rect textRect = createTextRectangle(textHorizontalPosition, textVerticalPosition, textWidth, textHeight);
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-
-    SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
-
-    cleanupSurfaceAndTexture(textSurface, textTexture);
+    renderTextWithOpenGL(text, textHorizontalPosition, textVerticalPosition, color, window);
 }
 
-void TextRenderer::renderDoublyCenteredText(SDL_Renderer* renderer, const std::string& text, const SDL_Color color, SDL_Window* window) 
+void TextRenderer::renderDoublyCenteredText(const std::string& text, const SDL_Color color, SDL_Window* window) 
 {
-    int textWidth;
-    int textHeight;
-
     ReadWindowDimensions(window);
-
+    int textWidth, textHeight;
     TTF_SizeText(font, text.c_str(), &textWidth, &textHeight);
-
     int textHorizontalPosition = (windowWidth - textWidth) / 2;
     int textVerticalPosition = (windowHeight - textHeight) / 2;
-    SDL_Rect textRect = createTextRectangle(textHorizontalPosition, textVerticalPosition, textWidth, textHeight);
 
-    SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);
-    SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-
-    SDL_RenderCopy(renderer, textTexture, nullptr, &textRect);
-
-    cleanupSurfaceAndTexture(textSurface, textTexture);
-}
-
-void TextRenderer::changeFont(TTF_Font* newFont)
-{
-    font = newFont;
+    renderTextWithOpenGL(text, textHorizontalPosition, textVerticalPosition, color, window);
 }
 
 SDL_Rect TextRenderer::createTextRectangle(const int textHorizontalPosition, const int textVerticalPosition, const int textWidth, const int textHeight)
@@ -107,14 +104,14 @@ SDL_Rect TextRenderer::createTextRectangle(const int textHorizontalPosition, con
     return textRect;
 }
 
-void TextRenderer::cleanupSurfaceAndTexture(SDL_Surface* textSurface, SDL_Texture* textTexture)
-{
-    SDL_FreeSurface(textSurface);
-    SDL_DestroyTexture(textTexture);
-}
-
 void TextRenderer::ReadWindowDimensions(SDL_Window* window)
 {
     SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+}
+
+void TextRenderer::cleanupSurfaceAndOpenGLTexture(SDL_Surface* surface, GLuint textureID)
+{
+    SDL_FreeSurface(surface);
+    glDeleteTextures(1, &textureID);
 }
 

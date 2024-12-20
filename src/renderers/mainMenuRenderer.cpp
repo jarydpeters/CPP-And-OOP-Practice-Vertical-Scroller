@@ -31,31 +31,35 @@ MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
 
 void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
-    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    WindowRenderer::renderFPS(getMenuSubtitleTextFont());
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
+    menuSubtextRenderer.renderHorizontallyCenteredText(
         MAIN_MENU_CONTINUE_TEXT, 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == CONTINUE_INDEX) ? backlitBlack : white), 
         getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
+    
+    menuSubtextRenderer.renderHorizontallyCenteredText(
         MAIN_MENU_NEW_GAME_TEXT, 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == NEW_GAME_INDEX) ? backlitBlack : white), 
         getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
+    
+    menuSubtextRenderer.renderHorizontallyCenteredText(
         MAIN_MENU_SETTINGS_TEXT, 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == SETTINGS_INDEX) ? backlitBlack : white), 
         getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
+    
+    menuSubtextRenderer.renderHorizontallyCenteredText(
         MAIN_MENU_EXIT_TEXT, 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == EXIT_GAME_INDEX) ? backlitBlack : white), 
         getWindow());
 
+    // Swap the OpenGL window to display the rendered frame
     SDL_GL_SwapWindow(getWindow());
 }
 
