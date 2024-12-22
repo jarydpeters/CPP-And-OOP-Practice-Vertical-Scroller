@@ -48,6 +48,8 @@ class WindowRenderer
         static void setCurrentFPS(const int newCurrentFPS);
 
         static void renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFont);
+        
+        void renderScanLines(SDL_Window* window, SDL_Renderer* renderer, bool renderScanlines);
 
         TTF_Font* getMenuTitleTextFont();
         void setMenuTitleTextFont(TTF_Font* font);
@@ -55,7 +57,13 @@ class WindowRenderer
         TTF_Font* getMenuSubtitleTextFont();
         void setMenuSubtitleTextFont(TTF_Font* font);
 
+        // void destroyTextures();
+
     protected:
+
+        TextureRenderer::TextureWithRect scanlinesTextureWithRect;
+        SDL_Texture* scanlinesTexture;
+        SDL_Rect scanlinesRect;
 
         SettingsManager settingsManager;
         TextureRenderer textureRenderer;

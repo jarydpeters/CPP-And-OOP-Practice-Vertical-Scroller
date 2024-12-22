@@ -32,6 +32,7 @@ MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
 void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
     WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    WindowRenderer::renderScanLines(getWindow(), getRenderer(), true);
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 

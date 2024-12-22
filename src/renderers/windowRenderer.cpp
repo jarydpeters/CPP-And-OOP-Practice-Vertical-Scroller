@@ -122,6 +122,29 @@ void WindowRenderer::renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFon
     }
 }
 
+void WindowRenderer::renderScanLines(SDL_Window* window, SDL_Renderer* renderer, bool renderScanlines)
+{
+    std::cout << "HERE" << std::endl;
+    
+    scanlinesTextureWithRect = textureRenderer.createAndVerifyTexture(
+        0, 
+        0, 
+        SCANLINE_IMAGE_PATH, 
+        getWindow(), 
+        getRenderer());
+    
+    scanlinesTexture = scanlinesTextureWithRect.texture;
+    scanlinesRect = scanlinesTextureWithRect.rectangle;
+
+    //set no interpolation scaling mode
+    SDL_SetTextureScaleMode(scanlinesTexture, SDL_ScaleModeNearest);
+
+    SDL_RenderCopy(getRenderer(), scanlinesTexture, NULL, &scanlinesRect);
+
+    // Clean up the texture and surface
+    SDL_DestroyTexture(scanlinesTexture);
+}
+
 TTF_Font* WindowRenderer::getMenuTitleTextFont()
 {
     return menuTitleFont;
@@ -141,3 +164,13 @@ void WindowRenderer::setMenuSubtitleTextFont(TTF_Font* font)
 {
     menuSubtitleFont = font;
 }
+
+// void WindowRenderer::destroyTextures()
+// {
+//     // Destroy old textures to prevent memory leaks
+//     if(scanlinesTexture != nullptr) 
+//     {
+//         SDL_DestroyTexture(scanlinesTexture);
+//         scanlinesTexture = nullptr;  // Prevent dangling pointer
+//     }
+// }
