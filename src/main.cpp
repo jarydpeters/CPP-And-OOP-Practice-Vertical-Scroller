@@ -2,48 +2,54 @@
 #include <SDL.h>
 #include <iostream>
 
-#include "gameplayRenderer.h"
-#include "mainMenuRenderer.h"
-#include "openGLUtility.h"
-#include "settingsMenuRenderer.h"
-#include "sdlUtility.h"
-#include "textRenderer.h"
-#include "windowRenderer.h"
+// Set up the orthographic projection matrix manually (fixed-function pipeline)
+void setupOrthoProjection() {
+    glMatrixMode(GL_PROJECTION);  // Switch to projection matrix
+    glLoadIdentity();             // Reset the projection matrix
+    glOrtho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f);  // Create an orthographic projection
+    glMatrixMode(GL_MODELVIEW);   // Switch back to modelview matrix
+}
 
-//FPS calculation variable
-Uint32 frameCount = 0;
-Uint32 lastFPSUpdateTime = SDL_GetTicks();
-
-int main(int argc, char* argv[]) 
-{
+int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);  // Initialize SDL2
     SDL_Window* mainWindow = SDL_CreateWindow("OpenGL Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL);
     SDL_GLContext context = SDL_GL_CreateContext(mainWindow);
+    glewInit();  // Initialize GLEW
 
-    initOpenGL(mainWindow);
+    // Set up orthographic projection without shaders
+    setupOrthoProjection();
+
+    // Vertex data for a simple triangle
+    GLfloat vertices[] = {
+        0.0f,  0.5f,
+       -0.5f, -0.5f,
+        0.5f, -0.5f
+    };
 
     // Main loop
     SDL_Event event;
-    while(!WindowRenderer::quitGame)    
-    {
+    bool quitGame = false;
+    while (!quitGame) {
         // Poll events
-        while (SDL_PollEvent(&event)) 
-        {
-            if (event.type == SDL_QUIT) 
-            {
-                WindowRenderer::quitGame = true;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                quitGame = true;
             }
         }
 
         // Clear the screen and set background color to blue for debugging
         glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shaderProgram);
 
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glBindVertexArray(0);
+        // Begin OpenGL rendering of the triangle
+        glBegin(GL_TRIANGLES);  
+        glColor3f(1.0f, 0.0f, 0.0f);  // Set color to red
+        glVertex2f(vertices[0], vertices[1]); // Top vertex
+        glVertex2f(vertices[2], vertices[3]); // Bottom-left vertex
+        glVertex2f(vertices[4], vertices[5]); // Bottom-right vertex
+        glEnd();  // End drawing the triangle
 
+        // Swap the buffers to display the rendered triangle
         SDL_GL_SwapWindow(mainWindow);
     }
 
@@ -51,9 +57,21 @@ int main(int argc, char* argv[])
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(mainWindow);
     SDL_Quit();
-
     return 0;
 }
+
+
+// #include "gameplayRenderer.h"
+// #include "mainMenuRenderer.h"
+// #include "openGLUtility.h"
+// #include "settingsMenuRenderer.h"
+// #include "sdlUtility.h"
+// #include "textRenderer.h"
+// #include "windowRenderer.h"
+
+// //FPS calculation variable
+// Uint32 frameCount = 0;
+// Uint32 lastFPSUpdateTime = SDL_GetTicks();
 
 // SdlUtility sdlUtility;
 
@@ -110,18 +128,18 @@ int main(int argc, char* argv[])
 // TextRenderer gameplayScreenTitleTextRenderer(gameplayScreen.getMenuTitleTextFont());
 // TextRenderer gameplayScreenSubtextRenderer(gameplayScreen.getMenuSubtitleTextFont());
 
-//TODO: MOVE TO UTILITY FILE
-void calculateFPS()
-{
-    Uint32 currentTime = SDL_GetTicks();
-    if(currentTime - lastFPSUpdateTime >= 1000)  // One second has passed since last FPS calculation
-    {
-        WindowRenderer::setCurrentFPS(frameCount);
+// //TODO: MOVE TO UTILITY FILE
+// void calculateFPS()
+// {
+//     Uint32 currentTime = SDL_GetTicks();
+//     if(currentTime - lastFPSUpdateTime >= 1000)  // One second has passed since last FPS calculation
+//     {
+//         WindowRenderer::setCurrentFPS(frameCount);
 
-        frameCount = 0;
-        lastFPSUpdateTime = currentTime;
-    }
-}
+//         frameCount = 0;
+//         lastFPSUpdateTime = currentTime;
+//     }
+// }
 
 // int main(int argc, char* argv[])
 // {    
