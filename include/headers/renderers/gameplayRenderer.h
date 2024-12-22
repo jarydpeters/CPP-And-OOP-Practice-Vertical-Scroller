@@ -1,9 +1,6 @@
 #ifndef GAMEPLAY_RENDERER_H
 #define GAMEPLAY_RENDERER_H
 
-#include <iostream>
-#include <glew.h>
-
 #include "assetFilePaths.h"
 #include "colorDefines.h"
 #include "textRenderer.h"
@@ -61,7 +58,7 @@ class GameplayRenderer : public WindowRenderer
 
         TextureRenderer::TextureWithRect redballTextureWithRect;
 
-        GLuint redballTexture = redballTextureWithRect.texture;
+        SDL_Texture* redballTexture = redballTextureWithRect.texture;
         SDL_Rect redballRect = redballTextureWithRect.rectangle;
 
         SDL_Window* mainGameWindow;

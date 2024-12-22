@@ -11,11 +11,6 @@
 // fonts
 #define FONT_PATH "assets/fonts/Pixellettersfull-BnJ5.ttf"
 
-//shaders
-
-#define VERTEX_SHADER_PATH "assets/shaders/vertexShader.glsl"
-#define BARREL_DISTORTION_SHADER_PATH "assets/shaders/barrelDistortionShader.glsl"
-
 //settings
 const std::string settingsFilePath = "settings/settings.txt";
 

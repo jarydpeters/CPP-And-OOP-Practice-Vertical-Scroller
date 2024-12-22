@@ -76,6 +76,7 @@ class MenuRenderer : public WindowRenderer
 
         SDL_Texture* mainMenuLogoTexture;
         SDL_Rect mainMenuLogoRect;
+        TextureRenderer::TextureWithRect menuLogoTextureWithRect;
 
         int menuSelectionIconVerticalPosition;
 
@@ -137,11 +138,6 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         void renderMainMenuLogo();
-
-        /**
-         * 
-         */
-        void renderQuadWithTexture(GLuint textureID, const SDL_Rect& rect);
 
         /**
          * renders white bar menu selection icon on main/settings menu

@@ -1,6 +1,5 @@
 #include "gameplayRenderer.h"
 #include "mainMenuRenderer.h"
-#include "openGLUtility.h"
 #include "settingsMenuRenderer.h"
 #include "sdlUtility.h"
 #include "textRenderer.h"
@@ -16,7 +15,7 @@ SdlUtility sdlUtility;
 
 //TODO: DO WINDOWS NEED TO BE UNIQUE PER SCREEN OR JUST ONE OVERALL?
 // Create the window for the title screen
-SDL_Window* mainWindow = sdlUtility.createAndVerifySDLWindowWithOpenGL(
+SDL_Window* mainWindow = sdlUtility.createAndVerifySDLWindow(
     "mainWindow", 
     DEFAULT_HORIZONTAL_RESOLUTION, 
     DEFAULT_VERTICAL_RESOLUTION, 
@@ -66,7 +65,6 @@ SDL_Renderer* gameplayScreenRenderer = gameplayScreen.getMainGameWindowRenderer(
 TextRenderer gameplayScreenTitleTextRenderer(gameplayScreen.getMenuTitleTextFont());
 TextRenderer gameplayScreenSubtextRenderer(gameplayScreen.getMenuSubtitleTextFont());
 
-//TODO: MOVE TO UTILITY FILE
 void calculateFPS()
 {
     Uint32 currentTime = SDL_GetTicks();
@@ -107,11 +105,9 @@ int main(int argc, char* argv[])
     {
         frameCount++;
 
-        // Clear screen using OpenGL
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // Use the shader program for rendering
-        glUseProgram(shaderProgram);
+        SDL_RenderClear(mainMenuScreenRenderer);
+        SDL_RenderClear(settingsMenuScreenRenderer);
+        SDL_RenderClear(gameplayScreenRenderer);
 
         Uint32 timeAtStartOfFrame = SDL_GetTicks();
 
@@ -119,7 +115,7 @@ int main(int argc, char* argv[])
         {
             case(WindowRenderer::MAIN_MENU_SCREEN):
             {
-                glClearColor(0.1f, 0.1f, 0.1f, 1.0f);  // Dark background for main menu
+                SDL_SetRenderDrawColor(mainMenuScreenRenderer, black.r, black.g, black.b, black.a);
 
                 while (SDL_PollEvent(&event))
                 {
@@ -139,7 +135,7 @@ int main(int argc, char* argv[])
             }
             case(WindowRenderer::SETTINGS_MENU_SCREEN):
             {
-                glClearColor(0.1f, 0.1f, 0.1f, 1.0f);  // Dark background for main menu
+                SDL_SetRenderDrawColor(settingsMenuScreenRenderer, black.r, black.g, black.b, black.a);
 
                 while (SDL_PollEvent(&event))
                 {
@@ -159,7 +155,8 @@ int main(int argc, char* argv[])
             }
             case(WindowRenderer::MAIN_GAME_SCREEN):
             {                
-                glClearColor(0.1f, 0.1f, 0.1f, 1.0f);  // Dark background for main menu                
+                SDL_SetRenderDrawColor(gameplayScreenRenderer, black.r, black.g, black.b, black.a);
+                
 
                 while (SDL_PollEvent(&event))
                 {
@@ -181,16 +178,12 @@ int main(int argc, char* argv[])
                 break;
             }
         }
-
-        SDL_GL_SwapWindow(mainWindow);
-
         firstLoop = false;
 
         Uint32 timeElapsedOverLoop = SDL_GetTicks() - timeAtStartOfFrame;
 
         calculateFPS();
 
-        //TODO: MOVE TO UTILITY FILE
         //TODO: SET UP WINDOW RENDERER TO RENDER FPS FOR DEBUG/AS OPTION
         if(timeElapsedOverLoop < FRAME_DELAY)
         {

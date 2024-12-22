@@ -38,27 +38,27 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_FULLSCREEN_TEXT, 
         menuTextFirstVerticalPosition, 
-        ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
         getWindow());
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_RESOLUTION_TEXT, 
         menuTextSecondVerticalPosition, 
-        ((getCurrentMenuOption() == RESOLUTION_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         getWindow());
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
         menuTextThirdVerticalPosition, 
-        ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         getWindow());
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
         menuTextFourthVerticalPosition, 
-        ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         getWindow());
     menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
         menuTextFifthVerticalPosition, 
-        ((getCurrentMenuOption() == RETURN_TO_MAIN_MENU_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
         getWindow());
 
     //render fullscreen toggle icon
@@ -66,7 +66,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextFirstVerticalPosition, 
-        ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
         getWindow());
 
     //render resolution selection icon
@@ -74,7 +74,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextSecondVerticalPosition, 
-        ((getCurrentMenuOption() == RESOLUTION_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         getWindow());
 
     //render music and sound effects volume selection icons
@@ -82,14 +82,14 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextThirdVerticalPosition, 
-        ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         getWindow());
 
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextFourthVerticalPosition, 
-        ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? backlitBlack : white), 
+        ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         getWindow());
 
     SDL_RenderPresent(getRenderer());

@@ -2,7 +2,6 @@
 #define WINDOW_RENDERER_H
 
 #include <map>
-#include <glew.h>
 #include <SDL.h>
 #include <string>
 #include <vector>

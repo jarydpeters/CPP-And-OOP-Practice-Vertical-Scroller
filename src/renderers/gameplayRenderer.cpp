@@ -11,7 +11,6 @@ GameplayRenderer::GameplayRenderer(SdlUtility sdlUtility,
 {
     SDL_SetWindowResizable(getWindow(), SDL_bool::SDL_FALSE);
 
-    //TODO: Initialize font rendering using OpenGL (need to implement or use FreeType for this)
     TTF_Font* titleFont = sdlUtility.createAndVerifyTTFFont(FONT_PATH, 
         TITLE_TEXT_POINT_SIZE, 
         getWindow(), 
@@ -39,65 +38,35 @@ void GameplayRenderer::renderMainGame()
 
     renderRedball();
 
-    SDL_GL_SwapWindow(getWindow());
+    SDL_RenderPresent(getRenderer());
 }
 
 void GameplayRenderer::renderRedball()
 {
-    // Create the OpenGL texture for the redball
-    TextureRenderer::TextureWithRect textureWithRect = textureRenderer.createAndVerifyOpenGLTexture(
-        100, //redballCurrentHorizontalPosition,
-        100, //redballCurrentVerticalPosition,
-        REDBALL_GAMEPLAY_SPRITE_PATH);
+    redballTextureWithRect = textureRenderer.createAndVerifyTexture(
+        100,//redballCurrentHorizontalPosition,
+        100,//redballCurrentVerticalPosition,
+        REDBALL_GAMEPLAY_SPRITE_PATH,
+        getWindow(),
+        getRenderer());
 
-    redballTexture = textureWithRect.texture;
-    redballRect = textureWithRect.rectangle;
+    redballTexture = redballTextureWithRect.texture;
+    redballRect = redballTextureWithRect.rectangle;
 
-    if (redballTexture == 0) 
+    //set no interpolation scaling mode
+    SDL_SetTextureScaleMode(redballTexture, SDL_ScaleModeNearest);
+
+    redballRect.w *= FOUR_TIMES_SCALAR;
+    redballRect.h *= FOUR_TIMES_SCALAR;
+
+    SDL_RenderCopy(getRenderer(), redballTexture, NULL, &redballRect);
+
+    if (redballTexture == nullptr) 
     {
-        std::cout << "Failed to load redball texture" << std::endl;
-        return;
+    std::cout << "Failed to load redball texture" << std::endl;
+    return;
     }
 
-    // Set up OpenGL texture parameters and drawing
-    glBindTexture(GL_TEXTURE_2D, redballTexture);
-
-    // Optionally set up texture filtering and wrapping
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // Render the redball as a textured quad
-    GLfloat vertices[] = {
-        static_cast<GLfloat>(redballRect.x), static_cast<GLfloat>(redballRect.y), 0.0f, 0.0f, 0.0f, // Bottom-left corner
-        static_cast<GLfloat>(redballRect.x + redballRect.w), static_cast<GLfloat>(redballRect.y), 1.0f, 0.0f, 0.0f, // Bottom-right corner
-        static_cast<GLfloat>(redballRect.x + redballRect.w), static_cast<GLfloat>(redballRect.y + redballRect.h), 1.0f, 1.0f, 0.0f, // Top-right corner
-        static_cast<GLfloat>(redballRect.x), static_cast<GLfloat>(redballRect.y + redballRect.h), 0.0f, 1.0f, 0.0f  // Top-left corner
-    };
-
-    GLuint VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    // Define the layout of the vertex data
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // Draw the textured quad
-    glDrawArrays(GL_QUADS, 0, 4);
-
-    // Clean up
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void GameplayRenderer::executeGameplayActionBasedOnEvent(const SDL_Event event)
@@ -107,12 +76,12 @@ void GameplayRenderer::executeGameplayActionBasedOnEvent(const SDL_Event event)
 
 void GameplayRenderer::destroyTextures()
 {
-    // Clean up textures (OpenGL)
-    if (redballTexture != 0) 
-    {
-        glDeleteTextures(1, &redballTexture);
-        redballTexture = 0;
-    }
+    // // Destroy old textures to prevent memory leaks
+    // if(mainMenuLogoTexture != nullptr) 
+    // {
+    //     SDL_DestroyTexture(mainMenuLogoTexture);
+    //     mainMenuLogoTexture = nullptr;  // Prevent dangling pointer
+    // }
 }
 
 SDL_Window* GameplayRenderer::getMainGameWindow()

@@ -7,9 +7,7 @@
                 "${workspaceFolder}",
                 "${workspaceFolder}/include",
                 "${workspaceFolder}/include/sdl",
-                "${workspaceFolder}/include/headers",
-                "${workspaceFolder}/include/GL",
-                "${workspaceFolder}/include/stb"
+                "${workspaceFolder}/include/headers"
             ],
             "defines": [
                 "_DEBUG",
