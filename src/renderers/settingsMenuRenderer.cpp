@@ -31,75 +31,69 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
 
 void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
-    WindowRenderer::renderFPS(getMenuSubtitleTextFont());
+    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
-    menuSubtextRenderer.renderHorizontallyCenteredText(
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_FULLSCREEN_TEXT, 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? backlitBlack : white), 
         getWindow());
-
-    menuSubtextRenderer.renderHorizontallyCenteredText(
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_RESOLUTION_TEXT, 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? backlitBlack : white), 
         getWindow());
-
-    menuSubtextRenderer.renderHorizontallyCenteredText(
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? backlitBlack : white), 
         getWindow());
-
-    menuSubtextRenderer.renderHorizontallyCenteredText(
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? backlitBlack : white), 
         getWindow());
-
-    menuSubtextRenderer.renderHorizontallyCenteredText(
+    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
         SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
         menuTextFifthVerticalPosition, 
         ((getCurrentMenuOption() == RETURN_TO_MAIN_MENU_INDEX) ? backlitBlack : white), 
         getWindow());
 
-    // Render fullscreen toggle icon
-    menuSubtextRenderer.renderText(
+    //render fullscreen toggle icon
+    menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextFirstVerticalPosition, 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? backlitBlack : white), 
         getWindow());
 
-    // Render resolution selection icon
-    menuSubtextRenderer.renderText(
-        (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), 
+    //render resolution selection icon
+    menuSubtextRenderer.renderText(getRenderer(), 
+        (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextSecondVerticalPosition, 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? backlitBlack : white), 
         getWindow());
 
-    // Render music volume selection icon
-    menuSubtextRenderer.renderText(
+    //render music and sound effects volume selection icons
+    menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextThirdVerticalPosition, 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? backlitBlack : white), 
         getWindow());
 
-    // Render sound effects volume selection icon
-    menuSubtextRenderer.renderText(
+    menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? backlitBlack : white), 
         getWindow());
 
-    SDL_GL_SwapWindow(getWindow()); // Swap the OpenGL buffers
+    SDL_RenderPresent(getRenderer());
 }
-
 
 void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {

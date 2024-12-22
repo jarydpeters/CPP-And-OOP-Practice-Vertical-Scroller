@@ -1,13 +1,8 @@
 #ifndef TEXT_RENDERER_H
 #define TEXT_RENDERER_H
 
-#include <glew.h>
-#include <iostream>
 #include <SDL_ttf.h>
 #include <string>
-
-#include "openGLUtility.h"
-#include "windowRenderer.h"
 
 class TextRenderer
 {
@@ -22,6 +17,7 @@ class TextRenderer
         /**
          * Renders text centered at a given horizontal and vertical position
          *
+         * \param renderer the rendering context
          * \param text the string to be rendered
          * \param textHorizontalPosition the X coordinate at which to render the text
          * \param textVerticalPosition the Y coordinate at which to render the text
@@ -29,27 +25,42 @@ class TextRenderer
          * \param window
          * \returns void
          */
-        void renderTextWithOpenGL(const std::string& text, const int textHorizontalPosition, const int textVerticalPosition, const SDL_Color color, SDL_Window* window);
+        void renderText(SDL_Renderer* renderer, const std::string& text, const int textHorizontalPosition, const int textVerticalPosition, const SDL_Color color, SDL_Window* window);
 
         /**
-         * 
+         * Renders text centered Horizontaly and at a given vertical position
+         *
+         * \param renderer the rendering context
+         * \param text the string to be rendered
+         * \param textVerticalPosition the Y coordinate at which to render the text
+         * \param color the color to render the text in
+         * \param window
+         * \returns void
          */
-        void renderText(const std::string& text, const int textHorizontalPosition, const int textVerticalPosition, const SDL_Color color, SDL_Window* window);
+        void renderHorizontallyCenteredText(SDL_Renderer* renderer, const std::string& text, const int textVerticalPosition, const SDL_Color color, SDL_Window* window);
 
         /**
-         * 
+         * Renders text centered Verticaly and at a given horizontal position
+         *
+         * \param renderer the rendering context
+         * \param text the string to be rendered
+         * \param textHorizontalPosition the X coordinate at which to render the text
+         * \param color the color to render the text in
+         * \param window
+         * \returns void
          */
-        void renderHorizontallyCenteredText(const std::string& text, const int textVerticalPosition, const SDL_Color color, SDL_Window* window);
-        
+        void renderVerticallyCenteredText(SDL_Renderer* renderer, const std::string& text, const int textHorizontalPosition, const SDL_Color color, SDL_Window* window);
+
         /**
-         * 
+         * Renders text centered Verticaly and Horizontaly
+         *
+         * \param renderer the rendering context
+         * \param text the string to be rendered
+         * \param color the color to render the text in
+         * \param window
+         * \returns void
          */
-        void renderVerticallyCenteredText(const std::string& text, const int textHorizontalPosition, const SDL_Color color, SDL_Window* window);
-        
-        /**
-         * 
-         */
-        void renderDoublyCenteredText(const std::string& text, const SDL_Color color, SDL_Window* window);
+        void renderDoublyCenteredText(SDL_Renderer* renderer, const std::string& text, const SDL_Color color, SDL_Window* window);
 
         /**
          * changes font of created TextRenderer
@@ -68,19 +79,22 @@ class TextRenderer
         /**
          * creates an SDL_Rect of size and position of given text paramters
          * 
-         * \param surface surface to generate texture from
-         * \returns GLuint of texture created from the given position and size
+         * \param textHorizontalPosition horizontal position of text
+         * \param textVerticalPosition vertical position of text
+         * \param textWidth width of text
+         * \param textHeight height of text
+         * \returns SDL_Rect of text created from the given position and size
          */
-        GLuint createOpenGLTextureFromSurface(SDL_Surface* surface);
+        SDL_Rect createTextRectangle(const int textHorizontalPosition, const int textVerticalPosition, const int textWidth, const int textHeight);
 
         /**
          * frees surface and destroys texture
          * 
-         * \param surface surface to be freed
-         * \param textureID texture to be destroyed
+         * \param textSurface surface to be freed
+         * \param textTexture texture to be destroyed
          * \returns void
          */
-        void cleanupSurfaceAndOpenGLTexture(SDL_Surface* surface, GLuint textureID);
+        void cleanupSurfaceAndTexture(SDL_Surface* textSurface, SDL_Texture* textTexture);
 
         /**
          * updates class parameters for window height and width
@@ -89,11 +103,6 @@ class TextRenderer
          * \returns void
          */
         void ReadWindowDimensions(SDL_Window* window);
-
-        /**
-         * 
-         */
-        SDL_Rect createTextRectangle(const int textHorizontalPosition, const int textVerticalPosition, const int textWidth, const int textHeight);
 };
 
 #endif // TEXT_RENDERER_H

@@ -18,7 +18,7 @@ TextureRenderer::TextureWithRect TextureRenderer::createAndVerifyOpenGLTexture(i
 
     if (!imageData)
     {
-        std::cout << "Failed to load texture: " << imagePath << std::endl;
+        std::cerr << "Failed to load texture: " << imagePath << std::endl;
         return textureWithRect;  // Return an empty structure if texture creation fails
     }
 
@@ -86,6 +86,7 @@ void TextureRenderer::renderTexture(const TextureWithRect& textureWithRect)
         static_cast<GLfloat>(textureWithRect.rectangle.y + textureWithRect.rectangle.h), 
         0.0f, 1.0f, 0.0f // Top-left corner
     };
+
 
     GLuint VBO, VAO;
     glGenVertexArrays(1, &VAO);

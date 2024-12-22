@@ -8,7 +8,6 @@
 #include <vector>
 
 #include "colorDefines.h"
-#include "openGLUtility.h"
 #include "sdlUtility.h"
 #include "settingsManager.h"
 #include "textureRenderer.h"
@@ -49,7 +48,7 @@ class WindowRenderer
         static int getCurrentFPS();
         static void setCurrentFPS(const int newCurrentFPS);
 
-        static void renderFPS(TTF_Font* menuSubtitleFont);
+        static void renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFont);
 
         TTF_Font* getMenuTitleTextFont();
         void setMenuTitleTextFont(TTF_Font* font);

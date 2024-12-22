@@ -11,7 +11,6 @@
 
 void initOpenGL(SDL_Window* window);
 void cleanupOpenGL();
-void renderQuadWithTexture(GLuint textureID, const SDL_Rect& rect);
 
 extern SDL_GLContext glContext;
 extern GLuint shaderProgram;

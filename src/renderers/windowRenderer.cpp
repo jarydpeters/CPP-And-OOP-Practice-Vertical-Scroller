@@ -18,7 +18,6 @@ int WindowRenderer::menuTextThirdVerticalPosition = menuTextSecondVerticalPositi
 int WindowRenderer::menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (50);
 int WindowRenderer::menuTextFifthVerticalPosition = menuTextFourthVerticalPosition + (50);
 
-//TODO: REMOVE ALL SDL RENDERERS
 WindowRenderer::WindowRenderer(SDL_Window* win, SDL_Renderer* ren)
 {
     window = win;
@@ -85,7 +84,7 @@ void WindowRenderer::setCurrentVerticalResolution(const int verticalResolution)
     resolution.currentVerticalResolution = verticalResolution;
 }
 
-void WindowRenderer::renderFPS(TTF_Font* menuSubtitleFont)
+void WindowRenderer::renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFont)
 {
     if (displayFPS)
     {
@@ -101,63 +100,25 @@ void WindowRenderer::renderFPS(TTF_Font* menuSubtitleFont)
             return;
         }
 
-        // Generate an OpenGL texture from the SDL surface
-        GLuint textTexture;
-        glGenTextures(1, &textTexture);
-        glBindTexture(GL_TEXTURE_2D, textTexture);
+        // Create a texture from the surface
+        SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 
-        // Upload the surface data to the texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textSurface->w, textSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, textSurface->pixels);
-
-        // Set texture filtering options
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        // Set up the destination rectangle for rendering (top-left corner)
-        GLfloat x = 10.0f;
-        GLfloat y = 10.0f;
-        GLfloat width = static_cast<GLfloat>(textSurface->w);
-        GLfloat height = static_cast<GLfloat>(textSurface->h);
-
-        GLfloat vertices[] = 
+        if(textTexture == nullptr)
         {
-            static_cast<GLfloat>(x),               static_cast<GLfloat>(y),                0.0f, 0.0f, // Bottom-left corner
-            static_cast<GLfloat>(x + width),       static_cast<GLfloat>(y),                1.0f, 0.0f, // Bottom-right corner
-            static_cast<GLfloat>(x + width),       static_cast<GLfloat>(y + height),       1.0f, 1.0f, // Top-right corner
-            static_cast<GLfloat>(x),               static_cast<GLfloat>(y + height),       0.0f, 1.0f  // Top-left corner
-        };
+            std::cout << "Error creating texture: " << SDL_GetError() << std::endl;
+            SDL_FreeSurface(textSurface); // Clean up the surface
+            return;
+        }
 
-         // Clean up the SDL surface now that we've uploaded it to an OpenGL texture
+        // Set the destination rectangle for rendering (top-left corner)
+        SDL_Rect renderQuad = {10, 10, textSurface->w, textSurface->h};
+
+        // Render the text to the screen
+        SDL_RenderCopy(renderer, textTexture, nullptr, &renderQuad);
+
+        // Clean up the texture and surface
+        SDL_DestroyTexture(textTexture);
         SDL_FreeSurface(textSurface);
-
-        // Use the shader program
-        //glUseProgram(shaderProgram);
-
-        // Set up the vertex buffer and attributes (assuming you have VBO/VAO set up)
-        GLuint VBO, VAO;
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-
-        glBindVertexArray(VAO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        // Enable the position and texture coordinates attributes (adjust the attribute pointers as necessary)
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0); // Vertex position
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat))); // Texture coordinates
-        glEnableVertexAttribArray(1);
-
-        // Bind the texture and draw the quad
-        glBindTexture(GL_TEXTURE_2D, textTexture);
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-
-        // Clean up
-        glDeleteTextures(1, &textTexture);
-        glDeleteBuffers(1, &VBO);
-        glDeleteVertexArrays(1, &VAO);
     }
 }
 
