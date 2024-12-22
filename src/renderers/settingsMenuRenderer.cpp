@@ -35,37 +35,20 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        SETTINGS_MENU_FULLSCREEN_TEXT, 
-        menuTextFirstVerticalPosition, 
-        ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
-        getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        SETTINGS_MENU_RESOLUTION_TEXT, 
-        menuTextSecondVerticalPosition, 
-        ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
-        getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        SETTINGS_MENU_MUSIC_VOLUME_TEXT, 
-        menuTextThirdVerticalPosition, 
-        ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
-        getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT, 
-        menuTextFourthVerticalPosition, 
-        ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
-        getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT, 
-        menuTextFifthVerticalPosition, 
-        ((getCurrentMenuOption() == RETURN_TO_MAIN_MENU_INDEX) ? black : white), 
-        getWindow());
+    for(int menuOption = 0; menuOption < NUMBER_OF_SETTINGS_OPTIONS; menuOption++)
+    {
+        menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
+            settingsMenuOptionsText[menuOption], 
+            menuOptionsVerticalPositions[menuOption], 
+            ((getCurrentMenuOption() == menuOption) ? black : white), 
+            getWindow());
+    }
 
     //render fullscreen toggle icon
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuTextFirstVerticalPosition, 
+        menuOptionsVerticalPositions[0], 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
         getWindow());
 
@@ -73,7 +56,7 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuTextSecondVerticalPosition, 
+        menuOptionsVerticalPositions[1], 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         getWindow());
 
@@ -81,14 +64,14 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuTextThirdVerticalPosition, 
+        menuOptionsVerticalPositions[2], 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         getWindow());
 
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuTextFourthVerticalPosition, 
+        menuOptionsVerticalPositions[3], 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         getWindow());
 
@@ -102,19 +85,11 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     if(event.key.keysym.sym == SDLK_UP)
     {
-        setCurrentMenuOption(getCurrentMenuOption() - 1);
-        if(getCurrentMenuOption() < FULLSCREEN_INDEX)
-        {
-            setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
-        }
+        advanceToNextMenuOption();
     }   
     else if(event.key.keysym.sym == SDLK_DOWN)
     {
-        setCurrentMenuOption(getCurrentMenuOption() + 1);
-        if(getCurrentMenuOption() > RETURN_TO_MAIN_MENU_INDEX)
-        {
-            setCurrentMenuOption(FULLSCREEN_INDEX);
-        }
+        returnToPreviousMenuOption();
     } 
     else if(event.key.keysym.sym == SDLK_LEFT)
     {
@@ -219,6 +194,24 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
     }   
 }
 
+void SettingsMenuRenderer::advanceToNextMenuOption()
+{
+    setCurrentMenuOption(getCurrentMenuOption() + 1);
+    if(getCurrentMenuOption() > RETURN_TO_MAIN_MENU_INDEX)
+    {
+        setCurrentMenuOption(FULLSCREEN_INDEX);
+    }
+}
+
+void SettingsMenuRenderer::returnToPreviousMenuOption()
+{
+    setCurrentMenuOption(getCurrentMenuOption() - 1);
+    if(getCurrentMenuOption() < FULLSCREEN_INDEX)
+    {
+        setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
+    }
+}
+
 void SettingsMenuRenderer::evaluateMouseMotionEvent()
 {
     SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
@@ -250,20 +243,12 @@ void SettingsMenuRenderer::evaluateMouseWheelEvent(const SDL_Event event)
     //scroll up
     if(event.wheel.y < 0)
     {
-        setCurrentMenuOption(getCurrentMenuOption() + 1);
-        if(getCurrentMenuOption() > RETURN_TO_MAIN_MENU_INDEX)
-        {
-            setCurrentMenuOption(FULLSCREEN_INDEX);
-        }
+        advanceToNextMenuOption();
     }
     //scroll down
     else if(event.wheel.y > 0)
     {
-        setCurrentMenuOption(getCurrentMenuOption() - 1);
-        if(getCurrentMenuOption() < FULLSCREEN_INDEX)
-        {
-            setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
-        }
+        returnToPreviousMenuOption();
     }
 }
 

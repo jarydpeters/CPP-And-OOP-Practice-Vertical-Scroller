@@ -35,6 +35,14 @@ class MainMenuRenderer : public MenuRenderer
         #define MAIN_MENU_SETTINGS_TEXT "SETTINGS"
         #define MAIN_MENU_EXIT_TEXT "EXIT GAME"
 
+        std::map<int, const std::string> mainMenuOptionsText =
+        {
+            {0, "CONTINUE"},
+            {1, "NEW GAME"},
+            {2, "SETTINGS"},
+            {3, "EXIT GAME"},
+        };
+
         /**
          * manipulates menu based off of keystroke event
          *
@@ -65,6 +73,16 @@ class MainMenuRenderer : public MenuRenderer
          * \returns void
          */
         void evaluateMouseWheelEvent(const SDL_Event event) override;
+
+        /**
+         * moves forward one menu option
+         */
+        void advanceToNextMenuOption() override;
+
+        /**
+         * moves back one menu option
+         */
+        void returnToPreviousMenuOption() override;
 };
 
 #endif // MAIN_MENU_RENDERER_H

@@ -14,6 +14,7 @@ int MenuRenderer::menuTextThirdVerticalUILowerEdgePosition = 0;
 int MenuRenderer::menuTextFourthVerticalUILowerEdgePosition = 0;
 int MenuRenderer::menuTextFifthVerticalUILowerEdgePosition = 0;
 
+std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> MenuRenderer::menuOptionsVerticalPositions;
 
 MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     : WindowRenderer(win, ren)
@@ -116,23 +117,18 @@ void MenuRenderer::updateUIPositions()
 {
     menuTitleLogoVerticalPosition = getCurrentVerticalResolution() / 3.0;
 
-    menuTextFirstVerticalPosition = menuTitleLogoVerticalPosition + (150);
-    menuTextSecondVerticalPosition = menuTextFirstVerticalPosition + (50);
-    menuTextThirdVerticalPosition = menuTextSecondVerticalPosition + (50);
-    menuTextFourthVerticalPosition = menuTextThirdVerticalPosition + (50);
-    menuTextFifthVerticalPosition = menuTextFourthVerticalPosition + (50);
+    menuOptionsVerticalPositions[0] = menuTitleLogoVerticalPosition + (MENU_OPTION_INITIAL_OFFSET);
 
-    menuTextFirstVerticalUIUpperEdgePosition = menuTextFirstVerticalPosition - UISelectionMargin;
-    menuTextSecondVerticalUIUpperEdgePosition = menuTextSecondVerticalPosition - UISelectionMargin;
-    menuTextThirdVerticalUIUpperEdgePosition = menuTextThirdVerticalPosition - UISelectionMargin;
-    menuTextFourthVerticalUIUpperEdgePosition = menuTextFourthVerticalPosition - UISelectionMargin;
-    menuTextFifthVerticalUIUpperEdgePosition = menuTextFifthVerticalPosition - UISelectionMargin;
+    for(int menuOption = 1; menuOption < NUMBER_OF_SETTINGS_OPTIONS; menuOption++)
+    {
+        menuOptionsVerticalPositions[menuOption] = (menuOptionsVerticalPositions[menuOption - 1] + MENU_OPTION_SUBSEQUENT_OFFSET);
+    }
 
-    menuTextFirstVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    // menuTextFirstVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    // menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    // menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    // menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    // menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
 }
 
 
@@ -218,34 +214,7 @@ void MenuRenderer::renderMenuOptionSelectionSprite()
 {
     int menuSelectionIconVerticalPosition;
 
-    switch(currentlySelectedMenuOption)
-    {
-        case(0):
-        {
-            menuSelectionIconVerticalPosition = (menuTextFirstVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
-            break;
-        }
-        case(1):
-        {
-            menuSelectionIconVerticalPosition = (menuTextSecondVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
-            break;
-        }
-        case(2):
-        {
-            menuSelectionIconVerticalPosition = (menuTextThirdVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
-            break;
-        }
-        case(3):
-        {
-            menuSelectionIconVerticalPosition = (menuTextFourthVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
-            break;
-        }
-        case(4):
-        {
-            menuSelectionIconVerticalPosition = (menuTextFifthVerticalPosition - MENU_SELECTION_ICON_VERTICAL_OFFSET);
-            break;
-        }
-    }
+    menuSelectionIconVerticalPosition = (menuOptionsVerticalPositions[currentlySelectedMenuOption] - MENU_SELECTION_ICON_VERTICAL_OFFSET);
 
     menuSelectionIconTextureWithRect = textureRenderer.createAndVerifyTexture(
         0, //place on far left side of screen

@@ -35,26 +35,14 @@ void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, 
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        MAIN_MENU_CONTINUE_TEXT, 
-        menuTextFirstVerticalPosition, 
-        ((getCurrentMenuOption() == CONTINUE_INDEX) ? black : white), 
-        getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        MAIN_MENU_NEW_GAME_TEXT, 
-        menuTextSecondVerticalPosition, 
-        ((getCurrentMenuOption() == NEW_GAME_INDEX) ? black : white), 
-        getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        MAIN_MENU_SETTINGS_TEXT, 
-        menuTextThirdVerticalPosition, 
-        ((getCurrentMenuOption() == SETTINGS_INDEX) ? black : white), 
-        getWindow());
-    menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
-        MAIN_MENU_EXIT_TEXT, 
-        menuTextFourthVerticalPosition, 
-        ((getCurrentMenuOption() == EXIT_GAME_INDEX) ? black : white), 
-        getWindow());
+    for(int menuOption = 0; menuOption < NUMBER_OF_MAIN_MENU_OPTIONS; menuOption++)
+    {
+        menuSubtextRenderer.renderHorizontallyCenteredText(getRenderer(), 
+            mainMenuOptionsText[menuOption], 
+            menuOptionsVerticalPositions[menuOption], 
+            ((getCurrentMenuOption() == menuOption) ? black : white), 
+            getWindow());
+    }
 
     //TODO: make setting
     WindowRenderer::renderScanLines(getRenderer());
@@ -66,19 +54,11 @@ void MainMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     if(event.key.keysym.sym == SDLK_UP)
     {
-        setCurrentMenuOption(getCurrentMenuOption() - 1);
-        if(getCurrentMenuOption() < CONTINUE_INDEX)
-        {
-            setCurrentMenuOption(EXIT_GAME_INDEX);
-        }
+        advanceToNextMenuOption();
     }   
     else if(event.key.keysym.sym == SDLK_DOWN)
     {
-        setCurrentMenuOption(getCurrentMenuOption() + 1);
-        if(getCurrentMenuOption() > EXIT_GAME_INDEX)
-        {
-            setCurrentMenuOption(CONTINUE_INDEX);
-        }
+        returnToPreviousMenuOption();
     } 
     else if(event.key.keysym.sym == SDLK_RETURN)
     {
@@ -126,10 +106,6 @@ void MainMenuRenderer::evaluateMouseMotionEvent()
     {
         setCurrentMenuOption(EXIT_GAME_INDEX);
     }
-    else if((menuTextFifthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFifthVerticalUILowerEdgePosition))
-    {
-        //no fifth option on main menu
-    }
 }
 
 
@@ -138,20 +114,12 @@ void MainMenuRenderer::evaluateMouseWheelEvent(const SDL_Event event)
     //scroll up
     if(event.wheel.y < 0)
     {
-        setCurrentMenuOption(getCurrentMenuOption() + 1);
-        if(getCurrentMenuOption() > RETURN_TO_MAIN_MENU_INDEX)
-        {
-            setCurrentMenuOption(FULLSCREEN_INDEX);
-        }
+        advanceToNextMenuOption();
     }
     //scroll down
     else if(event.wheel.y > 0)
     {
-        setCurrentMenuOption(getCurrentMenuOption() - 1);
-        if(getCurrentMenuOption() < FULLSCREEN_INDEX)
-        {
-            setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);
-        }
+        returnToPreviousMenuOption();
     }
 }
 
@@ -181,5 +149,23 @@ void MainMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
             quitGame = true;
             break;
         }
+    }
+}
+
+void MainMenuRenderer::advanceToNextMenuOption()
+{
+    setCurrentMenuOption(getCurrentMenuOption() + 1);
+    if(getCurrentMenuOption() > EXIT_GAME_INDEX)
+    {
+        setCurrentMenuOption(CONTINUE_INDEX);
+    }
+}
+
+void MainMenuRenderer::returnToPreviousMenuOption()
+{
+    setCurrentMenuOption(getCurrentMenuOption() - 1);
+    if(getCurrentMenuOption() < CONTINUE_INDEX)
+    {
+        setCurrentMenuOption(EXIT_GAME_INDEX);
     }
 }

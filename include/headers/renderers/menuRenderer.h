@@ -1,6 +1,8 @@
 #ifndef MENU_RENDERER_H
 #define MENU_RENDERER_H
 
+#include <array>
+
 #include "assetFilePaths.h"
 #include "colorDefines.h"
 #include "textRenderer.h"
@@ -16,6 +18,12 @@ constexpr int SETTINGS_MENU_INDEX = 1;
 
 constexpr int MENU_SELECTION_ICON_VERTICAL_OFFSET = 6;
 
+constexpr int MENU_OPTION_INITIAL_OFFSET = 150;
+constexpr int MENU_OPTION_SUBSEQUENT_OFFSET = 50;
+
+constexpr int NUMBER_OF_MAIN_MENU_OPTIONS = 4;
+constexpr int NUMBER_OF_SETTINGS_OPTIONS = 7;
+
 constexpr int CONTINUE_INDEX = 0;
 constexpr int NEW_GAME_INDEX = 1;
 constexpr int SETTINGS_INDEX = 2;
@@ -25,7 +33,11 @@ constexpr int FULLSCREEN_INDEX = 0;
 constexpr int RESOLUTION_INDEX = 1;
 constexpr int MUSIC_VOLUME_INDEX = 2;
 constexpr int SOUND_EFFECTS_VOLUME_INDEX = 3;
-constexpr int RETURN_TO_MAIN_MENU_INDEX = 4;
+constexpr int DISPLAY_FPS_INDEX = 4;
+constexpr int CRT_SCANLINES_INDEX = 5;
+constexpr int RETURN_TO_MAIN_MENU_INDEX = 6;
+
+constexpr int NUMBER_OF_ALLOCATED_MENU_OPTIONS = 10;
 
 class MenuRenderer : public WindowRenderer 
 {
@@ -69,6 +81,8 @@ class MenuRenderer : public WindowRenderer
         void setTitleScreenRenderer(SDL_Renderer* renderer);
 
     protected:
+
+        static std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuOptionsVerticalPositions;
 
         SDL_Texture* menuSelectionIconTexture;
         SDL_Rect menuSelectionIconRect;
@@ -116,6 +130,9 @@ class MenuRenderer : public WindowRenderer
          */
         void setCurrentMenuOption(const int selectedMenuOption);
 
+        /**
+         * 
+         */
         int getCurrentMenuOption();
 
         /**
@@ -176,6 +193,16 @@ class MenuRenderer : public WindowRenderer
          * \returns void
          */
         virtual void evaluateMouseWheelEvent(const SDL_Event event) = 0;
+
+        /**
+         * moves forward one menu option
+         */
+        virtual void advanceToNextMenuOption() = 0;
+        
+        /**
+         * moves back one menu option
+         */
+        virtual void returnToPreviousMenuOption() = 0;
 
     private:
 

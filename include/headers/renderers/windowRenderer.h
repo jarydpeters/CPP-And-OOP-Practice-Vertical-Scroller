@@ -91,12 +91,6 @@ class WindowRenderer
 
         static int menuTitleLogoVerticalPosition;
 
-        static int menuTextFirstVerticalPosition;
-        static int menuTextSecondVerticalPosition;
-        static int menuTextThirdVerticalPosition;
-        static int menuTextFourthVerticalPosition;
-        static int menuTextFifthVerticalPosition;
-
     private:
 
         struct Resolution

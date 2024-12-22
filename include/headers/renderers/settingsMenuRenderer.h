@@ -42,6 +42,17 @@ class SettingsMenuRenderer : public MenuRenderer
 
         #define WIDTH_OF_RESOLUTION_OPTION_TEXT 110
 
+        std::map<int, const std::string> settingsMenuOptionsText =
+        {
+            {0, "FULLSCREEN"},
+            {1, "RESOLUTION"},
+            {2, "MUSIC VOLUME"},
+            {3, "SOUND EFFECTS VOLUME"},
+            {4, "DISPLAY FPS"},
+            {5, "CRT SCANLINES"},
+            {6, "RETURN TO MAIN MENU"}
+        };
+
         std::map<int, const std::string> variableSettingSelectionMap = 
         {
             {0,  ".........."},
@@ -92,6 +103,16 @@ class SettingsMenuRenderer : public MenuRenderer
          * gets resolution setting's "<" location for clickable UI
          */
         int getResolutionSettingLeftSideHorizontalPlacement();
+
+        /**
+         * moves forward one menu option
+         */
+        void advanceToNextMenuOption() override;
+
+        /**
+         * moves back one menu option
+         */
+        void returnToPreviousMenuOption() override;
 };
 
 #endif // SETTINGS_MENU_RENDERER_H
