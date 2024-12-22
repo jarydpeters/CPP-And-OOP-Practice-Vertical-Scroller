@@ -1,4 +1,4 @@
 full screen: 0
-resolution: 1
+resolution: 0
 music volume: 6
 sound effects volume: 9

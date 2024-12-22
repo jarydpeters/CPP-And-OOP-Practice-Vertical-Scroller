@@ -49,7 +49,7 @@ class WindowRenderer
 
         static void renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFont);
         
-        void renderScanLines(SDL_Window* window, SDL_Renderer* renderer, bool renderScanlines);
+        void renderScanLines(SDL_Renderer* renderer);
 
         TTF_Font* getMenuTitleTextFont();
         void setMenuTitleTextFont(TTF_Font* font);

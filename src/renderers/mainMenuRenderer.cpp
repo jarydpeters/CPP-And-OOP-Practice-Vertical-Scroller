@@ -32,7 +32,6 @@ MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
 void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
     WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
-    WindowRenderer::renderScanLines(getWindow(), getRenderer(), true);
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
@@ -56,6 +55,9 @@ void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, 
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == EXIT_GAME_INDEX) ? black : white), 
         getWindow());
+
+    //TODO: make setting
+    WindowRenderer::renderScanLines(getRenderer());
 
     SDL_RenderPresent(getRenderer());
 }

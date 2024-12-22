@@ -122,27 +122,14 @@ void WindowRenderer::renderFPS(SDL_Renderer* renderer, TTF_Font* menuSubtitleFon
     }
 }
 
-void WindowRenderer::renderScanLines(SDL_Window* window, SDL_Renderer* renderer, bool renderScanlines)
-{
-    std::cout << "HERE" << std::endl;
+void WindowRenderer::renderScanLines(SDL_Renderer* renderer)
+{    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 50);  // Dark gray scanlines
     
-    scanlinesTextureWithRect = textureRenderer.createAndVerifyTexture(
-        0, 
-        0, 
-        SCANLINE_IMAGE_PATH, 
-        getWindow(), 
-        getRenderer());
-    
-    scanlinesTexture = scanlinesTextureWithRect.texture;
-    scanlinesRect = scanlinesTextureWithRect.rectangle;
-
-    //set no interpolation scaling mode
-    SDL_SetTextureScaleMode(scanlinesTexture, SDL_ScaleModeNearest);
-
-    SDL_RenderCopy(getRenderer(), scanlinesTexture, NULL, &scanlinesRect);
-
-    // Clean up the texture and surface
-    SDL_DestroyTexture(scanlinesTexture);
+    for (int y = 1; y < getCurrentVerticalResolution(); y += 2)  // Every other line
+    {
+        SDL_RenderDrawLine(renderer, 0, y, getCurrentHorizontalResolution(), y);
+    }
 }
 
 TTF_Font* WindowRenderer::getMenuTitleTextFont()

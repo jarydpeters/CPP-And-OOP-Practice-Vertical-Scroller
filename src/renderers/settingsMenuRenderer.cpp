@@ -32,7 +32,6 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
 void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
     WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
-    WindowRenderer::renderScanLines(getWindow(), getRenderer(), true);
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
@@ -92,6 +91,9 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
         menuTextFourthVerticalPosition, 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         getWindow());
+
+    //TODO: make setting
+    WindowRenderer::renderScanLines(getRenderer());
 
     SDL_RenderPresent(getRenderer());
 }
