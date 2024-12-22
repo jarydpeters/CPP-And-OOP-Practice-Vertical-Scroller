@@ -85,11 +85,11 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
 {
     if(event.key.keysym.sym == SDLK_UP)
     {
-        advanceToNextMenuOption();
+        returnToPreviousMenuOption();
     }   
     else if(event.key.keysym.sym == SDLK_DOWN)
     {
-        returnToPreviousMenuOption();
+        advanceToNextMenuOption();
     } 
     else if(event.key.keysym.sym == SDLK_LEFT)
     {
