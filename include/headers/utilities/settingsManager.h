@@ -48,13 +48,21 @@ class SettingsManager
         bool getFullscreen();
         void setFullscreen(const bool newFullscreen);
 
+        bool getDisplayFPS();
+        void setDisplayFPS(const bool newDisplayFPS);
+
+        bool getDisplayCRTScanlines();
+        void setDisplayCRTScanlines(const bool newCRTScanlines);
+
     private:
 
-        int currentWindowedResolutionSetting;
-        int currentMusicVolumeSetting;
-        int currentSoundEffectVolumeSetting;
+        static int currentWindowedResolutionSetting;
+        static int currentMusicVolumeSetting;
+        static int currentSoundEffectVolumeSetting;
 
-        bool fullscreen;
+        static bool fullscreen;
+        static bool displayFPS;
+        static bool displayCRTScanlines;
 };
 
 

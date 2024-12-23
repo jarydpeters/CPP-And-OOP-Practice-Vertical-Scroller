@@ -115,6 +115,8 @@ int main(int argc, char* argv[])
         {
             case(WindowRenderer::MAIN_MENU_SCREEN):
             {
+                mainMenuScreen.updateUIPositions();
+
                 SDL_SetRenderDrawColor(mainMenuScreenRenderer, black.r, black.g, black.b, black.a);
 
                 while (SDL_PollEvent(&event))
@@ -135,6 +137,8 @@ int main(int argc, char* argv[])
             }
             case(WindowRenderer::SETTINGS_MENU_SCREEN):
             {
+                settingsMenuScreen.updateUIPositions();
+
                 SDL_SetRenderDrawColor(settingsMenuScreenRenderer, black.r, black.g, black.b, black.a);
 
                 while (SDL_PollEvent(&event))
@@ -157,7 +161,6 @@ int main(int argc, char* argv[])
             {                
                 SDL_SetRenderDrawColor(gameplayScreenRenderer, black.r, black.g, black.b, black.a);
                 
-
                 while (SDL_PollEvent(&event))
                 {
                     gameplayScreen.executeGameplayActionBasedOnEvent(event);

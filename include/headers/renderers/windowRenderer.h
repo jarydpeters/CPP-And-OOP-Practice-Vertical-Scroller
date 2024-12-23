@@ -41,9 +41,6 @@ class WindowRenderer
          */
         WindowRenderer(SDL_Window* win, SDL_Renderer* ren);
 
-        static bool getDisplayFPS();
-        static void setDisplayFPS(const bool newDisplayFPS);
-
         static int getCurrentFPS();
         static void setCurrentFPS(const int newCurrentFPS);
 
@@ -104,8 +101,6 @@ class WindowRenderer
             {}
         };
 
-        //TODO: MAKE SETTING TO CONTROL VISIBILITY
-        static bool displayFPS;
         static int currentFPS;
         static Resolution resolution;
 

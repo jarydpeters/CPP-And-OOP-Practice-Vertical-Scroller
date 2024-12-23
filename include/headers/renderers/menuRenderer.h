@@ -30,11 +30,11 @@ constexpr int SETTINGS_INDEX = 2;
 constexpr int EXIT_GAME_INDEX = 3;
 
 constexpr int FULLSCREEN_INDEX = 0;
-constexpr int RESOLUTION_INDEX = 1;
-constexpr int MUSIC_VOLUME_INDEX = 2;
-constexpr int SOUND_EFFECTS_VOLUME_INDEX = 3;
-constexpr int DISPLAY_FPS_INDEX = 4;
-constexpr int CRT_SCANLINES_INDEX = 5;
+constexpr int DISPLAY_FPS_INDEX = 1;
+constexpr int DISPLAY_CRT_SCANLINES_INDEX = 2;
+constexpr int RESOLUTION_INDEX = 3;
+constexpr int MUSIC_VOLUME_INDEX = 4;
+constexpr int SOUND_EFFECTS_VOLUME_INDEX = 5;
 constexpr int RETURN_TO_MAIN_MENU_INDEX = 6;
 
 constexpr int NUMBER_OF_ALLOCATED_MENU_OPTIONS = 10;
@@ -80,9 +80,18 @@ class MenuRenderer : public WindowRenderer
         SDL_Renderer* getTitleScreenRenderer();
         void setTitleScreenRenderer(SDL_Renderer* renderer);
 
+        /**
+         * adjusts UI positions for new resolution
+         * 
+         * \returns void
+         */
+        virtual void updateUIPositions() = 0;
+
     protected:
 
-        static std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuOptionsVerticalPositions;
+        std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuOptionsVerticalPositions;
+        std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuTextVerticalUIUpperEdgePositions;
+        std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuTextVerticalUIULowerEdgePositions;
 
         SDL_Texture* menuSelectionIconTexture;
         SDL_Rect menuSelectionIconRect;
@@ -98,19 +107,6 @@ class MenuRenderer : public WindowRenderer
         int currentVerticalMousePosition;
 
         int UISelectionMargin = 4;
-
-        //fine tune hitbox of menu options
-        static int menuTextFirstVerticalUIUpperEdgePosition;
-        static int menuTextSecondVerticalUIUpperEdgePosition;
-        static int menuTextThirdVerticalUIUpperEdgePosition;
-        static int menuTextFourthVerticalUIUpperEdgePosition;
-        static int menuTextFifthVerticalUIUpperEdgePosition;
-
-        static int menuTextFirstVerticalUILowerEdgePosition;
-        static int menuTextSecondVerticalUILowerEdgePosition;
-        static int menuTextThirdVerticalUILowerEdgePosition;
-        static int menuTextFourthVerticalUILowerEdgePosition;
-        static int menuTextFifthVerticalUILowerEdgePosition;
 
         /**
          * switches the currently displayed menu and the selected menu option
@@ -135,12 +131,6 @@ class MenuRenderer : public WindowRenderer
          */
         int getCurrentMenuOption();
 
-        /**
-         * adjusts UI positions for new resolution
-         * 
-         * \returns void
-         */
-        void updateUIPositions();
 
         /**
          * updates window size based off of new resolution

@@ -27,12 +27,11 @@ SettingsMenuRenderer::SettingsMenuRenderer(SdlUtility sdlUtility,
     settingsManager.loadSavedSettings();
     setFullscreen(getFullscreen());
     updateResolution();
+    updateUIPositions();
 }
 
 void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
-    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
-    renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
     for(int menuOption = 0; menuOption < NUMBER_OF_SETTINGS_OPTIONS; menuOption++)
@@ -48,15 +47,31 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuOptionsVerticalPositions[0], 
+        menuOptionsVerticalPositions[FULLSCREEN_INDEX], 
         ((getCurrentMenuOption() == FULLSCREEN_INDEX) ? black : white), 
+        getWindow());
+
+    //render FPS display toggle icon
+    menuSubtextRenderer.renderText(getRenderer(), 
+        (settingsManager.getDisplayFPS() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
+        (getResolutionSettingLeftSideHorizontalPlacement()), 
+        menuOptionsVerticalPositions[DISPLAY_FPS_INDEX], 
+        ((getCurrentMenuOption() == DISPLAY_FPS_INDEX) ? black : white), 
+        getWindow());
+
+    //render CRT scanlines toggle icon
+    menuSubtextRenderer.renderText(getRenderer(), 
+        (settingsManager.getDisplayCRTScanlines() ? SETTING_SELECTED_TEXT : SETTING_NOT_SELECTED_TEXT), 
+        (getResolutionSettingLeftSideHorizontalPlacement()), 
+        menuOptionsVerticalPositions[DISPLAY_CRT_SCANLINES_INDEX], 
+        ((getCurrentMenuOption() == DISPLAY_CRT_SCANLINES_INDEX) ? black : white), 
         getWindow());
 
     //render resolution selection icon
     menuSubtextRenderer.renderText(getRenderer(), 
         (settingsManager.getFullscreen() ? usersMonitorResolution : windowedResolutionSelectionMap[settingsManager.getCurrentWindowedResolutionSetting()]), //TODO: RESOLUTION CHANGE IN FULLSCREEN SUPPORT
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuOptionsVerticalPositions[1], 
+        menuOptionsVerticalPositions[RESOLUTION_INDEX], 
         ((getCurrentMenuOption() == RESOLUTION_INDEX) ? black : white), 
         getWindow());
 
@@ -64,19 +79,25 @@ void SettingsMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRender
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentMusicVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuOptionsVerticalPositions[2], 
+        menuOptionsVerticalPositions[MUSIC_VOLUME_INDEX], 
         ((getCurrentMenuOption() == MUSIC_VOLUME_INDEX) ? black : white), 
         getWindow());
 
     menuSubtextRenderer.renderText(getRenderer(), 
         variableSettingSelectionMap[settingsManager.getCurrentSoundEffectVolumeSetting()], 
         (getResolutionSettingLeftSideHorizontalPlacement()), 
-        menuOptionsVerticalPositions[3], 
+        menuOptionsVerticalPositions[SOUND_EFFECTS_VOLUME_INDEX], 
         ((getCurrentMenuOption() == SOUND_EFFECTS_VOLUME_INDEX) ? black : white), 
         getWindow());
 
-    //TODO: make setting
-    WindowRenderer::renderScanLines(getRenderer());
+    if(settingsManager.getDisplayFPS())
+    {
+        WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    }
+    if(settingsManager.getDisplayCRTScanlines())
+    {
+        WindowRenderer::renderScanLines(getRenderer());
+    }
 
     SDL_RenderPresent(getRenderer());
 }
@@ -93,7 +114,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
     } 
     else if(event.key.keysym.sym == SDLK_LEFT)
     {
-        //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
+        //TODO: ADD MOUSE CONTROLS FOR VOLUME
         //TODO: MOVE MOUSE TO NEW SPOT AFTER RESOLUTION CHANGE (MAKE INTO MENURENDER/WINDOWRENDERER FEATURE?)
         switch(getCurrentMenuOption())
         {
@@ -131,7 +152,7 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
     }
     else if(event.key.keysym.sym == SDLK_RIGHT)
     {
-        //TODO: ADD MOUSE CONTROLS FOR RESOLUTION AND VOLUME
+        //TODO: ADD MOUSE CONTROLS FOR FPS, CRT AND VOLUME
         //TODO: MOVE MOUSE TO NEW SPOT AFTER RESOLUTION CHANGE (MAKE INTO MENURENDER/WINDOWRENDERER FEATURE?)
         switch(getCurrentMenuOption())
         {
@@ -173,8 +194,19 @@ void SettingsMenuRenderer::evaluateKeystrokeEvent(const SDL_Event event)
         {
             case FULLSCREEN_INDEX:
             {
+                //TODO: MOVE FUNCTION TO SETTINGS MANAGER AKIN TO FPS AND SCANLINES
                 setFullscreen(!settingsManager.getFullscreen());
                 updateResolution();
+                break;
+            }
+            case DISPLAY_FPS_INDEX:
+            {
+                settingsManager.setDisplayFPS(!settingsManager.getDisplayFPS());
+                break;
+            }
+            case DISPLAY_CRT_SCANLINES_INDEX:
+            {
+                settingsManager.setDisplayCRTScanlines(!settingsManager.getDisplayCRTScanlines());
                 break;
             }
             case RETURN_TO_MAIN_MENU_INDEX:
@@ -216,23 +248,31 @@ void SettingsMenuRenderer::evaluateMouseMotionEvent()
 {
     SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
 
-    if((menuTextFirstVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFirstVerticalUILowerEdgePosition))
+    if((menuTextVerticalUIUpperEdgePositions[FULLSCREEN_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[FULLSCREEN_INDEX]))
     {
         setCurrentMenuOption(FULLSCREEN_INDEX);
     }
-    else if((menuTextSecondVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextSecondVerticalUILowerEdgePosition))
+    else if((menuTextVerticalUIUpperEdgePositions[DISPLAY_FPS_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[DISPLAY_FPS_INDEX]))
+    {
+        setCurrentMenuOption(DISPLAY_FPS_INDEX);  
+    }
+    else if((menuTextVerticalUIUpperEdgePositions[DISPLAY_CRT_SCANLINES_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[DISPLAY_CRT_SCANLINES_INDEX]))
+    {
+        setCurrentMenuOption(DISPLAY_CRT_SCANLINES_INDEX);  
+    }
+    else if((menuTextVerticalUIUpperEdgePositions[RESOLUTION_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[RESOLUTION_INDEX]))
     {
         setCurrentMenuOption(RESOLUTION_INDEX);  
     }
-    else if((menuTextThirdVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextThirdVerticalUILowerEdgePosition))
+    else if((menuTextVerticalUIUpperEdgePositions[MUSIC_VOLUME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[MUSIC_VOLUME_INDEX]))
     {
         setCurrentMenuOption(MUSIC_VOLUME_INDEX);  
     }
-    else if((menuTextFourthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFourthVerticalUILowerEdgePosition))
+    else if((menuTextVerticalUIUpperEdgePositions[SOUND_EFFECTS_VOLUME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[SOUND_EFFECTS_VOLUME_INDEX]))
     {
         setCurrentMenuOption(SOUND_EFFECTS_VOLUME_INDEX); 
     }
-    else if((menuTextFifthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFifthVerticalUILowerEdgePosition))
+    else if((menuTextVerticalUIUpperEdgePositions[RETURN_TO_MAIN_MENU_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[RETURN_TO_MAIN_MENU_INDEX]))
     {
         setCurrentMenuOption(RETURN_TO_MAIN_MENU_INDEX);  
     }
@@ -298,4 +338,16 @@ void SettingsMenuRenderer::evaluateMouseButtonEvent(const SDL_Event event)
 int SettingsMenuRenderer::getResolutionSettingLeftSideHorizontalPlacement()
 {
     return((getCurrentHorizontalResolution() / 2) + 200);
+}
+
+void SettingsMenuRenderer::updateUIPositions()
+{
+    menuOptionsVerticalPositions[0] = (MENU_OPTION_INITIAL_OFFSET);
+
+    for(int menuOption = 1; menuOption < NUMBER_OF_SETTINGS_OPTIONS; menuOption++)
+    {
+        menuOptionsVerticalPositions[menuOption] = (menuOptionsVerticalPositions[menuOption - 1] + MENU_OPTION_SUBSEQUENT_OFFSET);
+        menuTextVerticalUIUpperEdgePositions[menuOption] = menuOptionsVerticalPositions[menuOption];
+        menuTextVerticalUIULowerEdgePositions[menuOption] = menuOptionsVerticalPositions[menuOption] + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+    }
 }

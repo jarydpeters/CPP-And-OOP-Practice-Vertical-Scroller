@@ -28,6 +28,11 @@ class MainMenuRenderer : public MenuRenderer
          */
         void renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
 
+        /**
+         * adjusts UI positions for new resolution
+         */
+        void updateUIPositions() override;
+
     private:
 
         #define MAIN_MENU_CONTINUE_TEXT "CONTINUE"

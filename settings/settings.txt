@@ -1,4 +1,6 @@
 full screen: 0
-resolution: 0
+display FPS: 1
+display CRT scanlines: 1
+resolution: 1
 music volume: 5
-sound effects volume: 9
+sound effects volume: 7

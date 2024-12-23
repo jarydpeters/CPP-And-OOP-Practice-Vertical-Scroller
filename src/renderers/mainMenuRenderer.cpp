@@ -27,11 +27,11 @@ MainMenuRenderer::MainMenuRenderer(SdlUtility sdlUtility,
     settingsManager.loadSavedSettings();
     setFullscreen(getFullscreen());
     updateResolution();
+    updateUIPositions();
 }
 
 void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) 
 {
-    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
     renderMainMenuLogo();
     renderMenuOptionSelectionSprite();
 
@@ -44,8 +44,14 @@ void MainMenuRenderer::renderCurrentScreen(TextRenderer& menuTitleTextRenderer, 
             getWindow());
     }
 
-    //TODO: make setting
-    WindowRenderer::renderScanLines(getRenderer());
+    if(settingsManager.getDisplayFPS())
+    {
+        WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    }
+    if(settingsManager.getDisplayCRTScanlines())
+    {
+        WindowRenderer::renderScanLines(getRenderer());
+    }
 
     SDL_RenderPresent(getRenderer());
 }
@@ -90,19 +96,19 @@ void MainMenuRenderer::evaluateMouseMotionEvent()
     //TODO: CHANGE MOUSE CLICK HITBOX FOR BETTER UX
     SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
     
-    if((menuTextFirstVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFirstVerticalUILowerEdgePosition))
+    if((menuTextVerticalUIUpperEdgePositions[CONTINUE_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[CONTINUE_INDEX]))
     {
         setCurrentMenuOption(CONTINUE_INDEX);
     }
-    else if((menuTextSecondVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextSecondVerticalUILowerEdgePosition))
+    else if((menuTextVerticalUIUpperEdgePositions[NEW_GAME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[NEW_GAME_INDEX]))
     {
         setCurrentMenuOption(NEW_GAME_INDEX);
     }
-    else if((menuTextThirdVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextThirdVerticalUILowerEdgePosition))
+    else if((menuTextVerticalUIUpperEdgePositions[SETTINGS_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[SETTINGS_INDEX]))
     {
         setCurrentMenuOption(SETTINGS_INDEX);
     }
-    else if((menuTextFourthVerticalUIUpperEdgePosition < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextFourthVerticalUILowerEdgePosition))
+    else if((menuTextVerticalUIUpperEdgePositions[EXIT_GAME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[EXIT_GAME_INDEX]))
     {
         setCurrentMenuOption(EXIT_GAME_INDEX);
     }
@@ -167,5 +173,19 @@ void MainMenuRenderer::returnToPreviousMenuOption()
     if(getCurrentMenuOption() < CONTINUE_INDEX)
     {
         setCurrentMenuOption(EXIT_GAME_INDEX);
+    }
+}
+
+void MainMenuRenderer::updateUIPositions()
+{
+    menuTitleLogoVerticalPosition = getCurrentVerticalResolution() / 3.0;
+
+    menuOptionsVerticalPositions[0] = menuTitleLogoVerticalPosition + (MENU_OPTION_INITIAL_OFFSET);
+
+    for(int menuOption = 1; menuOption < NUMBER_OF_SETTINGS_OPTIONS; menuOption++)
+    {
+        menuOptionsVerticalPositions[menuOption] = (menuOptionsVerticalPositions[menuOption - 1] + MENU_OPTION_SUBSEQUENT_OFFSET);
+        menuTextVerticalUIUpperEdgePositions[menuOption] = menuOptionsVerticalPositions[menuOption];
+        menuTextVerticalUIULowerEdgePositions[menuOption] = menuOptionsVerticalPositions[menuOption] + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
     }
 }

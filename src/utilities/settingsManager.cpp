@@ -1,5 +1,13 @@
 #include "settingsManager.h"
 
+int SettingsManager::currentWindowedResolutionSetting;
+int SettingsManager::currentMusicVolumeSetting;
+int SettingsManager::currentSoundEffectVolumeSetting;
+
+bool SettingsManager::fullscreen;
+bool SettingsManager::displayFPS;
+bool SettingsManager::displayCRTScanlines;
+
 SettingsManager::SettingsManager()
 {
 
@@ -11,6 +19,8 @@ void SettingsManager::saveSettings()
     if(outFile.is_open())
     {
         outFile << "full screen: " << fullscreen << std::endl;
+        outFile << "display FPS: " << displayFPS << std::endl;
+        outFile << "display CRT scanlines: " << displayCRTScanlines << std::endl;
         outFile << "resolution: " << currentWindowedResolutionSetting << std::endl;
         outFile << "music volume: " << currentMusicVolumeSetting << std::endl;
         outFile << "sound effects volume: " << currentSoundEffectVolumeSetting << std::endl;
@@ -55,7 +65,15 @@ void SettingsManager::loadSavedSettings()
                     {
                         fullscreen = std::stoi(settingValue);
                     }
-                    if(settingName == "resolution")
+                    else if(settingName == "display FPS")
+                    {
+                        displayFPS = std::stoi(settingValue);
+                    }
+                    else if(settingName == "display CRT scanlines")
+                    {
+                        displayCRTScanlines = std::stoi(settingValue);
+                    }
+                    else if(settingName == "resolution")
                     {
                         currentWindowedResolutionSetting = std::stoi(settingValue);
                     }
@@ -125,4 +143,24 @@ bool SettingsManager::getFullscreen()
 void SettingsManager::setFullscreen(const bool newFullscreen)
 {
     fullscreen = newFullscreen;
+}
+
+bool SettingsManager::getDisplayFPS()
+{
+    return displayFPS;
+}
+
+void SettingsManager::setDisplayFPS(const bool newDisplayFPS)
+{
+    displayFPS = newDisplayFPS;
+}
+
+bool SettingsManager::getDisplayCRTScanlines()
+{
+    return displayCRTScanlines;
+}
+
+void SettingsManager::setDisplayCRTScanlines(const bool newCRTScanlines)
+{
+    displayCRTScanlines = newCRTScanlines;
 }

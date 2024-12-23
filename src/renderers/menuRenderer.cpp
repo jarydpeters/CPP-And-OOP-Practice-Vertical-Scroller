@@ -2,24 +2,10 @@
 
 int MenuRenderer::currentlySelectedMenuOption = 0;
 
-int MenuRenderer::menuTextFirstVerticalUIUpperEdgePosition = 0;
-int MenuRenderer::menuTextSecondVerticalUIUpperEdgePosition = 0;
-int MenuRenderer::menuTextThirdVerticalUIUpperEdgePosition = 0;
-int MenuRenderer::menuTextFourthVerticalUIUpperEdgePosition = 0;
-int MenuRenderer::menuTextFifthVerticalUIUpperEdgePosition = 0;
-
-int MenuRenderer::menuTextFirstVerticalUILowerEdgePosition = 0;
-int MenuRenderer::menuTextSecondVerticalUILowerEdgePosition = 0;
-int MenuRenderer::menuTextThirdVerticalUILowerEdgePosition = 0;
-int MenuRenderer::menuTextFourthVerticalUILowerEdgePosition = 0;
-int MenuRenderer::menuTextFifthVerticalUILowerEdgePosition = 0;
-
-std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> MenuRenderer::menuOptionsVerticalPositions;
-
 MenuRenderer::MenuRenderer(SDL_Window* win, SDL_Renderer* ren)
     : WindowRenderer(win, ren)
 {
-    updateUIPositions();
+
 }
 
 void MenuRenderer::executeMenuActionBasedOnEvent(const SDL_Event event)
@@ -112,25 +98,6 @@ int MenuRenderer::getCurrentMenuOption()
 {
     return currentlySelectedMenuOption;
 }
-
-void MenuRenderer::updateUIPositions()
-{
-    menuTitleLogoVerticalPosition = getCurrentVerticalResolution() / 3.0;
-
-    menuOptionsVerticalPositions[0] = menuTitleLogoVerticalPosition + (MENU_OPTION_INITIAL_OFFSET);
-
-    for(int menuOption = 1; menuOption < NUMBER_OF_SETTINGS_OPTIONS; menuOption++)
-    {
-        menuOptionsVerticalPositions[menuOption] = (menuOptionsVerticalPositions[menuOption - 1] + MENU_OPTION_SUBSEQUENT_OFFSET);
-    }
-
-    // menuTextFirstVerticalUILowerEdgePosition = menuTextFirstVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    // menuTextSecondVerticalUILowerEdgePosition = menuTextSecondVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    // menuTextThirdVerticalUILowerEdgePosition = menuTextThirdVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    // menuTextFourthVerticalUILowerEdgePosition = menuTextFourthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-    // menuTextFifthVerticalUILowerEdgePosition = menuTextFifthVerticalPosition + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
-}
-
 
 SDL_Texture* MenuRenderer::getMenuSelectionIconTexture()
 {

@@ -28,14 +28,12 @@ class SettingsMenuRenderer : public MenuRenderer
          */
         void renderCurrentScreen(TextRenderer& menuTitleTextRenderer, TextRenderer& menuSubtextRenderer) override;
 
-    private:
+        /**
+         * adjusts UI positions for new resolution
+         */
+        void updateUIPositions() override;
 
-        #define SETTINGS_MENU_TITLE_TEXT "SETTINGS"
-        #define SETTINGS_MENU_FULLSCREEN_TEXT "FULL SCREEN"
-        #define SETTINGS_MENU_RESOLUTION_TEXT "RESOLUTION"
-        #define SETTINGS_MENU_MUSIC_VOLUME_TEXT "MUSIC VOLUME"
-        #define SETTINGS_MENU_SOUND_EFFECTS_VOLUME_TEXT "SOUND EFFECTS VOLUME"
-        #define SETTINGS_MENU_RETURN_TO_MAIN_MENU_TEXT "RETURN TO MAIN MENU"
+    private:
 
         #define SETTING_NOT_SELECTED_TEXT "[ ]"
         #define SETTING_SELECTED_TEXT "[X]"
@@ -45,11 +43,11 @@ class SettingsMenuRenderer : public MenuRenderer
         std::map<int, const std::string> settingsMenuOptionsText =
         {
             {0, "FULLSCREEN"},
-            {1, "RESOLUTION"},
-            {2, "MUSIC VOLUME"},
-            {3, "SOUND EFFECTS VOLUME"},
-            {4, "DISPLAY FPS"},
-            {5, "CRT SCANLINES"},
+            {1, "DISPLAY FPS"},
+            {2, "CRT SCANLINES"},
+            {3, "RESOLUTION"},
+            {4, "MUSIC VOLUME"},
+            {5, "SOUND EFFECTS VOLUME"},
             {6, "RETURN TO MAIN MENU"}
         };
 

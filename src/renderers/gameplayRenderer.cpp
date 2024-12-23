@@ -34,12 +34,16 @@ void GameplayRenderer::renderMainGame()
 {
     SDL_GetWindowSize(getWindow(), &currentHorizontalResolution, &currentVerticalResolution);
 
-    WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
-
     renderRedball();
 
-    //TODO: make setting
-    WindowRenderer::renderScanLines(getRenderer());
+    if(settingsManager.getDisplayFPS())
+    {
+        WindowRenderer::renderFPS(getRenderer(), getMenuSubtitleTextFont());
+    }
+    if(settingsManager.getDisplayCRTScanlines())
+    {
+        WindowRenderer::renderScanLines(getRenderer());
+    }
 
     SDL_RenderPresent(getRenderer());
 }
