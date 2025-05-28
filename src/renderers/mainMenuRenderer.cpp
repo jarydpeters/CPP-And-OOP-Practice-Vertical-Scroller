@@ -96,19 +96,19 @@ void MainMenuRenderer::evaluateMouseMotionEvent()
     //TODO: CHANGE MOUSE CLICK HITBOX FOR BETTER UX
     SDL_GetMouseState(&currentHorizontalMousePosition, &currentVerticalMousePosition);
     
-    if((menuTextVerticalUIUpperEdgePositions[CONTINUE_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[CONTINUE_INDEX]))
+    if((menuTextVerticalUIUpperEdgePositions[CONTINUE_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUILowerEdgePositions[CONTINUE_INDEX]))
     {
         setCurrentMenuOption(CONTINUE_INDEX);
     }
-    else if((menuTextVerticalUIUpperEdgePositions[NEW_GAME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[NEW_GAME_INDEX]))
+    else if((menuTextVerticalUIUpperEdgePositions[NEW_GAME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUILowerEdgePositions[NEW_GAME_INDEX]))
     {
         setCurrentMenuOption(NEW_GAME_INDEX);
     }
-    else if((menuTextVerticalUIUpperEdgePositions[SETTINGS_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[SETTINGS_INDEX]))
+    else if((menuTextVerticalUIUpperEdgePositions[SETTINGS_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUILowerEdgePositions[SETTINGS_INDEX]))
     {
         setCurrentMenuOption(SETTINGS_INDEX);
     }
-    else if((menuTextVerticalUIUpperEdgePositions[EXIT_GAME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUIULowerEdgePositions[EXIT_GAME_INDEX]))
+    else if((menuTextVerticalUIUpperEdgePositions[EXIT_GAME_INDEX] < currentVerticalMousePosition) && (currentVerticalMousePosition < menuTextVerticalUILowerEdgePositions[EXIT_GAME_INDEX]))
     {
         setCurrentMenuOption(EXIT_GAME_INDEX);
     }
@@ -186,6 +186,6 @@ void MainMenuRenderer::updateUIPositions()
     {
         menuOptionsVerticalPositions[menuOption] = (menuOptionsVerticalPositions[menuOption - 1] + MENU_OPTION_SUBSEQUENT_OFFSET);
         menuTextVerticalUIUpperEdgePositions[menuOption] = menuOptionsVerticalPositions[menuOption];
-        menuTextVerticalUIULowerEdgePositions[menuOption] = menuOptionsVerticalPositions[menuOption] + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
+        menuTextVerticalUILowerEdgePositions[menuOption] = menuOptionsVerticalPositions[menuOption] + SUBTITLE_TEXT_POINT_SIZE + UISelectionMargin;
     }
 }

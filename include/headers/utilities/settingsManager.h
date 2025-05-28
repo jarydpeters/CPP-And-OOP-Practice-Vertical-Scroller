@@ -13,6 +13,8 @@ constexpr double MILLISECONDS_PER_SECOND = 1000;
 constexpr double TARGET_FRAMES_PER_SECOND = 60;
 constexpr double FRAME_DELAY = MILLISECONDS_PER_SECOND / TARGET_FRAMES_PER_SECOND;
 
+constexpr bool DEBUG = true;
+
 class SettingsManager
 {
     public:

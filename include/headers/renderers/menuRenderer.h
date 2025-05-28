@@ -21,21 +21,25 @@ constexpr int MENU_SELECTION_ICON_VERTICAL_OFFSET = 6;
 constexpr int MENU_OPTION_INITIAL_OFFSET = 150;
 constexpr int MENU_OPTION_SUBSEQUENT_OFFSET = 50;
 
-constexpr int NUMBER_OF_MAIN_MENU_OPTIONS = 4;
-constexpr int NUMBER_OF_SETTINGS_OPTIONS = 7;
+enum MainMenuIndex {
+    CONTINUE_INDEX = 0,
+    NEW_GAME_INDEX,
+    SETTINGS_INDEX,
+    EXIT_GAME_INDEX,
+    NUMBER_OF_MAIN_MENU_OPTIONS
+};
 
-constexpr int CONTINUE_INDEX = 0;
-constexpr int NEW_GAME_INDEX = 1;
-constexpr int SETTINGS_INDEX = 2;
-constexpr int EXIT_GAME_INDEX = 3;
-
-constexpr int FULLSCREEN_INDEX = 0;
-constexpr int DISPLAY_FPS_INDEX = 1;
-constexpr int DISPLAY_CRT_SCANLINES_INDEX = 2;
-constexpr int RESOLUTION_INDEX = 3;
-constexpr int MUSIC_VOLUME_INDEX = 4;
-constexpr int SOUND_EFFECTS_VOLUME_INDEX = 5;
-constexpr int RETURN_TO_MAIN_MENU_INDEX = 6;
+enum SettingsMenuIndex 
+{
+    FULLSCREEN_INDEX = 0,
+    DISPLAY_FPS_INDEX,
+    DISPLAY_CRT_SCANLINES_INDEX,
+    RESOLUTION_INDEX,
+    MUSIC_VOLUME_INDEX,
+    SOUND_EFFECTS_VOLUME_INDEX,
+    RETURN_TO_MAIN_MENU_INDEX,
+    NUMBER_OF_SETTINGS_OPTIONS
+};
 
 constexpr int NUMBER_OF_ALLOCATED_MENU_OPTIONS = 10;
 
@@ -91,7 +95,7 @@ class MenuRenderer : public WindowRenderer
 
         std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuOptionsVerticalPositions;
         std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuTextVerticalUIUpperEdgePositions;
-        std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuTextVerticalUIULowerEdgePositions;
+        std::array<int, NUMBER_OF_ALLOCATED_MENU_OPTIONS> menuTextVerticalUILowerEdgePositions;
 
         SDL_Texture* menuSelectionIconTexture;
         SDL_Rect menuSelectionIconRect;
