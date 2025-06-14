@@ -11,14 +11,14 @@ Once the features of the UI and menu are mature, it will be developed into a gen
 
 Current features include:
 
--FPS limiting to prevent excessive computational overhead
--realtime FPS display
--Mouse and keyboard control of menu actions
--Fullscreen toggle
--CRT Scanlines effect toggle
--Standard 16:9 resolution options
--Music and Sound Effects volume sliders
--Save file for persisting options selection
+-FPS limiting to prevent excessive computational overhead  
+-realtime FPS display  
+-Mouse and keyboard control of menu actions  
+-Fullscreen toggle  
+-CRT Scanlines effect toggle  
+-Standard 16:9 resolution options  
+-Music and Sound Effects volume sliders  
+-Save file for persisting options selection  
 
 ![image](https://github.com/user-attachments/assets/4dc326c8-7dfc-46a7-b536-0664d406f7c5)
 
